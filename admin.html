@@ -3,50 +3,143 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pick Mart - Admin Panel</title>
+    <title>Pick Mart - Admin Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-gray-200 p-6">
+<body class="bg-gray-100 min-h-screen p-4">
 
-    <div class="max-w-3xl mx-auto bg-white p-8 rounded-lg shadow-lg">
-        <h2 class="text-2xl font-bold text-gray-800 mb-6">Pick Mart Admin Panel</h2>
-        
-        <!-- Add Product Form -->
-        <form id="addProductForm" class="space-y-4">
-            <div>
-                <label class="block text-gray-700">Product Name</label>
-                <input type="text" id="pName" class="w-full p-2 border rounded mt-1" placeholder="e.g. Smart Watch" required>
-            </div>
-            
-            <div>
-                <label class="block text-gray-700">Price (₹)</label>
-                <input type="number" id="pPrice" class="w-full p-2 border rounded mt-1" placeholder="999" required>
-            </div>
-
-            <div>
-                <label class="block text-gray-700">Image URL</label>
-                <input type="url" id="pImg" class="w-full p-2 border rounded mt-1" placeholder="https://image-link.com" required>
-            </div>
-
-            <button type="submit" class="w-full bg-blue-600 text-white font-bold py-2 rounded hover:bg-blue-700">
-                Add Product to Store
-            </button>
-        </form>
+    <!-- Login Protection -->
+    <div id="loginBox" class="max-w-md mx-auto bg-white p-6 rounded-lg shadow-md mt-10 text-center">
+        <h2 class="text-xl font-bold mb-4">Pick Mart Admin Password</h2>
+        <input type="password" id="pinInput" placeholder="PIN അടിക്കുക" class="w-full p-2 border rounded mb-4 text-center text-lg">
+        <button onclick="login()" class="w-full bg-blue-600 text-white font-bold py-2 rounded">Login</button>
     </div>
 
-    <!-- Firebase Connection Script (ഉദാഹരണം) -->
-    <script type="module">
-        // നിങ്ങളുടേതായ ഫയർബേസ് പ്രൊജക്റ്റ് സെറ്റപ്പ് ചെയ്ത ശേഷം കോൺഫിഗറേഷൻ ഇവിടെ നൽകണം
-        // import { initializeApp } from "firebase/app";
-        // import { getFirestore, collection, addDoc } from "firebase/firestore";
+    <!-- Main Admin Dashboard -->
+    <div id="adminBody" class="max-w-4xl mx-auto hidden space-y-6">
+        
+        <div class="flex justify-between items-center bg-white p-4 rounded shadow">
+            <h1 class="text-2xl font-bold text-blue-600">🛒 Pick Mart Admin Dashboard</h1>
+            <button onclick="location.reload()" class="bg-red-500 text-white px-3 py-1 rounded text-sm">Logout</button>
+        </div>
 
-        document.getElementById('addProductForm').addEventListener('submit', function(e) {
+        <!-- Add Product Section -->
+        <div class="bg-white p-6 rounded shadow">
+            <h2 class="text-lg font-bold mb-4 border-b pb-2 text-gray-700">പുതിയ പ്രൊഡക്റ്റ് ചേർക്കുക</h2>
+            <form id="addProductForm" class="space-y-3">
+                <div>
+                    <label class="block text-xs font-bold text-gray-600">Product Name</label>
+                    <input type="text" id="pName" placeholder="e.g. Cotton T-Shirt" class="w-full p-2 border rounded" required>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-gray-600">Price (₹)</label>
+                    <input type="number" id="pPrice" placeholder="499" class="w-full p-2 border rounded" required>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-gray-600">Image Link (URL)</label>
+                    <input type="url" id="pImg" placeholder="https://..." class="w-full p-2 border rounded" required>
+                </div>
+                <button type="submit" id="addBtn" class="w-full bg-green-600 text-white font-bold py-2 rounded hover:bg-green-700">
+                    Save Product to Store
+                </button>
+            </form>
+        </div>
+
+        <!-- View Orders Section -->
+        <div class="bg-white p-6 rounded shadow">
+            <h2 class="text-lg font-bold mb-4 border-b pb-2 text-gray-700">വന്ന ഓർഡറുകൾ (Received Orders)</h2>
+            <div id="ordersContainer" class="space-y-4">
+                <p class="text-gray-500 text-center">ഓർഡറുകൾ പരിശോധിക്കുന്നു...</p>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Firebase SDK -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getFirestore, collection, addDoc, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        // നിങ്ങളുടേതായ Firebase Config[span_2](start_span)[span_2](end_span)
+        const firebaseConfig = {
+            apiKey: "AIzaSyA1QQX3FYTs1eN5Z-x0mdjBw1F0llBmuo",
+            authDomain: "pick-mart.firebaseapp.com",
+            projectId: "pick-mart",
+            storageBucket: "pick-mart.firebasestorage.app",
+            messagingSenderId: "438637337844",
+            appId: "1:438637337844:web:88734d96769e66faed12a1"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        window.login = function() {
+            const pin = document.getElementById('pinInput').value;
+            if(pin === "1234") {
+                document.getElementById('loginBox').classList.add('hidden');
+                document.getElementById('adminBody').classList.remove('hidden');
+                loadOrders();
+            } else {
+                alert("തെറ്റായ പാസ്‌വേഡ്!");
+            }
+        };
+
+        // Add Product
+        document.getElementById('addProductForm').addEventListener('submit', async (e) => {
             e.preventDefault();
-            const name = document.getElementById('pName').value;
-            const price = document.getElementById('pPrice').value;
-            alert(`${name} ₹${price} നിരക്കിൽ ആഡ് ചെയ്തു! (ഡാറ്റാബേസ് കണക്ട് ചെയ്യുമ്പോൾ ഇത് സേവ് ആകും)`);
+            const btn = document.getElementById('addBtn');
+            btn.disabled = true;
+            btn.innerText = "Saving...";
+
+            try {
+                await addDoc(collection(db, "products"), {
+                    name: document.getElementById('pName').value,
+                    price: Number(document.getElementById('pPrice').value),
+                    image: document.getElementById('pImg').value
+                });
+                alert("പ്രൊഡക്റ്റ് വിജയകരമായി സ്റ്റോറിൽ ആഡ് ആയി!");
+                document.getElementById('addProductForm').reset();
+            } catch (err) {
+                alert("Error: " + err.message);
+            } finally {
+                btn.disabled = false;
+                btn.innerText = "Save Product to Store";
+            }
         });
+
+        // Load Received Orders
+        async function loadOrders() {
+            const container = document.getElementById('ordersContainer');
+            try {
+                const q = query(collection(db, "orders"));
+                const querySnapshot = await getDocs(q);
+                if(querySnapshot.empty) {
+                    container.innerHTML = '<p class="text-gray-500 text-center py-4">ഇതുവരെ പുതിയ ഓർഡറുകൾ ഒന്നും വന്നിട്ടില്ല.</p>';
+                    return;
+                }
+                container.innerHTML = '';
+                querySnapshot.forEach((doc) => {
+                    const o = doc.data();
+                    container.innerHTML += `
+                        <div class="border p-4 rounded bg-blue-50 border-blue-200">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <h4 class="font-bold text-blue-900 text-lg">${o.productName}</h4>
+                                    <p class="text-green-700 font-bold">₹${o.price}</p>
+                                </div>
+                                <span class="bg-blue-200 text-blue-800 text-xs px-2 py-1 rounded">New Order</span>
+                            </div>
+                            <hr class="my-2 border-blue-200">
+                            <p class="text-sm"><b>Customer Name:</b> ${o.name}</p>
+                            <p class="text-sm"><b>Phone:</b> <a href="tel:${o.phone}" class="text-blue-600 underline">${o.phone}</a></p>
+                            <p class="text-sm"><b>Address:</b> ${o.address}</p>
+                        </div>
+                    `;
+                });
+            } catch (err) {
+                container.innerHTML = '<p class="text-red-500 text-center">ഓർഡറുകൾ കാണാൻ സാധിച്ചില്ല.</p>';
+            }
+        }
     </script>
 </body>
 </html>
-
