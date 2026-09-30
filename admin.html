@@ -1,1 +1,52 @@
-u
+<!DOCTYPE html>
+<html lang="ml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pick Mart - Admin Panel</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-200 p-6">
+
+    <div class="max-w-3xl mx-auto bg-white p-8 rounded-lg shadow-lg">
+        <h2 class="text-2xl font-bold text-gray-800 mb-6">Pick Mart Admin Panel</h2>
+        
+        <!-- Add Product Form -->
+        <form id="addProductForm" class="space-y-4">
+            <div>
+                <label class="block text-gray-700">Product Name</label>
+                <input type="text" id="pName" class="w-full p-2 border rounded mt-1" placeholder="e.g. Smart Watch" required>
+            </div>
+            
+            <div>
+                <label class="block text-gray-700">Price (₹)</label>
+                <input type="number" id="pPrice" class="w-full p-2 border rounded mt-1" placeholder="999" required>
+            </div>
+
+            <div>
+                <label class="block text-gray-700">Image URL</label>
+                <input type="url" id="pImg" class="w-full p-2 border rounded mt-1" placeholder="https://image-link.com" required>
+            </div>
+
+            <button type="submit" class="w-full bg-blue-600 text-white font-bold py-2 rounded hover:bg-blue-700">
+                Add Product to Store
+            </button>
+        </form>
+    </div>
+
+    <!-- Firebase Connection Script (ഉദാഹരണം) -->
+    <script type="module">
+        // നിങ്ങളുടേതായ ഫയർബേസ് പ്രൊജക്റ്റ് സെറ്റപ്പ് ചെയ്ത ശേഷം കോൺഫിഗറേഷൻ ഇവിടെ നൽകണം
+        // import { initializeApp } from "firebase/app";
+        // import { getFirestore, collection, addDoc } from "firebase/firestore";
+
+        document.getElementById('addProductForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const name = document.getElementById('pName').value;
+            const price = document.getElementById('pPrice').value;
+            alert(`${name} ₹${price} നിരക്കിൽ ആഡ് ചെയ്തു! (ഡാറ്റാബേസ് കണക്ട് ചെയ്യുമ്പോൾ ഇത് സേവ് ആകും)`);
+        });
+    </script>
+</body>
+</html>
+
