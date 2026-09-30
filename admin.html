@@ -26,7 +26,7 @@
         <!-- Add Product Section -->
         <div class="bg-white p-6 rounded shadow">
             <h2 class="text-lg font-bold mb-4 border-b pb-2 text-gray-700">പുതിയ പ്രൊഡക്റ്റ് ചേർക്കുക</h2>
-            <form id="addProductForm" class="space-y-3">
+            <form id="addProductForm" class="space-y-4">
                 <div>
                     <label class="block text-xs font-bold text-gray-600">Product Name</label>
                     <input type="text" id="pName" placeholder="e.g. Cotton T-Shirt" class="w-full p-2 border rounded" required>
@@ -36,10 +36,10 @@
                     <input type="number" id="pPrice" placeholder="499" class="w-full p-2 border rounded" required>
                 </div>
                 <div>
-                    <label class="block text-xs font-bold text-gray-600">Image Link (URL)</label>
-                    <input type="url" id="pImg" placeholder="https://..." class="w-full p-2 border rounded" required>
+                    <label class="block text-xs font-bold text-gray-600">Product Image (ഗാലറിയിൽ നിന്ന് ഫോട്ടോ എടുക്കുക)</label>
+                    <input type="file" id="pImgFile" accept="image/*" class="w-full p-2 border rounded bg-gray-50" required>
                 </div>
-                <button type="submit" id="addBtn" class="w-full bg-green-600 text-white font-bold py-2 rounded hover:bg-green-700">
+                <button type="submit" id="addBtn" class="w-full bg-green-600 text-white font-bold py-3 rounded hover:bg-green-700">
                     Save Product to Store
                 </button>
             </form>
@@ -58,9 +58,10 @@
     <!-- Firebase SDK -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, collection, addDoc, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, getDocs, query } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
 
-        // നിങ്ങളുടേതായ Firebase Config[span_2](start_span)[span_2](end_span)
+        // നിങ്ങളുടെ Firebase Config
         const firebaseConfig = {
             apiKey: "AIzaSyA1QQX3FYTs1eN5Z-x0mdjBw1F0llBmuo",
             authDomain: "pick-mart.firebaseapp.com",
@@ -72,6 +73,7 @@
 
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
+        const storage = getStorage(app);
 
         window.login = function() {
             const pin = document.getElementById('pinInput').value;
@@ -84,19 +86,36 @@
             }
         };
 
-        // Add Product
+        // Upload Image and Add Product
         document.getElementById('addProductForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const btn = document.getElementById('addBtn');
+            const fileInput = document.getElementById('pImgFile');
+            const file = fileInput.files[0];
+
+            if (!file) {
+                alert("ദയവായി ഒരു ചിത്രം തിരഞ്ഞെടുക്കുക!");
+                return;
+            }
+
             btn.disabled = true;
-            btn.innerText = "Saving...";
+            btn.innerText = "ചിത്രം അപ്‌ലോഡ് ചെയ്യുന്നു (Uploading Image)...";
 
             try {
+                // 1. Upload image to Firebase Storage
+                const storageRef = ref(storage, 'products/' + Date.now() + '_' + file.name);
+                await uploadBytes(storageRef, file);
+                const imageUrl = await getDownloadURL(storageRef);
+
+                btn.innerText = "പ്രൊഡക്റ്റ് സേവ് ചെയ്യുന്നു...";
+
+                // 2. Save product details to Firestore
                 await addDoc(collection(db, "products"), {
                     name: document.getElementById('pName').value,
                     price: Number(document.getElementById('pPrice').value),
-                    image: document.getElementById('pImg').value
+                    image: imageUrl
                 });
+
                 alert("പ്രൊഡക്റ്റ് വിജയകരമായി സ്റ്റോറിൽ ആഡ് ആയി!");
                 document.getElementById('addProductForm').reset();
             } catch (err) {
