@@ -1,179 +1,263 @@
-
 <!DOCTYPE html>
 <html lang="ml">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pick Mart - Instant Grocery & Daily Essentials</title>
+    <title>Pick Mart - Meesho Style Online Shopping</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        .meesho-bg { background-color: #9c27b0; }
+        .meesho-text { color: #9c27b0; }
+        .meesho-border { border-color: #9c27b0; }
     </style>
 </head>
-<body class="bg-gray-100 pb-20 font-sans">
+<body class="bg-gray-100 pb-20 font-sans text-gray-800">
 
-    <!-- Top Sticky Header -->
-    <header class="sticky top-0 z-40 bg-white shadow-sm border-b">
+    <!-- Top Navigation Header -->
+    <header class="sticky top-0 z-40 bg-white shadow-sm">
         <div class="max-w-md mx-auto px-4 py-3">
-            <!-- Top Row: Logo & Location -->
             <div class="flex items-center justify-between mb-2">
                 <div class="flex items-center space-x-2">
-                    <div class="bg-green-600 text-white p-2 rounded-xl flex items-center justify-center shadow">
-                        <i class="fa-solid fa-basket-shopping text-xl"></i>
-                    </div>
-                    <div>
-                        <h1 class="text-xl font-extrabold text-green-700 tracking-tight leading-none">Pick Mart</h1>
-                        <p class="text-[10px] text-gray-500 font-semibold tracking-wider uppercase">Grocery in 10 mins</p>
-                    </div>
+                    <span class="meesho-bg text-white font-extrabold px-3 py-1 rounded-lg text-lg tracking-wider">Pick Mart</span>
                 </div>
-                <div class="text-right">
-                    <p class="text-[11px] font-bold text-gray-400 uppercase">Deliver To</p>
-                    <p class="text-xs font-bold text-gray-800 flex items-center justify-end">
-                        <i class="fa-solid fa-location-dot text-red-500 mr-1"></i> Home <i class="fa-solid fa-chevron-down text-[10px] ml-1 text-gray-500"></i>
-                    </p>
+                <div class="flex items-center space-x-4 text-gray-600 text-lg">
+                    <button onclick="openSearch()" class="hover:text-purple-700"><i class="fa-solid fa-magnifying-glass"></i></button>
+                    <button onclick="switchTab('cartTab')" class="relative hover:text-purple-700">
+                        <i class="fa-solid fa-cart-shopping"></i>
+                        <span id="cartBadge" class="absolute -top-2 -right-2 bg-pink-600 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full hidden">0</span>
+                    </button>
                 </div>
             </div>
 
-            <!-- Search Bar -->
+            <!-- Search Input -->
             <div class="relative mt-2">
                 <i class="fa-solid fa-magnifying-glass absolute left-3 top-3 text-gray-400"></i>
-                <input type="text" id="searchInput" oninput="filterProducts()" placeholder="Search for 'milk, bread, vegetables...'" class="w-full pl-9 pr-4 py-2 bg-gray-100 rounded-xl text-sm border-none focus:ring-2 focus:ring-green-500 focus:bg-white transition-all outline-none">
+                <input type="text" id="searchInput" oninput="filterProducts()" placeholder="Try Saree, Kurti, T-Shirt, Gadgets..." class="w-full pl-9 pr-4 py-2 bg-gray-50 rounded-lg text-sm border focus:ring-2 focus:ring-purple-600 focus:bg-white transition outline-none">
             </div>
         </div>
     </header>
 
-    <main class="max-w-md mx-auto px-4 py-4 space-y-5">
+    <!-- MAIN CONTAINER -->
+    <main class="max-w-md mx-auto min-h-screen">
 
-        <!-- Hero Promo Banner -->
-        <div class="bg-gradient-to-r from-green-700 to-emerald-600 rounded-2xl p-4 text-white shadow-lg relative overflow-hidden flex items-center justify-between">
-            <div class="z-10 space-y-1 max-w-[65%]">
-                <span class="bg-yellow-400 text-green-950 text-[10px] font-extrabold px-2 py-0.5 rounded-full uppercase">Super Savings</span>
-                <h2 class="text-lg font-bold leading-snug">Everything you need, delivered fresh!</h2>
-                <p class="text-xs text-green-100">ഫ്രഷ് സാധനങ്ങൾ നിങ്ങളുടെ വാതിൽപ്പടിയിൽ.</p>
-                <button onclick="scrollToProducts()" class="mt-2 bg-white text-green-700 px-3 py-1.5 rounded-lg text-xs font-bold shadow hover:bg-green-50">Shop Now</button>
+        <!-- TAB 1: HOME PAGE -->
+        <div id="homeTab" class="tab-content px-3 py-3 space-y-4">
+            <!-- Banner Slider -->
+            <div class="rounded-xl overflow-hidden shadow-sm bg-gradient-to-r from-purple-800 to-pink-600 text-white p-4 relative">
+                <span class="bg-yellow-400 text-purple-950 font-black text-[10px] uppercase px-2 py-0.5 rounded">Lowest Prices Guaranteed</span>
+                <h2 class="text-xl font-bold mt-1">Trendy Collections 🔥</h2>
+                <p class="text-xs text-purple-100 mt-1">Free Delivery | Cash on Delivery Available</p>
+                <div class="mt-3 inline-block bg-white text-purple-800 text-xs font-bold px-3 py-1.5 rounded-lg shadow">Shop Now</div>
             </div>
-            <div class="text-5xl opacity-90 pr-2">
-                🥬🛒
-            </div>
-        </div>
 
-        <!-- Shop By Category -->
-        <div>
-            <div class="flex justify-between items-center mb-3">
-                <h3 class="font-bold text-gray-800 text-base">Shop by Category</h3>
-            </div>
-            <div class="flex space-x-3 overflow-x-auto no-scrollbar py-1" id="categoryList">
-                <button onclick="selectCategory('All')" class="cat-btn bg-green-600 text-white px-4 py-2 rounded-xl text-xs font-bold flex-shrink-0 shadow-sm transition">All Items</button>
-                <button onclick="selectCategory('Vegetables')" class="cat-btn bg-white text-gray-700 border px-4 py-2 rounded-xl text-xs font-bold flex-shrink-0 shadow-sm hover:border-green-500 transition">🥦 Vegetables</button>
-                <button onclick="selectCategory('Milk & Dairy')" class="cat-btn bg-white text-gray-700 border px-4 py-2 rounded-xl text-xs font-bold flex-shrink-0 shadow-sm hover:border-green-500 transition">🥛 Dairy & Milk</button>
-                <button onclick="selectCategory('Snacks')" class="cat-btn bg-white text-gray-700 border px-4 py-2 rounded-xl text-xs font-bold flex-shrink-0 shadow-sm hover:border-green-500 transition">🍿 Snacks</button>
-                <button onclick="selectCategory('Beverages')" class="cat-btn bg-white text-gray-700 border px-4 py-2 rounded-xl text-xs font-bold flex-shrink-0 shadow-sm hover:border-green-500 transition">🧃 Beverages</button>
-            </div>
-        </div>
-
-        <!-- Bestsellers Product Grid -->
-        <div id="productsSection">
-            <div class="flex justify-between items-center mb-3">
-                <h3 class="font-bold text-gray-800 text-base">Bestsellers</h3>
-                <span class="text-xs text-green-600 font-bold">Fresh Stock</span>
-            </div>
-            
-            <div id="productGrid" class="grid grid-cols-2 gap-3">
-                <div class="col-span-2 text-center py-8 text-gray-400">
-                    <i class="fa-solid fa-spinner fa-spin text-2xl mb-2"></i>
-                    <p class="text-sm">പ്രൊഡക്റ്റുകൾ ലോഡ് ചെയ്യുന്നു...</p>
+            <!-- Categories -->
+            <div>
+                <h3 class="font-bold text-sm text-gray-700 mb-2">Categories</h3>
+                <div class="flex space-x-2 overflow-x-auto no-scrollbar py-1">
+                    <button onclick="filterCategory('All')" class="cat-pill bg-purple-700 text-white px-3 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap">All</button>
+                    <button onclick="filterCategory('Women')" class="cat-pill bg-white border text-gray-700 px-3 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap">👗 Women</button>
+                    <button onclick="filterCategory('Men')" class="cat-pill bg-white border text-gray-700 px-3 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap">👕 Men</button>
+                    <button onclick="filterCategory('Electronics')" class="cat-pill bg-white border text-gray-700 px-3 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap">🎧 Electronics</button>
+                    <button onclick="filterCategory('Home')" class="cat-pill bg-white border text-gray-700 px-3 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap">🏠 Home & Kitchen</button>
                 </div>
+            </div>
+
+            <!-- Product Grid -->
+            <div>
+                <h3 class="font-bold text-sm text-gray-700 mb-2">Products For You</h3>
+                <div id="productGrid" class="grid grid-cols-2 gap-2.5">
+                    <p class="col-span-2 text-center text-gray-400 py-8">പ്രൊഡക്റ്റുകൾ ലോഡ് ചെയ്യുന്നു...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 2: CATEGORIES -->
+        <div id="categoriesTab" class="tab-content hidden p-4">
+            <h2 class="font-bold text-lg mb-4">All Categories</h2>
+            <div class="grid grid-cols-2 gap-3">
+                <div onclick="filterCategory('Women'); switchTab('homeTab');" class="bg-white p-4 rounded-xl border text-center font-bold text-gray-700 shadow-sm cursor-pointer">👗 Women Ethnic & Western</div>
+                <div onclick="filterCategory('Men'); switchTab('homeTab');" class="bg-white p-4 rounded-xl border text-center font-bold text-gray-700 shadow-sm cursor-pointer">👕 Men Fashion</div>
+                <div onclick="filterCategory('Electronics'); switchTab('homeTab');" class="bg-white p-4 rounded-xl border text-center font-bold text-gray-700 shadow-sm cursor-pointer">🎧 Electronics & Accessories</div>
+                <div onclick="filterCategory('Home'); switchTab('homeTab');" class="bg-white p-4 rounded-xl border text-center font-bold text-gray-700 shadow-sm cursor-pointer">🏠 Home & Kitchen</div>
+            </div>
+        </div>
+
+        <!-- TAB 3: MY ORDERS -->
+        <div id="ordersTab" class="tab-content hidden p-4 space-y-3">
+            <h2 class="font-bold text-lg mb-2">My Orders (എന്റെ ഓർഡറുകൾ)</h2>
+            <div id="myOrdersList" class="space-y-3">
+                <p class="text-gray-500 text-center py-6 text-sm">ഓർഡറുകൾ പരിശോധിക്കുന്നു...</p>
+            </div>
+        </div>
+
+        <!-- TAB 4: ACCOUNT / PROFILE & LOGIN -->
+        <div id="accountTab" class="tab-content hidden p-4 space-y-4">
+            <!-- Logged In State -->
+            <div id="profileBox" class="hidden bg-white p-4 rounded-xl border shadow-sm space-y-3">
+                <div class="flex items-center space-x-3">
+                    <div class="w-12 h-12 rounded-full bg-purple-100 text-purple-700 flex items-center justify-center font-bold text-xl">
+                        <i class="fa-solid fa-user"></i>
+                    </div>
+                    <div>
+                        <h3 id="userDisplayName" class="font-bold text-base text-gray-800">User Name</h3>
+                        <p id="userContactType" class="text-xs text-gray-500">Instagram / Phone</p>
+                    </div>
+                </div>
+                <button onclick="logoutUser()" class="w-full bg-red-50 text-red-600 font-bold py-2 rounded-lg text-sm border border-red-200">
+                    Logout (ലോഗ് ഔട്ട്)
+                </button>
+            </div>
+
+            <!-- Login Form (If not logged in) -->
+            <div id="loginFormBox" class="bg-white p-5 rounded-xl border shadow-sm space-y-4">
+                <div class="text-center">
+                    <h3 class="font-extrabold text-lg text-gray-800">Sign In to Pick Mart</h3>
+                    <p class="text-xs text-gray-500 mt-1">ഇൻസ്റ്റാഗ്രാം ഐഡിയോ ഫോൺ നമ്പറോ നൽകി പ്രവേശിക്കുക</p>
+                </div>
+
+                <div class="space-y-3">
+                    <div>
+                        <label class="block text-xs font-bold text-gray-600 mb-1">ലോഗിൻ രീതി സെലക്ട് ചെയ്യുക</label>
+                        <select id="loginType" onchange="toggleLoginType()" class="w-full p-2.5 border rounded-lg text-sm bg-gray-50 font-semibold">
+                            <option value="insta">Instagram Username / ID</option>
+                            <option value="phone">Phone Number (ഫോൺ നമ്പർ)</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label id="inputLabel" class="block text-xs font-bold text-gray-600 mb-1">Instagram ID</label>
+                        <input type="text" id="userLoginInput" placeholder="e.g. @your_insta_id" class="w-full p-2.5 border rounded-lg text-sm" required>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-gray-600 mb-1">നിങ്ങളുടെ പേര് (Your Name)</label>
+                        <input type="text" id="userNameInput" placeholder="Enter your full name" class="w-full p-2.5 border rounded-lg text-sm" required>
+                    </div>
+
+                    <button onclick="handleLogin()" class="w-full meesho-bg text-white font-bold py-3 rounded-lg shadow-md hover:bg-purple-800">
+                        Continue (തുടരുക)
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 5: CART PAGE -->
+        <div id="cartTab" class="tab-content hidden p-4 space-y-4">
+            <h2 class="font-bold text-lg mb-2">Shopping Cart</h2>
+            <div id="cartItemsContainer" class="space-y-3">
+                <!-- Cart Items -->
+            </div>
+
+            <div id="cartSummaryBox" class="bg-white p-4 rounded-xl border space-y-2 hidden">
+                <div class="flex justify-between text-sm"><span class="text-gray-500">Subtotal</span><span id="cartSubtotal" class="font-bold">₹0</span></div>
+                <div class="flex justify-between text-sm"><span class="text-gray-500">Delivery</span><span class="text-green-600 font-bold">FREE</span></div>
+                <div class="flex justify-between text-base font-extrabold border-t pt-2"><span>Total</span><span id="cartTotal" class="text-purple-700">₹0</span></div>
+                
+                <button onclick="openCheckoutModal()" class="w-full meesho-bg text-white font-bold py-3 rounded-lg shadow-md mt-2">
+                    Proceed to Checkout
+                </button>
             </div>
         </div>
 
     </main>
 
-    <!-- Bottom Navigation Bar -->
-    <nav class="fixed bottom-0 left-0 right-0 bg-white border-t z-40 max-w-md mx-auto">
-        <div class="flex justify-around items-center py-2 text-center text-gray-500">
-            <button class="flex flex-col items-center text-green-600">
-                <i class="fa-solid fa-house text-lg"></i>
-                <span class="text-[10px] font-bold mt-1">Home</span>
-            </button>
-            <button onclick="scrollToProducts()" class="flex flex-col items-center hover:text-green-600">
-                <i class="fa-solid fa-grid-2 text-lg"></i>
-                <span class="text-[10px] font-bold mt-1">Categories</span>
-            </button>
-            <button onclick="openCartModal()" class="flex flex-col items-center relative hover:text-green-600">
-                <i class="fa-solid fa-cart-shopping text-lg"></i>
-                <span id="cartBadge" class="absolute -top-1 -right-2 bg-red-500 text-white text-[9px] font-bold px-1.5 py-0.5 rounded-full hidden">0</span>
-                <span class="text-[10px] font-bold mt-1">Cart</span>
-            </button>
-        </div>
-    </nav>
-
-    <!-- Cart Floating Bar -->
-    <div id="cartBar" class="fixed bottom-16 left-4 right-4 max-w-md mx-auto bg-green-600 text-white p-3 rounded-2xl shadow-xl flex items-center justify-between z-30 hidden transition-all">
-        <div class="flex items-center space-x-3">
-            <div class="bg-white/20 p-2 rounded-lg">
-                <i class="fa-solid fa-basket-shopping text-xl"></i>
-            </div>
+    <!-- PRODUCT DETAIL MODAL -->
+    <div id="productModal" class="fixed inset-0 bg-black/60 z-50 hidden flex items-end sm:items-center justify-center p-0 sm:p-4">
+        <div class="bg-white w-full max-w-md rounded-t-2xl sm:rounded-2xl max-h-[90vh] overflow-y-auto p-4 space-y-4 relative">
+            <button onclick="closeProductModal()" class="absolute top-3 right-3 text-gray-500 bg-gray-100 rounded-full w-8 h-8 flex items-center justify-center font-bold">✕</button>
+            
+            <img id="modalImg" src="" class="w-full h-64 object-cover rounded-xl bg-gray-50">
             <div>
-                <p id="cartBarItems" class="text-xs font-bold">0 ITEMS</p>
-                <p id="cartBarTotal" class="text-sm font-extrabold">₹0</p>
+                <h3 id="modalName" class="font-bold text-lg text-gray-800">Product Title</h3>
+                <div class="flex items-baseline space-x-2 mt-1">
+                    <span id="modalPrice" class="text-xl font-extrabold text-gray-900">₹0</span>
+                    <span class="text-xs text-green-600 font-bold bg-green-50 px-2 py-0.5 rounded">Free Delivery</span>
+                </div>
+            </div>
+
+            <!-- Size Selector -->
+            <div>
+                <label class="block text-xs font-bold text-gray-600 mb-1">Select Size</label>
+                <div class="flex space-x-2">
+                    <button class="size-btn border px-3 py-1 rounded text-xs font-bold hover:border-purple-600 active">Free Size</button>
+                    <button class="size-btn border px-3 py-1 rounded text-xs font-bold hover:border-purple-600">S</button>
+                    <button class="size-btn border px-3 py-1 rounded text-xs font-bold hover:border-purple-600">M</button>
+                    <button class="size-btn border px-3 py-1 rounded text-xs font-bold hover:border-purple-600">L</button>
+                    <button class="size-btn border px-3 py-1 rounded text-xs font-bold hover:border-purple-600">XL</button>
+                </div>
+            </div>
+
+            <p class="text-xs text-gray-500">100% Quality Guaranteed | Easy Returns</p>
+
+            <div class="flex space-x-2 pt-2">
+                <button onclick="addToCartFromModal()" class="flex-1 border-2 border-purple-700 text-purple-700 font-bold py-3 rounded-lg text-sm">Add To Cart</button>
+                <button onclick="buyNowFromModal()" class="flex-1 meesho-bg text-white font-bold py-3 rounded-lg text-sm shadow">Buy Now</button>
             </div>
         </div>
-        <button onclick="openCartModal()" class="bg-white text-green-700 px-4 py-2 rounded-xl text-xs font-bold flex items-center space-x-1 shadow">
-            <span>View Cart</span>
-            <i class="fa-solid fa-arrow-right"></i>
-        </button>
     </div>
 
-    <!-- Cart & Checkout Modal -->
-    <div id="cartModal" class="fixed inset-0 bg-black/50 z-50 hidden flex items-end sm:items-center justify-center p-0 sm:p-4">
-        <div class="bg-white w-full max-w-md rounded-t-2xl sm:rounded-2xl p-5 space-y-4 max-h-[90vh] overflow-y-auto">
-            <div class="flex justify-between items-center border-b pb-3">
-                <h3 class="font-bold text-gray-800 text-lg">Your Cart (നിങ്ങളുടെ കാർട്ട്)</h3>
-                <button onclick="closeCartModal()" class="text-gray-400 hover:text-gray-600">
-                    <i class="fa-solid fa-xmark text-xl"></i>
-                </button>
+    <!-- CHECKOUT & PAYMENT MODAL -->
+    <div id="checkoutModal" class="fixed inset-0 bg-black/60 z-50 hidden flex items-end sm:items-center justify-center p-0 sm:p-4">
+        <div class="bg-white w-full max-w-md rounded-t-2xl sm:rounded-2xl max-h-[90vh] overflow-y-auto p-4 space-y-4">
+            <div class="flex justify-between items-center border-b pb-2">
+                <h3 class="font-bold text-base">Checkout & Payment</h3>
+                <button onclick="closeCheckoutModal()" class="text-gray-400 font-bold">✕</button>
             </div>
 
-            <!-- Cart Items List -->
-            <div id="cartItemsList" class="space-y-3 max-h-48 overflow-y-auto divide-y">
-                <!-- Cart items load here -->
-            </div>
+            <form id="checkoutForm" onsubmit="handlePlaceOrder(event)" class="space-y-3">
+                <h4 class="font-bold text-xs uppercase text-gray-500">Delivery Address</h4>
+                <input type="text" id="custName" placeholder="Full Name" class="w-full p-2.5 border rounded-lg text-sm" required>
+                <input type="tel" id="custPhone" placeholder="Phone Number" class="w-full p-2.5 border rounded-lg text-sm" required>
+                <textarea id="custAddress" placeholder="Complete Address (House No, Area, Pincode)" class="w-full p-2.5 border rounded-lg text-sm" rows="2" required></textarea>
 
-            <div class="border-t pt-3 space-y-2">
-                <div class="flex justify-between text-sm">
-                    <span class="text-gray-500">Subtotal</span>
-                    <span id="cartSubtotal" class="font-bold">₹0</span>
+                <h4 class="font-bold text-xs uppercase text-gray-500 pt-2">Select Payment Method</h4>
+                <div class="space-y-2">
+                    <label class="flex items-center space-x-3 p-3 border rounded-lg bg-gray-50 cursor-pointer">
+                        <input type="radio" name="payment" value="COD" checked class="text-purple-600">
+                        <span class="text-sm font-bold">Cash on Delivery (COD)</span>
+                    </label>
+                    <label class="flex items-center space-x-3 p-3 border rounded-lg bg-gray-50 cursor-pointer">
+                        <input type="radio" name="payment" value="UPI" class="text-purple-600">
+                        <span class="text-sm font-bold">PhonePe / Google Pay / UPI</span>
+                    </label>
                 </div>
-                <div class="flex justify-between text-sm">
-                    <span class="text-gray-500">Delivery Fee</span>
-                    <span class="text-green-600 font-bold">FREE</span>
-                </div>
-                <div class="flex justify-between text-base font-extrabold border-t pt-2">
-                    <span>Total Amount</span>
-                    <span id="cartTotal" class="text-green-700">₹0</span>
-                </div>
-            </div>
 
-            <!-- Customer Details Form -->
-            <form id="checkoutForm" onsubmit="submitOrder(event)" class="space-y-3 pt-2">
-                <h4 class="font-bold text-xs uppercase text-gray-500 tracking-wider">Delivery Details</h4>
-                <input type="text" id="custName" placeholder="നിങ്ങളുടെ പേര് (Name)" class="w-full p-2.5 border rounded-xl text-sm" required>
-                <input type="tel" id="custPhone" placeholder="ഫോൺ നമ്പർ (Phone Number)" class="w-full p-2.5 border rounded-xl text-sm" required>
-                <textarea id="custAddress" placeholder="മേൽവിലാസം (Delivery Address)" class="w-full p-2.5 border rounded-xl text-sm" rows="2" required></textarea>
-
-                <button type="submit" id="orderBtn" class="w-full bg-green-600 text-white font-bold py-3 rounded-xl hover:bg-green-700 shadow-md">
-                    Place Order (ഓർഡർ സമർപ്പിക്കുക)
+                <button type="submit" id="placeOrderBtn" class="w-full meesho-bg text-white font-bold py-3 rounded-lg shadow-md mt-4">
+                    Confirm & Place Order
                 </button>
             </form>
         </div>
     </div>
 
-    <!-- Firebase JS -->
+    <!-- BOTTOM NAVIGATION BAR -->
+    <nav class="fixed bottom-0 left-0 right-0 bg-white border-t z-40 max-w-md mx-auto">
+        <div class="flex justify-around items-center py-2 text-center text-gray-500">
+            <button onclick="switchTab('homeTab')" id="nav-homeTab" class="nav-btn flex flex-col items-center meesho-text">
+                <i class="fa-solid fa-house text-lg"></i>
+                <span class="text-[10px] font-bold mt-0.5">Home</span>
+            </button>
+            <button onclick="switchTab('categoriesTab')" id="nav-categoriesTab" class="nav-btn flex flex-col items-center hover:text-purple-700">
+                <i class="fa-solid fa-border-all text-lg"></i>
+                <span class="text-[10px] font-bold mt-0.5">Categories</span>
+            </button>
+            <button onclick="switchTab('ordersTab')" id="nav-ordersTab" class="nav-btn flex flex-col items-center hover:text-purple-700">
+                <i class="fa-solid fa-box-archive text-lg"></i>
+                <span class="text-[10px] font-bold mt-0.5">My Orders</span>
+            </button>
+            <button onclick="switchTab('accountTab')" id="nav-accountTab" class="nav-btn flex flex-col items-center hover:text-purple-700">
+                <i class="fa-solid fa-user text-lg"></i>
+                <span class="text-[10px] font-bold mt-0.5">Account</span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- FIREBASE SDK & APPLICATION LOGIC -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, collection, getDocs, addDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, collection, getDocs, addDoc, query, where } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyA1QQX3FYTs1eN5Z-x0mdjBw1F0llBmuo",
@@ -189,8 +273,90 @@
 
         let allProducts = [];
         let cart = {};
+        let selectedProductForModal = null;
+        let currentUser = null;
 
-        // Load Products from Firestore
+        // Init App
+        window.addEventListener('DOMContentLoaded', () => {
+            checkAuthStatus();
+            loadProducts();
+        });
+
+        // 1. LOGIN & AUTHENTICATION LOGIC (LOCALSTORAGE PERSISTENCE)
+        window.checkAuthStatus = function() {
+            const savedUser = localStorage.getItem('pickmart_user');
+            if (savedUser) {
+                currentUser = JSON.parse(savedUser);
+                document.getElementById('loginFormBox').classList.add('hidden');
+                document.getElementById('profileBox').classList.remove('hidden');
+                document.getElementById('userDisplayName').innerText = currentUser.name;
+                document.getElementById('userContactType').innerText = currentUser.type === 'insta' ? `Instagram: ${currentUser.id}` : `Phone: ${currentUser.id}`;
+                
+                // Auto-fill checkout fields
+                document.getElementById('custName').value = currentUser.name;
+                if(currentUser.type === 'phone') document.getElementById('custPhone').value = currentUser.id;
+            } else {
+                currentUser = null;
+                document.getElementById('loginFormBox').classList.remove('hidden');
+                document.getElementById('profileBox').classList.add('hidden');
+            }
+        };
+
+        window.toggleLoginType = function() {
+            const type = document.getElementById('loginType').value;
+            const label = document.getElementById('inputLabel');
+            const input = document.getElementById('userLoginInput');
+            if (type === 'insta') {
+                label.innerText = 'Instagram ID';
+                input.placeholder = 'e.g. @your_insta_id';
+            } else {
+                label.innerText = 'Phone Number (ഫോൺ നമ്പർ)';
+                input.placeholder = 'e.g. 9876543210';
+            }
+        };
+
+        window.handleLogin = function() {
+            const type = document.getElementById('loginType').value;
+            const id = document.getElementById('userLoginInput').value.trim();
+            const name = document.getElementById('userNameInput').value.trim();
+
+            if (!id || !name) {
+                alert('ദയവായി എല്ലാ വിവരങ്ങളും നൽകുക!');
+                return;
+            }
+
+            currentUser = { type, id, name };
+            localStorage.setItem('pickmart_user', JSON.stringify(currentUser));
+            checkAuthStatus();
+            alert('ലോഗിൻ വിജയിച്ചു!');
+            switchTab('homeTab');
+        };
+
+        window.logoutUser = function() {
+            localStorage.removeItem('pickmart_user');
+            checkAuthStatus();
+            alert('ലോഗ് ഔട്ട് ആയി!');
+        };
+
+        // 2. TAB NAVIGATION
+        window.switchTab = function(tabId) {
+            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.add('hidden'));
+            document.getElementById(tabId).classList.remove('hidden');
+
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('meesho-text');
+                btn.classList.add('text-gray-500');
+            });
+            const activeNav = document.getElementById('nav-' + tabId);
+            if(activeNav) {
+                activeNav.classList.add('meesho-text');
+                activeNav.classList.remove('text-gray-500');
+            }
+
+            if(tabId === 'ordersTab') loadMyOrders();
+        };
+
+        // 3. LOAD PRODUCTS FROM FIRESTORE
         async function loadProducts() {
             const grid = document.getElementById('productGrid');
             try {
@@ -199,48 +365,33 @@
                 querySnapshot.forEach((doc) => {
                     allProducts.push({ id: doc.id, ...doc.data() });
                 });
-
                 renderProducts(allProducts);
             } catch (err) {
-                grid.innerHTML = '<div class="col-span-2 text-center py-8 text-red-500">പ്രൊഡക്റ്റുകൾ ലഭിച്ചില്ല! ഫയർബേസ് കണക്ഷൻ പരിശോധിക്കുക.</div>';
+                grid.innerHTML = '<p class="col-span-2 text-center text-red-500 py-8">പ്രൊഡക്റ്റുകൾ കാണാൻ സാധിച്ചില്ല.</p>';
             }
         }
 
-        // Render Product Cards
         window.renderProducts = function(products) {
             const grid = document.getElementById('productGrid');
             if (products.length === 0) {
-                grid.innerHTML = '<div class="col-span-2 text-center py-8 text-gray-500">പ്രൊഡക്റ്റുകൾ ഒന്നും ലഭ്യമല്ല.</div>';
+                grid.innerHTML = '<p class="col-span-2 text-center text-gray-500 py-8">ഉൽപ്പന്നങ്ങൾ ഒന്നും ലഭ്യമല്ല.</p>';
                 return;
             }
 
             grid.innerHTML = '';
             products.forEach((p) => {
-                const qty = cart[p.id] ? cart[p.id].qty : 0;
                 grid.innerHTML += `
-                    <div class="bg-white p-3 rounded-2xl shadow-sm border border-gray-100 flex flex-col justify-between transition hover:shadow-md">
-                        <div class="relative mb-2">
-                            <img src="${p.image || 'https://via.placeholder.com/150'}" alt="${p.name}" class="w-full h-28 object-cover rounded-xl bg-gray-50">
-                        </div>
-                        <div>
-                            <h4 class="font-bold text-gray-800 text-sm line-clamp-1 mb-1">${p.name}</h4>
-                            <p class="text-xs text-gray-400 mb-2">1 Unit</p>
-                        </div>
-                        <div class="flex items-center justify-between mt-auto">
-                            <span class="font-extrabold text-gray-900 text-sm">₹${p.price}</span>
-                            
-                            <div id="btn-container-${p.id}">
-                                ${qty === 0 ? `
-                                    <button onclick="addToCart('${p.id}', '${p.name.replace(/'/g, "\\'")}', ${p.price})" class="border-2 border-green-600 text-green-700 bg-green-50 hover:bg-green-600 hover:text-white px-3 py-1 rounded-xl text-xs font-bold transition">
-                                        + ADD
-                                    </button>
-                                ` : `
-                                    <div class="flex items-center bg-green-600 text-white rounded-xl px-2 py-0.5 text-xs font-bold space-x-2">
-                                        <button onclick="updateQty('${p.id}', -1)" class="px-1 text-base">-</button>
-                                        <span>${qty}</span>
-                                        <button onclick="updateQty('${p.id}', 1)" class="px-1 text-base">+</button>
-                                    </div>
-                                `}
+                    <div onclick="openProductModal('${p.id}')" class="bg-white rounded-xl overflow-hidden border shadow-sm flex flex-col justify-between cursor-pointer">
+                        <img src="${p.image || 'https://via.placeholder.com/150'}" class="w-full h-40 object-cover bg-gray-50">
+                        <div class="p-2.5 space-y-1">
+                            <h4 class="font-bold text-xs text-gray-800 line-clamp-1">${p.name}</h4>
+                            <div class="flex items-baseline space-x-1">
+                                <span class="font-black text-sm text-gray-900">₹${p.price}</span>
+                                <span class="text-[10px] text-gray-400 line-through">₹${Math.round(p.price * 1.3)}</span>
+                            </div>
+                            <div class="flex items-center justify-between text-[10px] pt-1">
+                                <span class="bg-green-100 text-green-800 font-bold px-1.5 py-0.5 rounded">Free Delivery</span>
+                                <span class="bg-green-700 text-white font-bold px-1.5 py-0.5 rounded-full">3.9 ★</span>
                             </div>
                         </div>
                     </div>
@@ -248,147 +399,192 @@
             });
         };
 
-        // Filter Products Search
+        window.filterCategory = function(cat) {
+            if(cat === 'All') renderProducts(allProducts);
+            else renderProducts(allProducts.filter(p => p.name.toLowerCase().includes(cat.toLowerCase())));
+        };
+
         window.filterProducts = function() {
-            const term = document.getElementById('searchInput').value.toLowerCase();
-            const filtered = allProducts.filter(p => p.name.toLowerCase().includes(term));
-            renderProducts(filtered);
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            renderProducts(allProducts.filter(p => p.name.toLowerCase().includes(query)));
         };
 
-        // Category Filter
-        window.selectCategory = function(cat) {
-            document.querySelectorAll('.cat-btn').forEach(btn => {
-                btn.className = 'cat-btn bg-white text-gray-700 border px-4 py-2 rounded-xl text-xs font-bold flex-shrink-0 shadow-sm hover:border-green-500 transition';
-            });
-            event.target.className = 'cat-btn bg-green-600 text-white px-4 py-2 rounded-xl text-xs font-bold flex-shrink-0 shadow-sm transition';
-
-            if (cat === 'All') {
-                renderProducts(allProducts);
-            } else {
-                const filtered = allProducts.filter(p => p.name.toLowerCase().includes(cat.toLowerCase()));
-                renderProducts(filtered);
-            }
+        // 4. PRODUCT MODAL & CART LOGIC
+        window.openProductModal = function(id) {
+            const p = allProducts.find(item => item.id === id);
+            if(!p) return;
+            selectedProductForModal = p;
+            document.getElementById('modalImg').src = p.image || 'https://via.placeholder.com/150';
+            document.getElementById('modalName').innerText = p.name;
+            document.getElementById('modalPrice').innerText = '₹' + p.price;
+            document.getElementById('productModal').classList.remove('hidden');
         };
 
-        // Cart Functions
-        window.addToCart = function(id, name, price) {
-            cart[id] = { name, price, qty: 1 };
+        window.closeProductModal = function() {
+            document.getElementById('productModal').classList.add('hidden');
+        };
+
+        window.addToCartFromModal = function() {
+            if(!selectedProductForModal) return;
+            const p = selectedProductForModal;
+            if(cart[p.id]) cart[p.id].qty += 1;
+            else cart[p.id] = { name: p.name, price: p.price, qty: 1, image: p.image };
+            
             updateCartUI();
-            renderProducts(allProducts);
+            closeProductModal();
+            alert('കാർട്ടിലേക്ക് ആഡ് ആയി!');
         };
 
-        window.updateQty = function(id, change) {
-            if (cart[id]) {
-                cart[id].qty += change;
-                if (cart[id].qty <= 0) {
-                    delete cart[id];
-                }
-            }
-            updateCartUI();
-            renderProducts(allProducts);
+        window.buyNowFromModal = function() {
+            addToCartFromModal();
+            switchTab('cartTab');
         };
 
         function updateCartUI() {
             const items = Object.values(cart);
-            const totalCount = items.reduce((sum, item) => sum + item.qty, 0);
+            const totalQty = items.reduce((sum, item) => sum + item.qty, 0);
             const totalPrice = items.reduce((sum, item) => sum + (item.price * item.qty), 0);
 
             const badge = document.getElementById('cartBadge');
-            const cartBar = document.getElementById('cartBar');
-
-            if (totalCount > 0) {
-                badge.innerText = totalCount;
+            if(totalQty > 0) {
+                badge.innerText = totalQty;
                 badge.classList.remove('hidden');
-                cartBar.classList.remove('hidden');
-                document.getElementById('cartBarItems').innerText = `${totalCount} ITEMS`;
-                document.getElementById('cartBarTotal').innerText = `₹${totalPrice}`;
             } else {
                 badge.classList.add('hidden');
-                cartBar.classList.add('hidden');
             }
 
-            document.getElementById('cartSubtotal').innerText = `₹${totalPrice}`;
-            document.getElementById('cartTotal').innerText = `₹${totalPrice}`;
+            const cartContainer = document.getElementById('cartItemsContainer');
+            const summaryBox = document.getElementById('cartSummaryBox');
 
-            // Render modal list
-            const cartList = document.getElementById('cartItemsList');
-            if (items.length === 0) {
-                cartList.innerHTML = '<p class="text-center text-gray-400 py-4 text-sm">കാർട്ടിൽ ഉൽപ്പന്നങ്ങൾ ഒന്നുമില്ല.</p>';
-            } else {
-                cartList.innerHTML = '';
-                for (const [id, item] of Object.entries(cart)) {
-                    cartList.innerHTML += `
-                        <div class="flex items-center justify-between py-2">
-                            <div>
-                                <h5 class="font-bold text-sm text-gray-800">${item.name}</h5>
-                                <p class="text-xs text-green-700 font-semibold">₹${item.price} x ${item.qty} = ₹${item.price * item.qty}</p>
-                            </div>
-                            <div class="flex items-center bg-green-100 text-green-800 rounded-lg px-2 py-1 text-xs font-bold space-x-2">
-                                <button onclick="updateQty('${id}', -1)" class="px-1 text-sm font-bold">-</button>
-                                <span>${item.qty}</span>
-                                <button onclick="updateQty('${id}', 1)" class="px-1 text-sm font-bold">+</button>
-                            </div>
-                        </div>
-                    `;
-                }
-            }
-        }
-
-        window.openCartModal = function() {
-            document.getElementById('cartModal').classList.remove('hidden');
-            updateCartUI();
-        };
-
-        window.closeCartModal = function() {
-            document.getElementById('cartModal').classList.add('hidden');
-        };
-
-        window.scrollToProducts = function() {
-            document.getElementById('productsSection').scrollIntoView({ behavior: 'smooth' });
-        };
-
-        // Submit Order to Firestore
-        window.submitOrder = async function(e) {
-            e.preventDefault();
-            const btn = document.getElementById('orderBtn');
-            const items = Object.values(cart);
-
-            if (items.length === 0) {
-                alert("കാർട്ടിൽ ഉൽപ്പന്നങ്ങൾ ഒന്നുമില്ല!");
+            if(items.length === 0) {
+                cartContainer.innerHTML = '<p class="text-center text-gray-400 py-8 text-sm">കാർട്ടിൽ പ്രൊഡക്റ്റുകൾ ഒന്നുമില്ല.</p>';
+                summaryBox.classList.add('hidden');
                 return;
             }
 
-            btn.disabled = true;
-            btn.innerText = "ഓർഡർ സമർപ്പിക്കുന്നു...";
+            summaryBox.classList.remove('hidden');
+            document.getElementById('cartSubtotal').innerText = '₹' + totalPrice;
+            document.getElementById('cartTotal').innerText = '₹' + totalPrice;
 
-            const itemSummary = items.map(i => `${i.name} (x${i.qty})`).join(', ');
-            const totalPrice = items.reduce((sum, item) => sum + (item.price * item.qty), 0);
+            cartContainer.innerHTML = '';
+            for(const [id, item] of Object.entries(cart)) {
+                cartContainer.innerHTML += `
+                    <div class="bg-white p-3 rounded-xl border flex items-center justify-between">
+                        <div class="flex items-center space-x-3">
+                            <img src="${item.image}" class="w-12 h-12 rounded object-cover">
+                            <div>
+                                <h4 class="font-bold text-xs text-gray-800">${item.name}</h4>
+                                <p class="text-xs text-purple-700 font-bold">₹${item.price} x ${item.qty}</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center space-x-2 bg-gray-100 rounded-lg px-2 py-1 text-xs font-bold">
+                            <button onclick="changeQty('${id}', -1)">-</button>
+                            <span>${item.qty}</span>
+                            <button onclick="changeQty('${id}', 1)">+</button>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        window.changeQty = function(id, change) {
+            if(cart[id]) {
+                cart[id].qty += change;
+                if(cart[id].qty <= 0) delete cart[id];
+            }
+            updateCartUI();
+        };
+
+        // 5. CHECKOUT & PLACE ORDER TO FIRESTORE
+        window.openCheckoutModal = function() {
+            if(!currentUser) {
+                alert('ഓർഡർ ചെയ്യുന്നതിന് മുൻപ് ലോഗിൻ ചെയ്യുക!');
+                switchTab('accountTab');
+                return;
+            }
+            document.getElementById('checkoutModal').classList.remove('hidden');
+        };
+
+        window.closeCheckoutModal = function() {
+            document.getElementById('checkoutModal').classList.add('hidden');
+        };
+
+        window.handlePlaceOrder = async function(e) {
+            e.preventDefault();
+            const btn = document.getElementById('placeOrderBtn');
+            const items = Object.values(cart);
+
+            if(items.length === 0) return;
+
+            btn.disabled = true;
+            btn.innerText = 'Processing Order...';
+
+            const summary = items.map(i => `${i.name} (x${i.qty})`).join(', ');
+            const total = items.reduce((sum, item) => sum + (item.price * item.qty), 0);
+            const paymentMethod = document.querySelector('input[name="payment"]:checked').value;
 
             try {
                 await addDoc(collection(db, "orders"), {
-                    productName: itemSummary,
-                    price: totalPrice,
+                    productName: summary,
+                    price: total,
+                    paymentMethod: paymentMethod,
                     name: document.getElementById('custName').value,
                     phone: document.getElementById('custPhone').value,
                     address: document.getElementById('custAddress').value,
+                    userIdentifier: currentUser ? currentUser.id : 'Guest',
                     timestamp: new Date()
                 });
 
-                alert("നിങ്ങളുടെ ഓർഡർ വിജയകരമായി സമർപ്പിച്ചു! ഞങ്ങളുടെ പ്രതിനിധി ഉടൻ ബന്ധപ്പെടും.");
+                alert('ഓർഡർ വിജയിച്ചു! മീഷോ മാതൃകയിൽ നിങ്ങളുടെ ഓർഡർ പ്രോസസ്സ് ചെയ്യുന്നു.');
                 cart = {};
                 updateCartUI();
-                closeCartModal();
-                document.getElementById('checkoutForm').reset();
-            } catch (err) {
-                alert("Error placing order: " + err.message);
+                closeCheckoutModal();
+                switchTab('ordersTab');
+            } catch(err) {
+                alert('Error placing order: ' + err.message);
             } finally {
                 btn.disabled = false;
-                btn.innerText = "Place Order (ഓർഡർ സമർപ്പിക്കുക)";
+                btn.innerText = 'Confirm & Place Order';
             }
         };
 
-        // Load Products on page start
-        loadProducts();
+        // 6. MY ORDERS TAB
+        async function loadMyOrders() {
+            const container = document.getElementById('myOrdersList');
+            if(!currentUser) {
+                container.innerHTML = '<p class="text-center text-gray-500 py-6 text-sm">ഓർഡറുകൾ കാണാൻ ലോഗിൻ ചെയ്യുക.</p>';
+                return;
+            }
+
+            try {
+                const q = query(collection(db, "orders"), where("userIdentifier", "==", currentUser.id));
+                const querySnapshot = await getDocs(q);
+                if(querySnapshot.empty) {
+                    container.innerHTML = '<p class="text-center text-gray-500 py-6 text-sm">നിങ്ങൾ ഇതുവരെ ഓർഡറുകൾ ഒന്നും ചെയ്തിട്ടില്ല.</p>';
+                    return;
+                }
+
+                container.innerHTML = '';
+                querySnapshot.forEach(doc => {
+                    const o = doc.data();
+                    container.innerHTML += `
+                        <div class="bg-white p-3.5 rounded-xl border shadow-sm space-y-1">
+                            <div class="flex justify-between items-start border-b pb-2">
+                                <div>
+                                    <h4 class="font-bold text-xs text-purple-900">${o.productName}</h4>
+                                    <p class="text-xs text-green-700 font-extrabold mt-0.5">Total: ₹${o.price}</p>
+                                </div>
+                                <span class="bg-purple-100 text-purple-800 text-[10px] font-bold px-2 py-0.5 rounded-full">Order Placed</span>
+                            </div>
+                            <p class="text-[11px] text-gray-500 pt-1"><b>Payment:</b> ${o.paymentMethod || 'COD'}</p>
+                            <p class="text-[11px] text-gray-500"><b>Address:</b> ${o.address}</p>
+                        </div>
+                    `;
+                });
+            } catch(err) {
+                container.innerHTML = '<p class="text-center text-red-500 py-6 text-sm">ഓർഡറുകൾ കാണാൻ സാധിച്ചില്ല.</p>';
+            }
+        }
     </script>
 </body>
 </html>
