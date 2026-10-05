@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pick Mart Admin - Full Business Dashboard</title>
+    <title>Pick Mart Admin - Business Management</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
@@ -19,7 +19,6 @@
     <!-- MAIN ADMIN DASHBOARD -->
     <div id="adminBody" class="max-w-5xl mx-auto hidden space-y-5">
         
-        <!-- Header & Nav Tabs -->
         <div class="bg-white p-4 rounded-2xl shadow flex flex-col md:flex-row justify-between items-center gap-3">
             <h1 class="text-xl font-extrabold text-blue-900">🛒 Pick Mart Business Admin</h1>
             <div class="flex space-x-2 overflow-x-auto">
@@ -32,48 +31,46 @@
             </div>
         </div>
 
-        <!-- TAB 1: SEPARATE ORDERS PAGE -->
+        <!-- TAB 1: ORDERS & SCREENSHOT VERIFICATION -->
         <div id="adminOrdersTab" class="admin-tab bg-white p-5 rounded-2xl shadow space-y-4">
-            <h2 class="font-extrabold text-lg text-gray-800 border-b pb-2">All Customer Orders & Status Updates</h2>
+            <h2 class="font-extrabold text-lg text-gray-800 border-b pb-2">Customer Orders & Payment Verification</h2>
             <div id="ordersContainer" class="space-y-4">
                 <p class="text-center text-gray-400 py-6 text-sm">ഓർഡറുകൾ ലോഡ് ചെയ്യുന്നു...</p>
             </div>
         </div>
 
-        <!-- TAB 2: MONTHLY PROFIT & SALES ANALYTICS -->
+        <!-- TAB 2: ANALYTICS -->
         <div id="adminAnalyticsTab" class="admin-tab hidden bg-white p-5 rounded-2xl shadow space-y-4">
             <h2 class="font-extrabold text-lg text-gray-800 border-b pb-2">Monthly Sales & Profit Tracking</h2>
-            
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div class="bg-blue-50 border border-blue-200 p-4 rounded-xl text-center">
                     <p class="text-xs text-blue-700 font-bold uppercase">This Month Orders</p>
                     <h3 id="statTotalOrders" class="text-3xl font-black text-blue-900 mt-1">0</h3>
                 </div>
                 <div class="bg-green-50 border border-green-200 p-4 rounded-xl text-center">
-                    <p class="text-xs text-green-700 font-bold uppercase">Total Revenue (കച്ചവടം)</p>
+                    <p class="text-xs text-green-700 font-bold uppercase">Total Revenue</p>
                     <h3 id="statTotalRevenue" class="text-3xl font-black text-green-900 mt-1">₹0</h3>
                 </div>
                 <div class="bg-purple-50 border border-purple-200 p-4 rounded-xl text-center">
-                    <p class="text-xs text-purple-700 font-bold uppercase">Net Profit (അറ്റാദായം)</p>
+                    <p class="text-xs text-purple-700 font-bold uppercase">Net Profit</p>
                     <h3 id="statTotalProfit" class="text-3xl font-black text-purple-900 mt-1">₹0</h3>
                 </div>
             </div>
         </div>
 
-        <!-- TAB 3: PRODUCTS & MULTI-PHOTO UPLOAD -->
+        <!-- TAB 3: PRODUCTS -->
         <div id="adminProductsTab" class="admin-tab hidden space-y-5">
-            <!-- Add Product Form -->
             <div class="bg-white p-5 rounded-2xl shadow space-y-3">
-                <h2 class="font-extrabold text-gray-800 border-b pb-2">പുതിയ പ്രൊഡക്റ്റ് ചേർക്കുക (Multi-Photos Support)</h2>
+                <h2 class="font-extrabold text-gray-800 border-b pb-2">പുതിയ പ്രൊഡക്റ്റ് ചേർക്കുക (Multi-Photos)</h2>
                 <form id="addProductForm" class="grid grid-cols-1 md:grid-cols-3 gap-3">
                     <input type="text" id="pName" placeholder="Product Name" class="p-2.5 border rounded-xl text-sm" required>
                     <input type="number" id="pPrice" placeholder="Pay Online Price (₹)" class="p-2.5 border rounded-xl text-sm" required>
                     <input type="number" id="pCodPrice" placeholder="COD Price (₹)" class="p-2.5 border rounded-xl text-sm" required>
-                    <input type="number" id="pCostPrice" placeholder="Cost Price / Purchase Price (₹)" class="p-2.5 border rounded-xl text-sm" required>
+                    <input type="number" id="pCostPrice" placeholder="Cost Price (₹)" class="p-2.5 border rounded-xl text-sm" required>
                     <input type="text" id="pOptions" placeholder="Options e.g: Red, Blue OR S, M, L" class="p-2.5 border rounded-xl text-sm" required>
                     
                     <div class="md:col-span-3 bg-gray-50 p-3 rounded-xl border">
-                        <label class="block text-xs font-bold text-gray-600 mb-1">Product Images (ഒന്നിൽ കൂടുതൽ ഫോട്ടോകൾ നൽകാം) *</label>
+                        <label class="block text-xs font-bold text-gray-600 mb-1">Product Images *</label>
                         <input type="file" id="pImgFiles" accept="image/*" multiple class="w-full text-xs" required>
                     </div>
 
@@ -81,18 +78,16 @@
                 </form>
             </div>
 
-            <!-- Product List -->
             <div class="bg-white p-5 rounded-2xl shadow space-y-3">
                 <h2 class="font-extrabold text-gray-800 border-b pb-2">നിലവിലുള്ള പ്രൊഡക്റ്റുകൾ</h2>
                 <div id="productList" class="grid grid-cols-1 md:grid-cols-2 gap-3"></div>
             </div>
         </div>
 
-        <!-- TAB 4: REVIEWS MANAGEMENT -->
+        <!-- TAB 4: REVIEWS -->
         <div id="adminReviewsTab" class="admin-tab hidden space-y-5">
-            <!-- Add Manual Admin Review -->
             <div class="bg-white p-5 rounded-2xl shadow space-y-3">
-                <h2 class="font-extrabold text-gray-800 border-b pb-2">മനുവൽ ആയി റിവ്യൂ ആഡ് ചെയ്യുക (Add Custom Review)</h2>
+                <h2 class="font-extrabold text-gray-800 border-b pb-2">Add Custom Review</h2>
                 <form id="addAdminReviewForm" class="space-y-3">
                     <select id="revProductSelect" class="w-full p-2.5 border rounded-xl text-sm" required></select>
                     <div class="grid grid-cols-2 gap-2">
@@ -100,7 +95,6 @@
                         <select id="revAdminRating" class="p-2.5 border rounded-xl text-sm font-bold">
                             <option value="5">⭐⭐⭐⭐⭐ (5/5)</option>
                             <option value="4">⭐⭐⭐⭐ (4/5)</option>
-                            <option value="3">⭐⭐⭐ (3/5)</option>
                         </select>
                     </div>
                     <textarea id="revAdminComment" placeholder="Review Content" class="w-full p-2.5 border rounded-xl text-sm" rows="2" required></textarea>
@@ -108,30 +102,41 @@
                 </form>
             </div>
 
-            <!-- All Reviews List -->
             <div class="bg-white p-5 rounded-2xl shadow space-y-3">
                 <h2 class="font-extrabold text-gray-800 border-b pb-2">ഉപയോക്താക്കളുടെ റിവ്യൂകൾ</h2>
                 <div id="allAdminReviewsContainer" class="space-y-2"></div>
             </div>
         </div>
 
-        <!-- TAB 5: FAQ & AUTOMATED HELP SETUP -->
+        <!-- TAB 5: FAQ SETUP -->
         <div id="adminFaqTab" class="admin-tab hidden space-y-5">
             <div class="bg-white p-5 rounded-2xl shadow space-y-3">
-                <h2 class="font-extrabold text-gray-800 border-b pb-2">പുതിയ FAQ ചോദ്യവും ഉത്തരവും ചേർക്കുക</h2>
+                <h2 class="font-extrabold text-gray-800 border-b pb-2">FAQ ചേർക്കുക</h2>
                 <form id="addFaqForm" class="space-y-3">
-                    <input type="text" id="faqQuestion" placeholder="Question (e.g. സാധനം എത്ര ദിവസത്തിൽ ലഭിക്കും?)" class="w-full p-2.5 border rounded-xl text-sm" required>
-                    <textarea id="faqAnswer" placeholder="Answer (e.g. 3 മുതൽ 5 ദിവസത്തിനുള്ളിൽ ഡെലിവറി ലഭ്യമാണ്.)" class="w-full p-2.5 border rounded-xl text-sm" rows="2" required></textarea>
+                    <input type="text" id="faqQuestion" placeholder="Question" class="w-full p-2.5 border rounded-xl text-sm" required>
+                    <textarea id="faqAnswer" placeholder="Answer" class="w-full p-2.5 border rounded-xl text-sm" rows="2" required></textarea>
                     <button type="submit" class="bg-blue-600 text-white font-bold px-4 py-2.5 rounded-xl text-xs">Save FAQ</button>
                 </form>
             </div>
 
             <div class="bg-white p-5 rounded-2xl shadow space-y-3">
-                <h2 class="font-extrabold text-gray-800 border-b pb-2">ചേർത്ത FAQ ചോദ്യങ്ങൾ</h2>
+                <h2 class="font-extrabold text-gray-800 border-b pb-2">FAQ ചോദ്യങ്ങൾ</h2>
                 <div id="adminFaqList" class="space-y-2"></div>
             </div>
         </div>
 
+    </div>
+
+    <!-- PAYMENT SCREENSHOT POPUP MODAL -->
+    <div id="screenshotModal" class="fixed inset-0 bg-black/80 z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white p-4 rounded-2xl max-w-md w-full space-y-3 text-center">
+            <div class="flex justify-between items-center border-b pb-2">
+                <h3 class="font-bold text-sm text-gray-800">Payment Screenshot Verification</h3>
+                <button onclick="closeScreenshotModal()" class="text-gray-500 font-bold text-lg">✕</button>
+            </div>
+            <img id="fullScreenshotImg" src="" class="w-full max-h-96 object-contain rounded-xl border">
+            <button onclick="closeScreenshotModal()" class="w-full bg-blue-600 text-white font-bold py-2 rounded-xl text-xs">Close Preview</button>
+        </div>
     </div>
 
     <!-- FIREBASE & JS -->
@@ -151,8 +156,6 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        let allProducts = [];
-
         window.login = function() {
             if(document.getElementById('pinInput').value === "1234") {
                 document.getElementById('loginBox').classList.add('hidden');
@@ -163,8 +166,6 @@
 
         window.switchAdminTab = function(tabName) {
             document.querySelectorAll('.admin-tab').forEach(t => t.classList.add('hidden'));
-            document.querySelectorAll('.admin-nav').forEach(b => b.className = 'admin-nav bg-gray-100 text-gray-700 px-3 py-1.5 rounded-lg text-xs font-bold');
-
             if(tabName === 'ordersTab') document.getElementById('adminOrdersTab').classList.remove('hidden');
             if(tabName === 'analyticsTab') document.getElementById('adminAnalyticsTab').classList.remove('hidden');
             if(tabName === 'productsTab') document.getElementById('adminProductsTab').classList.remove('hidden');
@@ -190,15 +191,14 @@
             });
         }
 
-        // Add Product with Multiple Photos
         document.getElementById('addProductForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const btn = document.getElementById('addBtn');
             const files = document.getElementById('pImgFiles').files;
-            if(files.length === 0) return alert('ഫോട്ടോകൾ തിരെഞ്ഞെടുക്കുക!');
+            if(files.length === 0) return alert('ഫോട്ടോകൾ തിരഞ്ഞെടുക്കുക!');
 
             btn.disabled = true;
-            btn.innerText = "Processing Images...";
+            btn.innerText = "Saving...";
 
             try {
                 const imagePromises = Array.from(files).map(file => compressImage(file));
@@ -221,9 +221,7 @@
             finally { btn.disabled = false; btn.innerText = "Save Product"; }
         });
 
-        // Load All Data
         async function loadAllAdminData() {
-            // Load Orders & Calculate Monthly Stats
             const oDiv = document.getElementById('ordersContainer');
             oDiv.innerHTML = '';
             
@@ -238,7 +236,6 @@
             oSnap.forEach(docSnap => {
                 const o = docSnap.data();
                 
-                // Track current month stats
                 if (o.monthKey === currentMonthKey || !o.monthKey) {
                     totalOrdersCount += 1;
                     totalRevenueSum += o.price || 0;
@@ -246,7 +243,7 @@
                 }
 
                 oDiv.innerHTML += `
-                    <div class="border p-4 rounded-xl bg-white space-y-2 border-blue-200">
+                    <div class="border p-4 rounded-xl bg-white space-y-2 border-blue-200 shadow-sm">
                         <div class="flex justify-between items-start">
                             <h4 class="font-bold text-sm text-blue-900">${o.productName}</h4>
                             <span class="bg-green-100 text-green-800 text-xs px-2 py-0.5 rounded font-bold">₹${o.price} (${o.paymentMethod})</span>
@@ -255,7 +252,14 @@
                         <p class="text-xs bg-gray-50 p-2 rounded"><b>Address:</b> ${o.address}</p>
                         ${o.gpsMapLink ? `<p class="text-xs"><a href="${o.gpsMapLink}" target="_blank" class="text-blue-600 font-bold underline">🗺️ View GPS Location Map</a></p>` : ''}
 
-                        <!-- Status Update Dropdown (Includes Order Confirmed) -->
+                        <!-- Payment Screenshot Button -->
+                        ${o.paymentScreenshot ? `
+                            <div class="bg-blue-50 p-2 rounded-lg flex items-center justify-between text-xs border border-blue-200">
+                                <span class="font-bold text-blue-900">📸 Payment Receipt Attached</span>
+                                <button onclick="viewScreenshot('${o.paymentScreenshot}')" class="bg-blue-600 text-white font-bold px-3 py-1 rounded text-[11px]">View Screenshot</button>
+                            </div>
+                        ` : ''}
+
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-2 pt-2 border-t">
                             <select id="status-${docSnap.id}" class="p-1.5 border rounded text-xs font-bold bg-gray-50">
                                 <option value="Order Placed" ${o.status==='Order Placed'?'selected':''}>Order Placed</option>
@@ -282,10 +286,8 @@
             pSelect.innerHTML = '<option value="">Select Product to Review</option>';
 
             const pSnap = await getDocs(collection(db, "products"));
-            allProducts = [];
             pSnap.forEach(docSnap => {
                 const p = docSnap.data();
-                allProducts.push({id: docSnap.id, ...p});
                 const directUrl = `https://nsivegetables-coder.github.io/?id=${docSnap.id}`;
                 const img = p.images && p.images.length > 0 ? p.images[0] : p.image;
 
@@ -309,6 +311,15 @@
             loadAdminFaqs();
         }
 
+        window.viewScreenshot = function(imgSrc) {
+            document.getElementById('fullScreenshotImg').src = imgSrc;
+            document.getElementById('screenshotModal').classList.remove('hidden');
+        };
+
+        window.closeScreenshotModal = function() {
+            document.getElementById('screenshotModal').classList.add('hidden');
+        };
+
         window.updateOrder = async function(id) {
             const status = document.getElementById(`status-${id}`).value;
             const location = document.getElementById(`loc-${id}`).value;
@@ -318,7 +329,6 @@
             } catch(e) { alert("Error: " + e.message); }
         };
 
-        // Add Admin Custom Review
         document.getElementById('addAdminReviewForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const pId = document.getElementById('revProductSelect').value;
@@ -363,7 +373,6 @@
             }
         };
 
-        // Add FAQ Question & Answer
         document.getElementById('addFaqForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             try {
