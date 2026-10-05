@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pick Mart - Admin Panel</title>
+    <title>Pick Mart - Admin Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
@@ -25,26 +25,34 @@
     <div class="max-w-md mx-auto p-4 space-y-4">
         
         <!-- Header & Stats Summary -->
-        <div class="bg-blue-600 text-white p-4 rounded-2xl shadow space-y-2">
+        <div class="bg-blue-600 text-white p-4 rounded-2xl shadow space-y-3">
             <div class="flex justify-between items-center">
                 <div>
-                    <h1 class="text-lg font-extrabold">Pick Mart Admin Panel</h1>
-                    <p class="text-[11px] text-blue-100">Store Operational Dashboard</p>
+                    <h1 class="text-lg font-extrabold">Pick Mart Admin</h1>
+                    <p class="text-[11px] text-blue-100">Store Management Dashboard</p>
                 </div>
                 <button onclick="location.reload()" class="text-xs bg-blue-700 p-2 rounded-xl border border-blue-500">
                     <i class="fa-solid fa-rotate"></i>
                 </button>
             </div>
             
-            <!-- Order Counter Box -->
-            <div class="grid grid-cols-2 gap-2 pt-2 border-t border-blue-500/50">
-                <div class="bg-blue-700/60 p-2 rounded-xl text-center">
-                    <span class="text-[10px] block text-blue-100 font-bold uppercase">Total Orders</span>
-                    <span id="totalOrdersCount" class="text-lg font-black">0</span>
+            <!-- Order Status Summary Grid -->
+            <div class="grid grid-cols-4 gap-1.5 pt-2 border-t border-blue-500/50 text-center">
+                <div class="bg-blue-700/60 p-1.5 rounded-xl">
+                    <span class="text-[9px] block text-blue-100 uppercase font-bold">Total</span>
+                    <span id="statTotal" class="text-sm font-black">0</span>
                 </div>
-                <div class="bg-blue-700/60 p-2 rounded-xl text-center">
-                    <span class="text-[10px] block text-blue-100 font-bold uppercase">Active Products</span>
-                    <span id="totalProductsCount" class="text-lg font-black">0</span>
+                <div class="bg-orange-600/70 p-1.5 rounded-xl">
+                    <span class="text-[9px] block text-blue-100 uppercase font-bold">Out for Del</span>
+                    <span id="statOut" class="text-sm font-black">0</span>
+                </div>
+                <div class="bg-green-600/70 p-1.5 rounded-xl">
+                    <span class="text-[9px] block text-blue-100 uppercase font-bold">Delivered</span>
+                    <span id="statDelivered" class="text-sm font-black">0</span>
+                </div>
+                <div class="bg-red-600/70 p-1.5 rounded-xl">
+                    <span class="text-[9px] block text-blue-100 uppercase font-bold">Cancelled</span>
+                    <span id="statCancelled" class="text-sm font-black">0</span>
                 </div>
             </div>
         </div>
@@ -59,16 +67,16 @@
 
         <!-- TAB 1: ORDERS MANAGEMENT -->
         <div id="ordersTab" class="tab-sec space-y-3">
-            <h3 class="font-bold text-sm text-gray-800">Orders & Delivery Tracking</h3>
+            <h3 class="font-bold text-sm text-gray-800">Orders & Delivery Management</h3>
             <div id="ordersList" class="space-y-3">
                 <p class="text-center text-gray-400 py-6 text-xs">Loading orders...</p>
             </div>
         </div>
 
-        <!-- TAB 2: ADD & MANAGE PRODUCTS -->
+        <!-- TAB 2: PRODUCTS MANAGEMENT -->
         <div id="productsTab" class="tab-sec hidden space-y-4">
             <div class="bg-white p-4 rounded-2xl border space-y-3 shadow-sm">
-                <h3 class="font-bold text-sm text-gray-800 border-b pb-2">Add New Product</h3>
+                <h3 class="font-bold text-sm text-gray-800 border-b pb-2">Add New Product (Multiple Photos)</h3>
                 <form onsubmit="handleAddProduct(event)" class="space-y-3">
                     <input type="text" id="prodName" placeholder="Product Title *" class="w-full p-2.5 border rounded-xl text-xs" required>
                     
@@ -117,6 +125,11 @@
 
     </div>
 
+    <!-- IMAGE LIGHTBOX MODAL FOR SCREENSHOT VIEW -->
+    <div id="imageModal" class="fixed inset-0 bg-black/80 z-50 hidden flex items-center justify-center p-4" onclick="closeImageModal()">
+        <img id="modalFullImg" src="" class="max-w-full max-h-[90vh] rounded-xl border-2 border-white">
+    </div>
+
     <!-- FIREBASE SDK -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
@@ -134,7 +147,6 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        // Password protection (Default: 1234)
         window.checkAdminPassword = function() {
             const pass = document.getElementById('adminPassInput').value;
             if(pass === "1234" || pass === "admin") {
@@ -217,7 +229,6 @@
         async function loadProducts() {
             const grid = document.getElementById('productsList');
             const snap = await getDocs(collection(db, "products"));
-            document.getElementById('totalProductsCount').innerText = snap.size;
 
             if(snap.empty) return grid.innerHTML = '<p class="col-span-2 text-center text-gray-400 py-6 text-xs">No products added.</p>';
 
@@ -256,18 +267,35 @@
             }
         };
 
-        // Load Orders with Full Status Update Options
+        // Load Orders with Counters, Dropdowns & Payment Screenshot Viewer
         async function loadOrders() {
             const list = document.getElementById('ordersList');
             const snap = await getDocs(collection(db, "orders"));
-            document.getElementById('totalOrdersCount').innerText = snap.size;
+            
+            let total = snap.size;
+            let outCount = 0;
+            let delCount = 0;
+            let canCount = 0;
 
-            if(snap.empty) return list.innerHTML = '<p class="text-center py-6 text-gray-400 text-xs">No orders received.</p>';
+            if(snap.empty) {
+                list.innerHTML = '<p class="text-center py-6 text-gray-400 text-xs">No orders received.</p>';
+                document.getElementById('statTotal').innerText = 0;
+                document.getElementById('statOut').innerText = 0;
+                document.getElementById('statDelivered').innerText = 0;
+                document.getElementById('statCancelled').innerText = 0;
+                return;
+            }
 
             list.innerHTML = '';
             snap.forEach(docSnap => {
                 const o = docSnap.data();
                 const id = docSnap.id;
+                const status = o.status || 'Order Placed';
+
+                if(status.toLowerCase().includes('out')) outCount++;
+                if(status.toLowerCase().includes('deliver')) delCount++;
+                if(status.toLowerCase().includes('cancel')) canCount++;
+
                 list.innerHTML += `
                     <div class="bg-white p-3.5 rounded-2xl border space-y-2 text-xs shadow-sm">
                         <div class="flex justify-between border-b pb-2 items-start">
@@ -276,46 +304,62 @@
                                 <p class="text-xs text-green-700 font-extrabold">₹${o.price} (${o.paymentMethod})</p>
                                 <p class="text-[10px] text-gray-400">${o.orderDateFormatted || ''}</p>
                             </div>
-                            <span class="bg-blue-100 text-blue-800 text-[10px] font-bold px-2 py-0.5 rounded-full">${o.status || 'Order Placed'}</span>
+                            <span class="bg-blue-100 text-blue-800 text-[10px] font-bold px-2 py-0.5 rounded-full">${status}</span>
                         </div>
                         <div class="space-y-1 text-gray-600">
                             <p><b>Customer:</b> ${o.name} (${o.phone})</p>
                             <p><b>Address:</b> ${o.address}</p>
-                            <p><b>Live Tracking Location:</b> <span class="text-blue-700 font-bold">${o.currentLocation || 'In Transit'}</span></p>
                             ${o.gpsMapLink ? `<a href="${o.gpsMapLink}" target="_blank" class="text-blue-600 font-bold underline text-[11px]">📍 View Location on Maps</a>` : ''}
                         </div>
-                        ${o.paymentScreenshot ? `<div class="pt-1"><img src="${o.paymentScreenshot}" class="w-24 h-24 object-cover rounded-lg border"></div>` : ''}
                         
-                        <div class="bg-gray-50 p-2 rounded-xl border space-y-1 pt-2">
-                            <div class="flex gap-1">
-                                <input type="text" id="st-${id}" value="${o.status || ''}" placeholder="Order Status (e.g. Out for Delivery)" class="flex-1 p-1.5 border rounded-lg text-xs">
-                                <button onclick="updateOrderStatus('${id}')" class="bg-blue-600 text-white font-bold px-3 rounded-lg text-xs">Save Status</button>
+                        <!-- PAYMENT SCREENSHOT THUMBNAIL -->
+                        ${o.paymentScreenshot ? `
+                            <div class="pt-1 flex items-center space-x-2">
+                                <span class="font-bold text-gray-500 text-[10px]">Payment Proof:</span>
+                                <img src="${o.paymentScreenshot}" onclick="openImageModal('${o.paymentScreenshot}')" class="w-12 h-12 object-cover rounded-lg border cursor-pointer hover:opacity-80" title="Click to view full screenshot">
                             </div>
-                            <div class="flex gap-1 pt-1">
-                                <input type="text" id="loc-${id}" value="${o.currentLocation || ''}" placeholder="Current Location (e.g. Dispatched)" class="flex-1 p-1.5 border rounded-lg text-xs">
-                                <button onclick="updateOrderLocation('${id}')" class="bg-green-600 text-white font-bold px-3 rounded-lg text-xs">Save Location</button>
+                        ` : ''}
+                        
+                        <!-- STATUS DROPDOWN & UPDATE -->
+                        <div class="bg-gray-50 p-2.5 rounded-xl border space-y-2 pt-2">
+                            <label class="block font-bold text-gray-700 text-[11px]">Update Order Status:</label>
+                            <div class="flex gap-2">
+                                <select id="st-${id}" class="flex-1 p-2 border rounded-xl text-xs bg-white font-bold">
+                                    <option value="Order Placed" ${status === 'Order Placed' ? 'selected' : ''}>Order Placed</option>
+                                    <option value="Out for Delivery" ${status === 'Out for Delivery' ? 'selected' : ''}>Out for Delivery</option>
+                                    <option value="Delivered" ${status === 'Delivered' ? 'selected' : ''}>Delivered</option>
+                                    <option value="Cancelled" ${status === 'Cancelled' ? 'selected' : ''}>Cancelled</option>
+                                </select>
+                                <button onclick="updateOrderStatus('${id}')" class="bg-blue-600 text-white font-bold px-4 py-2 rounded-xl text-xs shadow">Update</button>
                             </div>
                         </div>
                     </div>
                 `;
             });
+
+            document.getElementById('statTotal').innerText = total;
+            document.getElementById('statOut').innerText = outCount;
+            document.getElementById('statDelivered').innerText = delCount;
+            document.getElementById('statCancelled').innerText = canCount;
         }
 
         window.updateOrderStatus = async function(id) {
             const st = document.getElementById('st-' + id).value;
             await updateDoc(doc(db, "orders", id), { status: st });
-            alert("Status Updated!");
+            alert("Order Status Updated Successfully!");
             loadOrders();
         };
 
-        window.updateOrderLocation = async function(id) {
-            const locVal = document.getElementById('loc-' + id).value;
-            await updateDoc(doc(db, "orders", id), { currentLocation: locVal });
-            alert("Location Updated!");
-            loadOrders();
+        window.openImageModal = function(imgSrc) {
+            document.getElementById('modalFullImg').src = imgSrc;
+            document.getElementById('imageModal').classList.remove('hidden');
         };
 
-        // Categories Management
+        window.closeImageModal = function() {
+            document.getElementById('imageModal').classList.add('hidden');
+        };
+
+        // Categories Add & Delete Management
         window.handleAddCategory = async function(e) {
             e.preventDefault();
             const name = document.getElementById('catNameInput').value;
@@ -328,10 +372,28 @@
             const list = document.getElementById('categoriesList');
             const snap = await getDocs(collection(db, "categories"));
             list.innerHTML = '';
+            if(snap.empty) {
+                list.innerHTML = '<p class="text-center text-gray-400 py-4 text-xs">No categories found.</p>';
+                return;
+            }
             snap.forEach(docSnap => {
-                list.innerHTML += `<div class="bg-white p-3 rounded-xl border text-xs font-bold flex justify-between"><span>${docSnap.data().name}</span></div>`;
+                const c = docSnap.data();
+                const id = docSnap.id;
+                list.innerHTML += `
+                    <div class="bg-white p-3 rounded-xl border text-xs font-bold flex justify-between items-center shadow-sm">
+                        <span>${c.name}</span>
+                        <button onclick="deleteCategory('${id}')" class="bg-red-50 text-red-600 px-3 py-1 rounded-lg border border-red-200">Delete</button>
+                    </div>
+                `;
             });
         }
+
+        window.deleteCategory = async function(id) {
+            if(confirm("Delete this category?")) {
+                await deleteDoc(doc(db, "categories", id));
+                loadCategories();
+            }
+        };
 
         // Reviews Management
         async function loadReviews() {
@@ -343,7 +405,7 @@
             snap.forEach(docSnap => {
                 const r = docSnap.data();
                 list.innerHTML += `
-                    <div class="bg-white p-3 rounded-xl border text-xs space-y-1">
+                    <div class="bg-white p-3 rounded-xl border text-xs space-y-1 shadow-sm">
                         <div class="flex justify-between font-bold">
                             <span>${r.userName || 'Customer'}</span>
                             <span class="text-amber-500">${'⭐'.repeat(r.rating || 5)}</span>
