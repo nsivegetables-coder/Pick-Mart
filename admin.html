@@ -344,6 +344,7 @@
                                 <option value="Shipped / In Transit" ${o.status==='Shipped / In Transit'?'selected':''}>Shipped / In Transit</option>
                                 <option value="Out for Delivery" ${o.status==='Out for Delivery'?'selected':''}>Out for Delivery</option>
                                 <option value="Delivered" ${o.status==='Delivered'?'selected':''}>Delivered</option>
+                                <option value="Order Cancelled" ${o.status==='Order Cancelled'?'selected':''}>Order Cancelled (ക്യാൻസൽഡ്)</option>
                             </select>
                             <input type="text" id="loc-${docSnap.id}" value="${o.currentLocation || ''}" placeholder="Live Location e.g. Kochi Hub" class="p-1.5 border rounded text-xs">
                             <button onclick="updateOrder('${docSnap.id}')" class="bg-blue-600 text-white text-xs font-bold py-1.5 rounded-lg">Update Tracking</button>
