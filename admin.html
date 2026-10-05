@@ -3,57 +3,141 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pick Mart Admin - Reselling Management</title>
+    <title>Pick Mart Admin - Full Business Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
-<body class="bg-gray-100 min-h-screen p-4">
+<body class="bg-gray-100 min-h-screen p-3 md:p-6 font-sans">
 
-    <div id="loginBox" class="max-w-md mx-auto bg-white p-6 rounded-lg shadow mt-10 text-center">
-        <h2 class="text-xl font-bold mb-4">Pick Mart Admin Password</h2>
-        <input type="password" id="pinInput" placeholder="Enter PIN" class="w-full p-2 border rounded mb-4 text-center">
-        <button onclick="login()" class="w-full bg-purple-700 text-white font-bold py-2 rounded">Login</button>
+    <!-- Admin PIN Login -->
+    <div id="loginBox" class="max-w-md mx-auto bg-white p-6 rounded-2xl shadow-lg mt-10 text-center space-y-4">
+        <h2 class="text-xl font-extrabold text-blue-900">Pick Mart Admin Access</h2>
+        <input type="password" id="pinInput" placeholder="Enter Admin PIN" class="w-full p-3 border rounded-xl text-center text-lg">
+        <button onclick="login()" class="w-full bg-blue-600 text-white font-bold py-3 rounded-xl shadow">Login</button>
     </div>
 
-    <div id="adminBody" class="max-w-4xl mx-auto hidden space-y-6">
-        <div class="flex justify-between items-center bg-white p-4 rounded shadow">
-            <h1 class="text-xl font-bold text-purple-800">🛒 Pick Mart Reseller Admin</h1>
-            <button onclick="location.reload()" class="bg-red-500 text-white px-3 py-1 rounded text-sm">Logout</button>
+    <!-- MAIN ADMIN DASHBOARD -->
+    <div id="adminBody" class="max-w-5xl mx-auto hidden space-y-5">
+        
+        <!-- Header & Nav Tabs -->
+        <div class="bg-white p-4 rounded-2xl shadow flex flex-col md:flex-row justify-between items-center gap-3">
+            <h1 class="text-xl font-extrabold text-blue-900">🛒 Pick Mart Business Admin</h1>
+            <div class="flex space-x-2 overflow-x-auto">
+                <button onclick="switchAdminTab('ordersTab')" class="admin-nav bg-blue-600 text-white px-3 py-1.5 rounded-lg text-xs font-bold">📦 Orders</button>
+                <button onclick="switchAdminTab('analyticsTab')" class="admin-nav bg-gray-100 text-gray-700 px-3 py-1.5 rounded-lg text-xs font-bold">📊 Profit & Sales</button>
+                <button onclick="switchAdminTab('productsTab')" class="admin-nav bg-gray-100 text-gray-700 px-3 py-1.5 rounded-lg text-xs font-bold">🛍️ Products</button>
+                <button onclick="switchAdminTab('reviewsTab')" class="admin-nav bg-gray-100 text-gray-700 px-3 py-1.5 rounded-lg text-xs font-bold">⭐ Reviews</button>
+                <button onclick="switchAdminTab('faqTab')" class="admin-nav bg-gray-100 text-gray-700 px-3 py-1.5 rounded-lg text-xs font-bold">❓ Help/FAQ Setup</button>
+                <button onclick="location.reload()" class="bg-red-500 text-white px-3 py-1.5 rounded-lg text-xs font-bold">Logout</button>
+            </div>
         </div>
 
-        <!-- Add Product -->
-        <div class="bg-white p-5 rounded shadow space-y-3">
-            <h2 class="font-bold text-gray-700 border-b pb-2">1. പുതിയ പ്രൊഡക്റ്റ് ചേർക്കുക</h2>
-            <form id="addProductForm" class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                <input type="text" id="pName" placeholder="Product Name" class="p-2 border rounded text-sm" required>
-                <input type="number" id="pPrice" placeholder="Prepaid / Online Price (₹)" class="p-2 border rounded text-sm" required>
-                <input type="number" id="pCodPrice" placeholder="COD Price (₹)" class="p-2 border rounded text-sm" required>
-                <input type="text" id="pOptions" placeholder="Options e.g: Red, Blue OR S, M, L, XL" class="p-2 border rounded text-sm" required>
-                <input type="number" id="pDeliveryDays" placeholder="Delivery Days (e.g. 4)" class="p-2 border rounded text-sm" required>
-                <input type="number" id="pReturnDays" placeholder="Return Days (e.g. 7)" class="p-2 border rounded text-sm" required>
-                <div class="md:col-span-2">
-                    <label class="text-xs font-bold text-gray-500">Product Image</label>
-                    <input type="file" id="pImgFile" accept="image/*" class="w-full p-2 border rounded bg-gray-50 text-sm" required>
+        <!-- TAB 1: SEPARATE ORDERS PAGE -->
+        <div id="adminOrdersTab" class="admin-tab bg-white p-5 rounded-2xl shadow space-y-4">
+            <h2 class="font-extrabold text-lg text-gray-800 border-b pb-2">All Customer Orders & Status Updates</h2>
+            <div id="ordersContainer" class="space-y-4">
+                <p class="text-center text-gray-400 py-6 text-sm">ഓർഡറുകൾ ലോഡ് ചെയ്യുന്നു...</p>
+            </div>
+        </div>
+
+        <!-- TAB 2: MONTHLY PROFIT & SALES ANALYTICS -->
+        <div id="adminAnalyticsTab" class="admin-tab hidden bg-white p-5 rounded-2xl shadow space-y-4">
+            <h2 class="font-extrabold text-lg text-gray-800 border-b pb-2">Monthly Sales & Profit Tracking</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="bg-blue-50 border border-blue-200 p-4 rounded-xl text-center">
+                    <p class="text-xs text-blue-700 font-bold uppercase">This Month Orders</p>
+                    <h3 id="statTotalOrders" class="text-3xl font-black text-blue-900 mt-1">0</h3>
                 </div>
-                <button type="submit" id="addBtn" class="md:col-span-2 bg-green-600 text-white font-bold py-2 rounded">Save Product</button>
-            </form>
+                <div class="bg-green-50 border border-green-200 p-4 rounded-xl text-center">
+                    <p class="text-xs text-green-700 font-bold uppercase">Total Revenue (കച്ചവടം)</p>
+                    <h3 id="statTotalRevenue" class="text-3xl font-black text-green-900 mt-1">₹0</h3>
+                </div>
+                <div class="bg-purple-50 border border-purple-200 p-4 rounded-xl text-center">
+                    <p class="text-xs text-purple-700 font-bold uppercase">Net Profit (അറ്റാദായം)</p>
+                    <h3 id="statTotalProfit" class="text-3xl font-black text-purple-900 mt-1">₹0</h3>
+                </div>
+            </div>
         </div>
 
-        <!-- Product List & Copy Insta Link -->
-        <div class="bg-white p-5 rounded shadow space-y-3">
-            <h2 class="font-bold text-gray-700 border-b pb-2">2. പ്രൊഡക്റ്റുകളും ഇൻസ്റ്റാഗ്രാം ലിങ്കും</h2>
-            <div id="productList" class="grid grid-cols-1 md:grid-cols-2 gap-3"></div>
+        <!-- TAB 3: PRODUCTS & MULTI-PHOTO UPLOAD -->
+        <div id="adminProductsTab" class="admin-tab hidden space-y-5">
+            <!-- Add Product Form -->
+            <div class="bg-white p-5 rounded-2xl shadow space-y-3">
+                <h2 class="font-extrabold text-gray-800 border-b pb-2">പുതിയ പ്രൊഡക്റ്റ് ചേർക്കുക (Multi-Photos Support)</h2>
+                <form id="addProductForm" class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                    <input type="text" id="pName" placeholder="Product Name" class="p-2.5 border rounded-xl text-sm" required>
+                    <input type="number" id="pPrice" placeholder="Pay Online Price (₹)" class="p-2.5 border rounded-xl text-sm" required>
+                    <input type="number" id="pCodPrice" placeholder="COD Price (₹)" class="p-2.5 border rounded-xl text-sm" required>
+                    <input type="number" id="pCostPrice" placeholder="Cost Price / Purchase Price (₹)" class="p-2.5 border rounded-xl text-sm" required>
+                    <input type="text" id="pOptions" placeholder="Options e.g: Red, Blue OR S, M, L" class="p-2.5 border rounded-xl text-sm" required>
+                    
+                    <div class="md:col-span-3 bg-gray-50 p-3 rounded-xl border">
+                        <label class="block text-xs font-bold text-gray-600 mb-1">Product Images (ഒന്നിൽ കൂടുതൽ ഫോട്ടോകൾ നൽകാം) *</label>
+                        <input type="file" id="pImgFiles" accept="image/*" multiple class="w-full text-xs" required>
+                    </div>
+
+                    <button type="submit" id="addBtn" class="md:col-span-3 bg-green-600 text-white font-bold py-3 rounded-xl shadow">Save Product</button>
+                </form>
+            </div>
+
+            <!-- Product List -->
+            <div class="bg-white p-5 rounded-2xl shadow space-y-3">
+                <h2 class="font-extrabold text-gray-800 border-b pb-2">നിലവിലുള്ള പ്രൊഡക്റ്റുകൾ</h2>
+                <div id="productList" class="grid grid-cols-1 md:grid-cols-2 gap-3"></div>
+            </div>
         </div>
 
-        <!-- Manage Orders -->
-        <div class="bg-white p-5 rounded shadow space-y-3">
-            <h2 class="font-bold text-gray-700 border-b pb-2">3. വന്ന ഓർഡറുകളും ലൈവ് ട്രാക്കിംഗും</h2>
-            <div id="ordersContainer" class="space-y-4"></div>
+        <!-- TAB 4: REVIEWS MANAGEMENT -->
+        <div id="adminReviewsTab" class="admin-tab hidden space-y-5">
+            <!-- Add Manual Admin Review -->
+            <div class="bg-white p-5 rounded-2xl shadow space-y-3">
+                <h2 class="font-extrabold text-gray-800 border-b pb-2">മനുവൽ ആയി റിവ്യൂ ആഡ് ചെയ്യുക (Add Custom Review)</h2>
+                <form id="addAdminReviewForm" class="space-y-3">
+                    <select id="revProductSelect" class="w-full p-2.5 border rounded-xl text-sm" required></select>
+                    <div class="grid grid-cols-2 gap-2">
+                        <input type="text" id="revAdminUser" placeholder="Customer Name" class="p-2.5 border rounded-xl text-sm" required>
+                        <select id="revAdminRating" class="p-2.5 border rounded-xl text-sm font-bold">
+                            <option value="5">⭐⭐⭐⭐⭐ (5/5)</option>
+                            <option value="4">⭐⭐⭐⭐ (4/5)</option>
+                            <option value="3">⭐⭐⭐ (3/5)</option>
+                        </select>
+                    </div>
+                    <textarea id="revAdminComment" placeholder="Review Content" class="w-full p-2.5 border rounded-xl text-sm" rows="2" required></textarea>
+                    <button type="submit" class="bg-blue-600 text-white font-bold px-4 py-2 rounded-xl text-xs">Add Review</button>
+                </form>
+            </div>
+
+            <!-- All Reviews List -->
+            <div class="bg-white p-5 rounded-2xl shadow space-y-3">
+                <h2 class="font-extrabold text-gray-800 border-b pb-2">ഉപയോക്താക്കളുടെ റിവ്യൂകൾ</h2>
+                <div id="allAdminReviewsContainer" class="space-y-2"></div>
+            </div>
         </div>
+
+        <!-- TAB 5: FAQ & AUTOMATED HELP SETUP -->
+        <div id="adminFaqTab" class="admin-tab hidden space-y-5">
+            <div class="bg-white p-5 rounded-2xl shadow space-y-3">
+                <h2 class="font-extrabold text-gray-800 border-b pb-2">പുതിയ FAQ ചോദ്യവും ഉത്തരവും ചേർക്കുക</h2>
+                <form id="addFaqForm" class="space-y-3">
+                    <input type="text" id="faqQuestion" placeholder="Question (e.g. സാധനം എത്ര ദിവസത്തിൽ ലഭിക്കും?)" class="w-full p-2.5 border rounded-xl text-sm" required>
+                    <textarea id="faqAnswer" placeholder="Answer (e.g. 3 മുതൽ 5 ദിവസത്തിനുള്ളിൽ ഡെലിവറി ലഭ്യമാണ്.)" class="w-full p-2.5 border rounded-xl text-sm" rows="2" required></textarea>
+                    <button type="submit" class="bg-blue-600 text-white font-bold px-4 py-2.5 rounded-xl text-xs">Save FAQ</button>
+                </form>
+            </div>
+
+            <div class="bg-white p-5 rounded-2xl shadow space-y-3">
+                <h2 class="font-extrabold text-gray-800 border-b pb-2">ചേർത്ത FAQ ചോദ്യങ്ങൾ</h2>
+                <div id="adminFaqList" class="space-y-2"></div>
+            </div>
+        </div>
+
     </div>
 
+    <!-- FIREBASE & JS -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, collection, addDoc, getDocs, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, getDocs, doc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyAYIQOX3FYTx1eN5Z-xD6dj8elfOilbbuU",
@@ -61,18 +145,31 @@
             projectId: "pick-mart",
             storageBucket: "pick-mart.firebasestorage.app",
             messagingSenderId: "438637337844",
-            appId: "1:438637337844:web:80734d96769e66faed12a1"
+            appId: "1:438637337844:web:80734d96769e06fa6d12a1"
         };
 
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
+        let allProducts = [];
+
         window.login = function() {
             if(document.getElementById('pinInput').value === "1234") {
                 document.getElementById('loginBox').classList.add('hidden');
                 document.getElementById('adminBody').classList.remove('hidden');
-                loadAdminData();
+                loadAllAdminData();
             } else { alert("Wrong PIN"); }
+        };
+
+        window.switchAdminTab = function(tabName) {
+            document.querySelectorAll('.admin-tab').forEach(t => t.classList.add('hidden'));
+            document.querySelectorAll('.admin-nav').forEach(b => b.className = 'admin-nav bg-gray-100 text-gray-700 px-3 py-1.5 rounded-lg text-xs font-bold');
+
+            if(tabName === 'ordersTab') document.getElementById('adminOrdersTab').classList.remove('hidden');
+            if(tabName === 'analyticsTab') document.getElementById('adminAnalyticsTab').classList.remove('hidden');
+            if(tabName === 'productsTab') document.getElementById('adminProductsTab').classList.remove('hidden');
+            if(tabName === 'reviewsTab') document.getElementById('adminReviewsTab').classList.remove('hidden');
+            if(tabName === 'faqTab') document.getElementById('adminFaqTab').classList.remove('hidden');
         };
 
         function compressImage(file) {
@@ -93,45 +190,114 @@
             });
         }
 
+        // Add Product with Multiple Photos
         document.getElementById('addProductForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const btn = document.getElementById('addBtn');
+            const files = document.getElementById('pImgFiles').files;
+            if(files.length === 0) return alert('ഫോട്ടോകൾ തിരെഞ്ഞെടുക്കുക!');
+
             btn.disabled = true;
-            btn.innerText = "Saving...";
+            btn.innerText = "Processing Images...";
 
             try {
-                const imgBase64 = await compressImage(document.getElementById('pImgFile').files[0]);
+                const imagePromises = Array.from(files).map(file => compressImage(file));
+                const imageBase64Array = await Promise.all(imagePromises);
+
                 await addDoc(collection(db, "products"), {
                     name: document.getElementById('pName').value,
                     price: Number(document.getElementById('pPrice').value),
                     codPrice: Number(document.getElementById('pCodPrice').value),
+                    costPrice: Number(document.getElementById('pCostPrice').value),
                     options: document.getElementById('pOptions').value,
-                    deliveryDays: document.getElementById('pDeliveryDays').value,
-                    returnDays: document.getElementById('pReturnDays').value,
-                    image: imgBase64
+                    images: imageBase64Array,
+                    image: imageBase64Array[0]
                 });
+
                 alert("പ്രൊഡക്റ്റ് ചേർത്തുകഴിഞ്ഞു!");
                 document.getElementById('addProductForm').reset();
-                loadAdminData();
-            } catch(e) { alert("Error: " + e.message); }
+                loadAllAdminData();
+            } catch(err) { alert("Error: " + err.message); }
             finally { btn.disabled = false; btn.innerText = "Save Product"; }
         });
 
-        async function loadAdminData() {
-            // Products List with Copy Direct Link
+        // Load All Data
+        async function loadAllAdminData() {
+            // Load Orders & Calculate Monthly Stats
+            const oDiv = document.getElementById('ordersContainer');
+            oDiv.innerHTML = '';
+            
+            const d = new Date();
+            const currentMonthKey = `${d.getMonth()+1}-${d.getFullYear()}`;
+
+            let totalOrdersCount = 0;
+            let totalRevenueSum = 0;
+            let totalProfitSum = 0;
+
+            const oSnap = await getDocs(collection(db, "orders"));
+            oSnap.forEach(docSnap => {
+                const o = docSnap.data();
+                
+                // Track current month stats
+                if (o.monthKey === currentMonthKey || !o.monthKey) {
+                    totalOrdersCount += 1;
+                    totalRevenueSum += o.price || 0;
+                    totalProfitSum += o.profit || (o.price - (o.costPrice || 0));
+                }
+
+                oDiv.innerHTML += `
+                    <div class="border p-4 rounded-xl bg-white space-y-2 border-blue-200">
+                        <div class="flex justify-between items-start">
+                            <h4 class="font-bold text-sm text-blue-900">${o.productName}</h4>
+                            <span class="bg-green-100 text-green-800 text-xs px-2 py-0.5 rounded font-bold">₹${o.price} (${o.paymentMethod})</span>
+                        </div>
+                        <p class="text-xs"><b>Customer:</b> ${o.name} | <b>Phone:</b> <a href="tel:${o.phone}" class="text-blue-600 underline">${o.phone}</a></p>
+                        <p class="text-xs bg-gray-50 p-2 rounded"><b>Address:</b> ${o.address}</p>
+                        ${o.gpsMapLink ? `<p class="text-xs"><a href="${o.gpsMapLink}" target="_blank" class="text-blue-600 font-bold underline">🗺️ View GPS Location Map</a></p>` : ''}
+
+                        <!-- Status Update Dropdown (Includes Order Confirmed) -->
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-2 pt-2 border-t">
+                            <select id="status-${docSnap.id}" class="p-1.5 border rounded text-xs font-bold bg-gray-50">
+                                <option value="Order Placed" ${o.status==='Order Placed'?'selected':''}>Order Placed</option>
+                                <option value="Order Confirmed" ${o.status==='Order Confirmed'?'selected':''}>Order Confirmed (കൺഫേം)</option>
+                                <option value="Shipped / In Transit" ${o.status==='Shipped / In Transit'?'selected':''}>Shipped / In Transit</option>
+                                <option value="Out for Delivery" ${o.status==='Out for Delivery'?'selected':''}>Out for Delivery</option>
+                                <option value="Delivered" ${o.status==='Delivered'?'selected':''}>Delivered</option>
+                            </select>
+                            <input type="text" id="loc-${docSnap.id}" value="${o.currentLocation || ''}" placeholder="Live Location e.g. Kochi Hub" class="p-1.5 border rounded text-xs">
+                            <button onclick="updateOrder('${docSnap.id}')" class="bg-blue-600 text-white text-xs font-bold py-1.5 rounded-lg">Update Tracking</button>
+                        </div>
+                    </div>
+                `;
+            });
+
+            document.getElementById('statTotalOrders').innerText = totalOrdersCount;
+            document.getElementById('statTotalRevenue').innerText = '₹' + totalRevenueSum;
+            document.getElementById('statTotalProfit').innerText = '₹' + totalProfitSum;
+
+            // Load Products
             const pDiv = document.getElementById('productList');
+            const pSelect = document.getElementById('revProductSelect');
             pDiv.innerHTML = '';
+            pSelect.innerHTML = '<option value="">Select Product to Review</option>';
+
             const pSnap = await getDocs(collection(db, "products"));
+            allProducts = [];
             pSnap.forEach(docSnap => {
                 const p = docSnap.data();
+                allProducts.push({id: docSnap.id, ...p});
                 const directUrl = `https://nsivegetables-coder.github.io/?id=${docSnap.id}`;
+                const img = p.images && p.images.length > 0 ? p.images[0] : p.image;
+
+                pSelect.innerHTML += `<option value="${docSnap.id}">${p.name}</option>`;
+
                 pDiv.innerHTML += `
-                    <div class="border p-3 rounded bg-purple-50 flex space-x-3 items-center">
-                        <img src="${p.image}" class="w-16 h-16 object-cover rounded">
+                    <div class="border p-3 rounded-xl bg-blue-50 flex space-x-3 items-center">
+                        <img src="${img}" class="w-16 h-16 object-cover rounded-lg">
                         <div class="flex-1">
                             <h4 class="font-bold text-xs">${p.name}</h4>
-                            <p class="text-xs text-purple-800">Prepaid: ₹${p.price} | COD: ₹${p.codPrice}</p>
-                            <button onclick="navigator.clipboard.writeText('${directUrl}'); alert('Insta Direct Link Copied!')" class="mt-1 bg-purple-700 text-white text-[10px] px-2 py-1 rounded font-bold">
+                            <p class="text-[11px] text-gray-600">Cost: ₹${p.costPrice || 0} | Online: ₹${p.price} | COD: ₹${p.codPrice}</p>
+                            <button onclick="navigator.clipboard.writeText('${directUrl}'); alert('Link Copied!')" class="mt-1 bg-blue-600 text-white text-[10px] px-2 py-0.5 rounded font-bold">
                                 🔗 Copy Insta Link
                             </button>
                         </div>
@@ -139,47 +305,101 @@
                 `;
             });
 
-            // Orders List & Location Updater
-            const oDiv = document.getElementById('ordersContainer');
-            oDiv.innerHTML = '';
-            const oSnap = await getDocs(collection(db, "orders"));
-            oSnap.forEach(docSnap => {
-                const o = docSnap.data();
-                oDiv.innerHTML += `
-                    <div class="border p-4 rounded bg-white space-y-2 border-purple-200">
-                        <div class="flex justify-between items-start">
-                            <h4 class="font-bold text-sm text-purple-900">${o.productName}</h4>
-                            <span class="bg-green-100 text-green-800 text-xs px-2 py-0.5 rounded font-bold">₹${o.price} (${o.paymentMethod})</span>
-                        </div>
-                        <p class="text-xs"><b>Customer:</b> ${o.name} | <b>Phone:</b> <a href="tel:${o.phone}" class="text-blue-600 underline">${o.phone}</a></p>
-                        <p class="text-xs bg-gray-50 p-2 rounded"><b>Address:</b> ${o.address}</p>
-                        
-                        <!-- Status & Location Update Box -->
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-2 pt-2 border-t">
-                            <select id="status-${docSnap.id}" class="p-1.5 border rounded text-xs font-bold">
-                                <option value="Order Placed" ${o.status==='Order Placed'?'selected':''}>Order Placed</option>
-                                <option value="Shipped / In Transit" ${o.status==='Shipped / In Transit'?'selected':''}>Shipped / In Transit</option>
-                                <option value="Out for Delivery" ${o.status==='Out for Delivery'?'selected':''}>Out for Delivery</option>
-                                <option value="Delivered" ${o.status==='Delivered'?'selected':''}>Delivered</option>
-                            </select>
-                            <input type="text" id="loc-${docSnap.id}" value="${o.currentLocation || ''}" placeholder="Live Location e.g. Kochi Hub" class="p-1.5 border rounded text-xs">
-                            <button onclick="updateOrder('${docSnap.id}')" class="bg-purple-700 text-white text-xs font-bold py-1.5 rounded">Update Tracking</button>
-                        </div>
-                    </div>
-                `;
-            });
+            loadAdminReviews();
+            loadAdminFaqs();
         }
 
         window.updateOrder = async function(id) {
             const status = document.getElementById(`status-${id}`).value;
             const location = document.getElementById(`loc-${id}`).value;
             try {
-                await updateDoc(doc(db, "orders", id), {
-                    status: status,
-                    currentLocation: location
-                });
-                alert("ട്രാക്കിംഗ് സ്റ്റാറ്റസ് അപ്‌ഡേറ്റ് ചെയ്തു!");
+                await updateDoc(doc(db, "orders", id), { status: status, currentLocation: location });
+                alert("അപ്‌ഡേറ്റ് ചെയ്തു!");
             } catch(e) { alert("Error: " + e.message); }
+        };
+
+        // Add Admin Custom Review
+        document.getElementById('addAdminReviewForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const pId = document.getElementById('revProductSelect').value;
+            if(!pId) return alert('പ്രൊഡക്റ്റ് സെലക്ട് ചെയ്യുക!');
+
+            try {
+                await addDoc(collection(db, "reviews"), {
+                    productId: pId,
+                    userName: document.getElementById('revAdminUser').value,
+                    rating: Number(document.getElementById('revAdminRating').value),
+                    comment: document.getElementById('revAdminComment').value,
+                    timestamp: new Date()
+                });
+                alert('റിവ്യൂ ആഡ് ആയി!');
+                document.getElementById('addAdminReviewForm').reset();
+                loadAdminReviews();
+            } catch(e) { alert('Error adding review'); }
+        });
+
+        async function loadAdminReviews() {
+            const rDiv = document.getElementById('allAdminReviewsContainer');
+            rDiv.innerHTML = '';
+            const snap = await getDocs(collection(db, "reviews"));
+            snap.forEach(docSnap => {
+                const r = docSnap.data();
+                rDiv.innerHTML += `
+                    <div class="bg-gray-50 p-2.5 rounded-xl border flex justify-between items-center text-xs">
+                        <div>
+                            <span class="font-bold">${r.userName}</span> (${'⭐'.repeat(r.rating)})
+                            <p class="text-gray-600 text-[11px]">${r.comment}</p>
+                        </div>
+                        <button onclick="deleteReview('${docSnap.id}')" class="text-red-500 font-bold px-2">Delete</button>
+                    </div>
+                `;
+            });
+        }
+
+        window.deleteReview = async function(id) {
+            if(confirm('ഡിലീറ്റ് ചെയ്യണോ?')) {
+                await deleteDoc(doc(db, "reviews", id));
+                loadAdminReviews();
+            }
+        };
+
+        // Add FAQ Question & Answer
+        document.getElementById('addFaqForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            try {
+                await addDoc(collection(db, "faqs"), {
+                    question: document.getElementById('faqQuestion').value,
+                    answer: document.getElementById('faqAnswer').value
+                });
+                alert('FAQ ആഡ് ആയി!');
+                document.getElementById('addFaqForm').reset();
+                loadAdminFaqs();
+            } catch(e) { alert('Error adding FAQ'); }
+        });
+
+        async function loadAdminFaqs() {
+            const fDiv = document.getElementById('adminFaqList');
+            fDiv.innerHTML = '';
+            const snap = await getDocs(collection(db, "faqs"));
+            snap.forEach(docSnap => {
+                const f = docSnap.data();
+                fDiv.innerHTML += `
+                    <div class="bg-gray-50 p-3 rounded-xl border flex justify-between items-start text-xs">
+                        <div>
+                            <h5 class="font-bold text-blue-900">❓ ${f.question}</h5>
+                            <p class="text-gray-600 mt-0.5">💡 ${f.answer}</p>
+                        </div>
+                        <button onclick="deleteFaq('${docSnap.id}')" class="text-red-500 font-bold px-2">Delete</button>
+                    </div>
+                `;
+            });
+        }
+
+        window.deleteFaq = async function(id) {
+            if(confirm('ഡിലീറ്റ് ചെയ്യണോ?')) {
+                await deleteDoc(doc(db, "faqs", id));
+                loadAdminFaqs();
+            }
         };
     </script>
 </body>
