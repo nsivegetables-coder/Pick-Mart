@@ -25,15 +25,16 @@
                 <button onclick="switchAdminTab('ordersTab')" class="admin-nav bg-blue-600 text-white px-3 py-1.5 rounded-lg text-xs font-bold">📦 Orders</button>
                 <button onclick="switchAdminTab('analyticsTab')" class="admin-nav bg-gray-100 text-gray-700 px-3 py-1.5 rounded-lg text-xs font-bold">📊 Profit & Sales</button>
                 <button onclick="switchAdminTab('productsTab')" class="admin-nav bg-gray-100 text-gray-700 px-3 py-1.5 rounded-lg text-xs font-bold">🛍️ Products</button>
+                <button onclick="switchAdminTab('categoryTab')" class="admin-nav bg-gray-100 text-gray-700 px-3 py-1.5 rounded-lg text-xs font-bold">🏷️ Categories</button>
                 <button onclick="switchAdminTab('reviewsTab')" class="admin-nav bg-gray-100 text-gray-700 px-3 py-1.5 rounded-lg text-xs font-bold">⭐ Reviews</button>
-                <button onclick="switchAdminTab('faqTab')" class="admin-nav bg-gray-100 text-gray-700 px-3 py-1.5 rounded-lg text-xs font-bold">❓ Help/FAQ Setup</button>
+                <button onclick="switchAdminTab('faqTab')" class="admin-nav bg-gray-100 text-gray-700 px-3 py-1.5 rounded-lg text-xs font-bold">❓ FAQ Setup</button>
                 <button onclick="location.reload()" class="bg-red-500 text-white px-3 py-1.5 rounded-lg text-xs font-bold">Logout</button>
             </div>
         </div>
 
-        <!-- TAB 1: ORDERS & SCREENSHOT VERIFICATION -->
+        <!-- TAB 1: ORDERS & TIMESTAMPS -->
         <div id="adminOrdersTab" class="admin-tab bg-white p-5 rounded-2xl shadow space-y-4">
-            <h2 class="font-extrabold text-lg text-gray-800 border-b pb-2">Customer Orders & Payment Verification</h2>
+            <h2 class="font-extrabold text-lg text-gray-800 border-b pb-2">Customer Orders & Timestamps</h2>
             <div id="ordersContainer" class="space-y-4">
                 <p class="text-center text-gray-400 py-6 text-sm">ഓർഡറുകൾ ലോഡ് ചെയ്യുന്നു...</p>
             </div>
@@ -58,12 +59,15 @@
             </div>
         </div>
 
-        <!-- TAB 3: PRODUCTS -->
+        <!-- TAB 3: PRODUCTS & DELETE / CHANGE CATEGORY -->
         <div id="adminProductsTab" class="admin-tab hidden space-y-5">
             <div class="bg-white p-5 rounded-2xl shadow space-y-3">
-                <h2 class="font-extrabold text-gray-800 border-b pb-2">പുതിയ പ്രൊഡക്റ്റ് ചേർക്കുക (Multi-Photos)</h2>
+                <h2 class="font-extrabold text-gray-800 border-b pb-2">പുതിയ പ്രൊഡക്റ്റ് ചേർക്കുക</h2>
                 <form id="addProductForm" class="grid grid-cols-1 md:grid-cols-3 gap-3">
                     <input type="text" id="pName" placeholder="Product Name" class="p-2.5 border rounded-xl text-sm" required>
+                    <select id="pCategorySelect" class="p-2.5 border rounded-xl text-sm font-bold bg-gray-50" required>
+                        <option value="">Select Category *</option>
+                    </select>
                     <input type="number" id="pPrice" placeholder="Pay Online Price (₹)" class="p-2.5 border rounded-xl text-sm" required>
                     <input type="number" id="pCodPrice" placeholder="COD Price (₹)" class="p-2.5 border rounded-xl text-sm" required>
                     <input type="number" id="pCostPrice" placeholder="Cost Price (₹)" class="p-2.5 border rounded-xl text-sm" required>
@@ -79,12 +83,28 @@
             </div>
 
             <div class="bg-white p-5 rounded-2xl shadow space-y-3">
-                <h2 class="font-extrabold text-gray-800 border-b pb-2">നിലവിലുള്ള പ്രൊഡക്റ്റുകൾ</h2>
+                <h2 class="font-extrabold text-gray-800 border-b pb-2">നിലവിലുള്ള പ്രൊഡക്റ്റുകൾ (Delete & Category Control)</h2>
                 <div id="productList" class="grid grid-cols-1 md:grid-cols-2 gap-3"></div>
             </div>
         </div>
 
-        <!-- TAB 4: REVIEWS -->
+        <!-- TAB 4: CATEGORY MANAGEMENT -->
+        <div id="adminCategoryTab" class="admin-tab hidden space-y-5">
+            <div class="bg-white p-5 rounded-2xl shadow space-y-3">
+                <h2 class="font-extrabold text-gray-800 border-b pb-2">പുതിയ കാറ്റഗറി ഉണ്ടാക്കുക</h2>
+                <form id="addCategoryForm" class="flex gap-2">
+                    <input type="text" id="catNameInput" placeholder="Category Name (e.g. Womenswear, Gadgets)" class="flex-1 p-2.5 border rounded-xl text-sm" required>
+                    <button type="submit" class="bg-blue-600 text-white font-bold px-4 py-2.5 rounded-xl text-xs">Add Category</button>
+                </form>
+            </div>
+
+            <div class="bg-white p-5 rounded-2xl shadow space-y-3">
+                <h2 class="font-extrabold text-gray-800 border-b pb-2">ഉണ്ടാക്കിയ കാറ്റഗറികൾ</h2>
+                <div id="categoryListContainer" class="flex flex-wrap gap-2"></div>
+            </div>
+        </div>
+
+        <!-- TAB 5: REVIEWS -->
         <div id="adminReviewsTab" class="admin-tab hidden space-y-5">
             <div class="bg-white p-5 rounded-2xl shadow space-y-3">
                 <h2 class="font-extrabold text-gray-800 border-b pb-2">Add Custom Review</h2>
@@ -108,7 +128,7 @@
             </div>
         </div>
 
-        <!-- TAB 5: FAQ SETUP -->
+        <!-- TAB 6: FAQ SETUP -->
         <div id="adminFaqTab" class="admin-tab hidden space-y-5">
             <div class="bg-white p-5 rounded-2xl shadow space-y-3">
                 <h2 class="font-extrabold text-gray-800 border-b pb-2">FAQ ചേർക്കുക</h2>
@@ -156,6 +176,8 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
+        let categoryList = [];
+
         window.login = function() {
             if(document.getElementById('pinInput').value === "1234") {
                 document.getElementById('loginBox').classList.add('hidden');
@@ -169,6 +191,7 @@
             if(tabName === 'ordersTab') document.getElementById('adminOrdersTab').classList.remove('hidden');
             if(tabName === 'analyticsTab') document.getElementById('adminAnalyticsTab').classList.remove('hidden');
             if(tabName === 'productsTab') document.getElementById('adminProductsTab').classList.remove('hidden');
+            if(tabName === 'categoryTab') document.getElementById('adminCategoryTab').classList.remove('hidden');
             if(tabName === 'reviewsTab') document.getElementById('adminReviewsTab').classList.remove('hidden');
             if(tabName === 'faqTab') document.getElementById('adminFaqTab').classList.remove('hidden');
         };
@@ -191,6 +214,48 @@
             });
         }
 
+        // Add Category Logic
+        document.getElementById('addCategoryForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const catName = document.getElementById('catNameInput').value.trim();
+            if(!catName) return;
+            try {
+                await addDoc(collection(db, "categories"), { name: catName });
+                alert('കാറ്റഗറി ഉണ്ടാക്കി!');
+                document.getElementById('addCategoryForm').reset();
+                loadCategories();
+            } catch(e) { alert('Category error'); }
+        });
+
+        async function loadCategories() {
+            const container = document.getElementById('categoryListContainer');
+            const selectBox = document.getElementById('pCategorySelect');
+            container.innerHTML = '';
+            selectBox.innerHTML = '<option value="">Select Category *</option>';
+            categoryList = [];
+
+            const snap = await getDocs(collection(db, "categories"));
+            snap.forEach(docSnap => {
+                const c = docSnap.data().name;
+                categoryList.push({ id: docSnap.id, name: c });
+                container.innerHTML += `
+                    <div class="bg-blue-50 border border-blue-200 text-blue-900 px-3 py-1 rounded-xl text-xs font-bold flex items-center space-x-2">
+                        <span>${c}</span>
+                        <button onclick="deleteCategory('${docSnap.id}')" class="text-red-500 hover:text-red-700">✕</button>
+                    </div>
+                `;
+                selectBox.innerHTML += `<option value="${c}">${c}</option>`;
+            });
+        }
+
+        window.deleteCategory = async function(id) {
+            if(confirm('ഈ കാറ്റഗറി ഡിലീറ്റ് ചെയ്യണോ?')) {
+                await deleteDoc(doc(db, "categories", id));
+                loadCategories();
+            }
+        };
+
+        // Add Product Logic
         document.getElementById('addProductForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const btn = document.getElementById('addBtn');
@@ -206,6 +271,7 @@
 
                 await addDoc(collection(db, "products"), {
                     name: document.getElementById('pName').value,
+                    category: document.getElementById('pCategorySelect').value,
                     price: Number(document.getElementById('pPrice').value),
                     codPrice: Number(document.getElementById('pCodPrice').value),
                     costPrice: Number(document.getElementById('pCostPrice').value),
@@ -222,6 +288,9 @@
         });
 
         async function loadAllAdminData() {
+            await loadCategories();
+
+            // Load Orders with Timestamps
             const oDiv = document.getElementById('ordersContainer');
             oDiv.innerHTML = '';
             
@@ -242,17 +311,25 @@
                     totalProfitSum += o.profit || (o.price - (o.costPrice || 0));
                 }
 
+                let timeDisplay = o.orderDateFormatted;
+                if(!timeDisplay && o.timestamp) {
+                    const dateObj = o.timestamp.toDate ? o.timestamp.toDate() : new Date(o.timestamp);
+                    timeDisplay = dateObj.toLocaleString('en-IN', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true });
+                }
+
                 oDiv.innerHTML += `
                     <div class="border p-4 rounded-xl bg-white space-y-2 border-blue-200 shadow-sm">
-                        <div class="flex justify-between items-start">
-                            <h4 class="font-bold text-sm text-blue-900">${o.productName}</h4>
+                        <div class="flex justify-between items-start border-b pb-2">
+                            <div>
+                                <h4 class="font-bold text-sm text-blue-900">${o.productName}</h4>
+                                <p class="text-[11px] text-gray-500 font-semibold mt-0.5">🕒 <b>Order Time:</b> ${timeDisplay || 'Just now'}</p>
+                            </div>
                             <span class="bg-green-100 text-green-800 text-xs px-2 py-0.5 rounded font-bold">₹${o.price} (${o.paymentMethod})</span>
                         </div>
                         <p class="text-xs"><b>Customer:</b> ${o.name} | <b>Phone:</b> <a href="tel:${o.phone}" class="text-blue-600 underline">${o.phone}</a></p>
                         <p class="text-xs bg-gray-50 p-2 rounded"><b>Address:</b> ${o.address}</p>
                         ${o.gpsMapLink ? `<p class="text-xs"><a href="${o.gpsMapLink}" target="_blank" class="text-blue-600 font-bold underline">🗺️ View GPS Location Map</a></p>` : ''}
 
-                        <!-- Payment Screenshot Button -->
                         ${o.paymentScreenshot ? `
                             <div class="bg-blue-50 p-2 rounded-lg flex items-center justify-between text-xs border border-blue-200">
                                 <span class="font-bold text-blue-900">📸 Payment Receipt Attached</span>
@@ -263,7 +340,7 @@
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-2 pt-2 border-t">
                             <select id="status-${docSnap.id}" class="p-1.5 border rounded text-xs font-bold bg-gray-50">
                                 <option value="Order Placed" ${o.status==='Order Placed'?'selected':''}>Order Placed</option>
-                                <option value="Order Confirmed" ${o.status==='Order Confirmed'?'selected':''}>Order Confirmed (കൺഫേം)</option>
+                                <option value="Order Confirmed" ${o.status==='Order Confirmed'?'selected':''}>Order Confirmed</option>
                                 <option value="Shipped / In Transit" ${o.status==='Shipped / In Transit'?'selected':''}>Shipped / In Transit</option>
                                 <option value="Out for Delivery" ${o.status==='Out for Delivery'?'selected':''}>Out for Delivery</option>
                                 <option value="Delivered" ${o.status==='Delivered'?'selected':''}>Delivered</option>
@@ -293,16 +370,30 @@
 
                 pSelect.innerHTML += `<option value="${docSnap.id}">${p.name}</option>`;
 
+                // Options for Changing Category
+                let catOptionsHtml = categoryList.map(c => `<option value="${c.name}" ${p.category===c.name?'selected':''}>${c.name}</option>`).join('');
+
                 pDiv.innerHTML += `
-                    <div class="border p-3 rounded-xl bg-blue-50 flex space-x-3 items-center">
-                        <img src="${img}" class="w-16 h-16 object-cover rounded-lg">
-                        <div class="flex-1">
-                            <h4 class="font-bold text-xs">${p.name}</h4>
-                            <p class="text-[11px] text-gray-600">Cost: ₹${p.costPrice || 0} | Online: ₹${p.price} | COD: ₹${p.codPrice}</p>
-                            <button onclick="navigator.clipboard.writeText('${directUrl}'); alert('Link Copied!')" class="mt-1 bg-blue-600 text-white text-[10px] px-2 py-0.5 rounded font-bold">
-                                🔗 Copy Insta Link
-                            </button>
+                    <div class="border p-3 rounded-xl bg-blue-50 flex space-x-3 items-center justify-between">
+                        <div class="flex space-x-3 items-center">
+                            <img src="${img}" class="w-16 h-16 object-cover rounded-lg">
+                            <div>
+                                <h4 class="font-bold text-xs">${p.name}</h4>
+                                <div class="flex items-center space-x-1 my-1">
+                                    <span class="text-[10px] font-bold text-gray-500">Category:</span>
+                                    <select onchange="updateProductCategory('${docSnap.id}', this.value)" class="text-[10px] border rounded bg-white p-0.5 font-bold">
+                                        <option value="">None</option>
+                                        ${catOptionsHtml}
+                                    </select>
+                                </div>
+                                <button onclick="navigator.clipboard.writeText('${directUrl}'); alert('Link Copied!')" class="bg-blue-600 text-white text-[10px] px-2 py-0.5 rounded font-bold">
+                                    🔗 Copy Insta Link
+                                </button>
+                            </div>
                         </div>
+                        <button onclick="deleteProduct('${docSnap.id}')" class="bg-red-100 text-red-600 p-2 rounded-lg text-xs font-bold hover:bg-red-200">
+                            🗑️ Delete
+                        </button>
                     </div>
                 `;
             });
@@ -310,6 +401,21 @@
             loadAdminReviews();
             loadAdminFaqs();
         }
+
+        window.updateProductCategory = async function(pId, newCat) {
+            try {
+                await updateDoc(doc(db, "products", pId), { category: newCat });
+                alert('കാറ്റഗറി മാറ്റി!');
+            } catch(e) { alert('Error updating category'); }
+        };
+
+        window.deleteProduct = async function(pId) {
+            if(confirm('ഈ പ്രൊഡക്റ്റ് ഡിലീറ്റ് ചെയ്യണോ?')) {
+                await deleteDoc(doc(db, "products", pId));
+                alert('ഡിലീറ്റ് ആയി!');
+                loadAllAdminData();
+            }
+        };
 
         window.viewScreenshot = function(imgSrc) {
             document.getElementById('fullScreenshotImg').src = imgSrc;
