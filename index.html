@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pick Mart - Meesho Style Online Shopping</title>
+    <title>Pick Mart - Online Shopping</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -11,7 +11,6 @@
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
         .meesho-bg { background-color: #9c27b0; }
         .meesho-text { color: #9c27b0; }
-        .meesho-border { border-color: #9c27b0; }
     </style>
 </head>
 <body class="bg-gray-100 pb-20 font-sans text-gray-800">
@@ -20,49 +19,28 @@
     <header class="sticky top-0 z-40 bg-white shadow-sm">
         <div class="max-w-md mx-auto px-4 py-3">
             <div class="flex items-center justify-between mb-2">
-                <div class="flex items-center space-x-2">
-                    <span class="meesho-bg text-white font-extrabold px-3 py-1 rounded-lg text-lg tracking-wider">Pick Mart</span>
-                </div>
-                <div class="flex items-center space-x-4 text-gray-600 text-lg">
-                    <button onclick="switchTab('cartTab')" class="relative hover:text-purple-700">
-                        <i class="fa-solid fa-cart-shopping"></i>
-                        <span id="cartBadge" class="absolute -top-2 -right-2 bg-pink-600 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full hidden">0</span>
-                    </button>
-                </div>
+                <span class="meesho-bg text-white font-extrabold px-3 py-1 rounded-lg text-lg tracking-wider">Pick Mart</span>
+                <button onclick="switchTab('cartTab')" class="relative hover:text-purple-700">
+                    <i class="fa-solid fa-cart-shopping text-xl"></i>
+                    <span id="cartBadge" class="absolute -top-2 -right-2 bg-pink-600 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full hidden">0</span>
+                </button>
             </div>
-
-            <!-- Search Input -->
             <div class="relative mt-2">
                 <i class="fa-solid fa-magnifying-glass absolute left-3 top-3 text-gray-400"></i>
-                <input type="text" id="searchInput" oninput="filterProducts()" placeholder="Try Saree, Kurti, T-Shirt, Gadgets..." class="w-full pl-9 pr-4 py-2 bg-gray-50 rounded-lg text-sm border focus:ring-2 focus:ring-purple-600 focus:bg-white transition outline-none">
+                <input type="text" id="searchInput" oninput="filterProducts()" placeholder="Search Products..." class="w-full pl-9 pr-4 py-2 bg-gray-50 rounded-lg text-sm border focus:ring-2 focus:ring-purple-600 focus:bg-white transition outline-none">
             </div>
         </div>
     </header>
 
-    <!-- MAIN CONTAINER -->
     <main class="max-w-md mx-auto min-h-screen">
-
         <!-- TAB 1: HOME PAGE -->
         <div id="homeTab" class="tab-content px-3 py-3 space-y-4">
-            <!-- Banner Slider -->
-            <div class="rounded-xl overflow-hidden shadow-sm bg-gradient-to-r from-purple-800 to-pink-600 text-white p-4 relative">
-                <span class="bg-yellow-400 text-purple-950 font-black text-[10px] uppercase px-2 py-0.5 rounded">Lowest Prices Guaranteed</span>
-                <h2 class="text-xl font-bold mt-1">Trendy Collections 🔥</h2>
+            <div class="rounded-xl overflow-hidden shadow-sm bg-gradient-to-r from-purple-800 to-pink-600 text-white p-4">
+                <span class="bg-yellow-400 text-purple-950 font-black text-[10px] uppercase px-2 py-0.5 rounded">Exclusive Offer</span>
+                <h2 class="text-xl font-bold mt-1">Trendy Direct Collection 🔥</h2>
                 <p class="text-xs text-purple-100 mt-1">Free Delivery | Cash on Delivery Available</p>
             </div>
 
-            <!-- Categories -->
-            <div>
-                <h3 class="font-bold text-sm text-gray-700 mb-2">Categories</h3>
-                <div class="flex space-x-2 overflow-x-auto no-scrollbar py-1">
-                    <button onclick="filterCategory('All')" class="cat-pill bg-purple-700 text-white px-3 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap">All</button>
-                    <button onclick="filterCategory('Women')" class="cat-pill bg-white border text-gray-700 px-3 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap">👗 Women</button>
-                    <button onclick="filterCategory('Men')" class="cat-pill bg-white border text-gray-700 px-3 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap">👕 Men</button>
-                    <button onclick="filterCategory('Electronics')" class="cat-pill bg-white border text-gray-700 px-3 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap">🎧 Electronics</button>
-                </div>
-            </div>
-
-            <!-- Product Grid -->
             <div>
                 <h3 class="font-bold text-sm text-gray-700 mb-2">Products For You</h3>
                 <div id="productGrid" class="grid grid-cols-2 gap-2.5">
@@ -71,27 +49,16 @@
             </div>
         </div>
 
-        <!-- TAB 2: CATEGORIES -->
-        <div id="categoriesTab" class="tab-content hidden p-4">
-            <h2 class="font-bold text-lg mb-4">All Categories</h2>
-            <div class="grid grid-cols-2 gap-3">
-                <div onclick="filterCategory('Women'); switchTab('homeTab');" class="bg-white p-4 rounded-xl border text-center font-bold text-gray-700 shadow-sm cursor-pointer">👗 Women Fashion</div>
-                <div onclick="filterCategory('Men'); switchTab('homeTab');" class="bg-white p-4 rounded-xl border text-center font-bold text-gray-700 shadow-sm cursor-pointer">👕 Men Fashion</div>
-                <div onclick="filterCategory('Electronics'); switchTab('homeTab');" class="bg-white p-4 rounded-xl border text-center font-bold text-gray-700 shadow-sm cursor-pointer">🎧 Electronics</div>
-            </div>
-        </div>
-
-        <!-- TAB 3: MY ORDERS -->
+        <!-- TAB 2: MY ORDERS & TRACKING -->
         <div id="ordersTab" class="tab-content hidden p-4 space-y-3">
-            <h2 class="font-bold text-lg mb-2">My Orders (എന്റെ ഓർഡറുകൾ)</h2>
+            <h2 class="font-bold text-lg mb-2">My Orders & Live Tracking</h2>
             <div id="myOrdersList" class="space-y-3">
                 <p class="text-gray-500 text-center py-6 text-sm">ഓർഡറുകൾ പരിശോധിക്കുന്നു...</p>
             </div>
         </div>
 
-        <!-- TAB 4: ACCOUNT / PROFILE & OTP LOGIN -->
+        <!-- TAB 3: ACCOUNT & LOGIN -->
         <div id="accountTab" class="tab-content hidden p-4 space-y-4">
-            <!-- Logged In State -->
             <div id="profileBox" class="hidden bg-white p-4 rounded-xl border shadow-sm space-y-3">
                 <div class="flex items-center space-x-3">
                     <div class="w-12 h-12 rounded-full bg-purple-100 text-purple-700 flex items-center justify-center font-bold text-xl">
@@ -102,73 +69,37 @@
                         <p id="userContactType" class="text-xs text-gray-500">Logged in</p>
                     </div>
                 </div>
-                <button onclick="logoutUser()" class="w-full bg-red-50 text-red-600 font-bold py-2 rounded-lg text-sm border border-red-200">
-                    Logout (ലോഗ് ഔട്ട്)
-                </button>
+                <button onclick="logoutUser()" class="w-full bg-red-50 text-red-600 font-bold py-2 rounded-lg text-sm border border-red-200">Logout</button>
             </div>
 
-            <!-- Login Form -->
             <div id="loginFormBox" class="bg-white p-5 rounded-xl border shadow-sm space-y-4">
-                <div class="text-center">
-                    <h3 class="font-extrabold text-lg text-gray-800">Sign In to Pick Mart</h3>
-                    <p class="text-xs text-gray-500 mt-1">ഇൻസ്റ്റാഗ്രാം ഐഡിയോ ഫോൺ നമ്പറോ നൽകി പ്രവേശിക്കുക</p>
-                </div>
-
+                <h3 class="font-extrabold text-lg text-gray-800 text-center">Sign In to Order</h3>
                 <div class="space-y-3">
-                    <div>
-                        <label class="block text-xs font-bold text-gray-600 mb-1">ലോഗിൻ രീതി</label>
-                        <select id="loginType" onchange="toggleLoginType()" class="w-full p-2.5 border rounded-lg text-sm bg-gray-50 font-semibold">
-                            <option value="phone">Phone Number (OTP വഴി)</option>
-                            <option value="insta">Instagram Username / ID</option>
-                        </select>
-                    </div>
-
-                    <div>
-                        <label class="block text-xs font-bold text-gray-600 mb-1">നിങ്ങളുടെ പേര് (Name)</label>
-                        <input type="text" id="userNameInput" placeholder="Enter your full name" class="w-full p-2.5 border rounded-lg text-sm" required>
-                    </div>
-
-                    <div>
-                        <label id="inputLabel" class="block text-xs font-bold text-gray-600 mb-1">10-Digit Mobile Number</label>
-                        <input type="text" id="userLoginInput" placeholder="e.g. 9876543210" class="w-full p-2.5 border rounded-lg text-sm" required>
-                    </div>
-
-                    <!-- Invisible Recaptcha -->
+                    <select id="loginType" onchange="toggleLoginType()" class="w-full p-2.5 border rounded-lg text-sm bg-gray-50 font-semibold">
+                        <option value="phone">Phone Number (OTP)</option>
+                        <option value="insta">Instagram Username</option>
+                    </select>
+                    <input type="text" id="userNameInput" placeholder="Your Name" class="w-full p-2.5 border rounded-lg text-sm" required>
+                    <input type="text" id="userLoginInput" placeholder="Mobile Number" class="w-full p-2.5 border rounded-lg text-sm" required>
                     <div id="recaptcha-container"></div>
-
-                    <!-- Send OTP / Continue Button -->
-                    <button id="sendOtpBtn" onclick="handleLoginClick()" class="w-full meesho-bg text-white font-bold py-3 rounded-lg shadow-md hover:bg-purple-800">
-                        Send OTP
-                    </button>
-
-                    <!-- OTP Input Field (Hidden initially) -->
+                    <button id="sendOtpBtn" onclick="handleLoginClick()" class="w-full meesho-bg text-white font-bold py-3 rounded-lg shadow-md">Send OTP / Continue</button>
                     <div id="otpSection" class="hidden space-y-2 pt-2 border-t">
-                        <label class="block text-xs font-bold text-gray-600">SMS വഴി ലഭിച്ച 6 അക്ക OTP അടിക്കുക</label>
-                        <input type="number" id="otpInput" placeholder="123456" class="w-full p-2.5 border rounded-lg text-sm text-center font-bold tracking-widest">
-                        <button onclick="verifyOTP()" class="w-full bg-green-600 text-white font-bold py-2.5 rounded-lg text-sm shadow">
-                            Verify OTP & Login
-                        </button>
+                        <input type="number" id="otpInput" placeholder="Enter 6-digit OTP" class="w-full p-2.5 border rounded-lg text-sm text-center font-bold">
+                        <button onclick="verifyOTP()" class="w-full bg-green-600 text-white font-bold py-2.5 rounded-lg text-sm">Verify OTP</button>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- TAB 5: CART PAGE -->
+        <!-- TAB 4: CART PAGE -->
         <div id="cartTab" class="tab-content hidden p-4 space-y-4">
             <h2 class="font-bold text-lg mb-2">Shopping Cart</h2>
             <div id="cartItemsContainer" class="space-y-3"></div>
-
             <div id="cartSummaryBox" class="bg-white p-4 rounded-xl border space-y-2 hidden">
-                <div class="flex justify-between text-sm"><span class="text-gray-500">Subtotal</span><span id="cartSubtotal" class="font-bold">₹0</span></div>
-                <div class="flex justify-between text-sm"><span class="text-gray-500">Delivery</span><span class="text-green-600 font-bold">FREE</span></div>
-                <div class="flex justify-between text-base font-extrabold border-t pt-2"><span>Total</span><span id="cartTotal" class="text-purple-700">₹0</span></div>
-                
-                <button onclick="openCheckoutModal()" class="w-full meesho-bg text-white font-bold py-3 rounded-lg shadow-md mt-2">
-                    Proceed to Checkout
-                </button>
+                <div class="flex justify-between text-sm"><span>Subtotal</span><span id="cartSubtotal" class="font-bold">₹0</span></div>
+                <button onclick="openCheckoutModal()" class="w-full meesho-bg text-white font-bold py-3 rounded-lg shadow-md mt-2">Proceed to Checkout</button>
             </div>
         </div>
-
     </main>
 
     <!-- PRODUCT DETAIL MODAL -->
@@ -178,11 +109,32 @@
             <img id="modalImg" src="" class="w-full h-64 object-cover rounded-xl bg-gray-50">
             <div>
                 <h3 id="modalName" class="font-bold text-lg text-gray-800">Product Title</h3>
-                <div class="flex items-baseline space-x-2 mt-1">
-                    <span id="modalPrice" class="text-xl font-extrabold text-gray-900">₹0</span>
-                    <span class="text-xs text-green-600 font-bold bg-green-50 px-2 py-0.5 rounded">Free Delivery</span>
+                
+                <!-- Dynamic Price Box -->
+                <div class="bg-purple-50 p-2.5 rounded-xl border border-purple-100 my-2 space-y-1">
+                    <div class="flex justify-between items-center">
+                        <span class="text-xs text-purple-900 font-bold">Pay Online Price:</span>
+                        <span id="modalOnlinePrice" class="text-lg font-black text-purple-700">₹0</span>
+                    </div>
+                    <div class="flex justify-between items-center text-xs text-gray-600">
+                        <span>Cash on Delivery (COD) Price:</span>
+                        <span id="modalCodPrice" class="font-bold text-gray-800">₹0</span>
+                    </div>
+                </div>
+
+                <!-- Delivery & Return Policy Info -->
+                <div class="flex justify-between text-[11px] text-gray-500 my-2 bg-gray-50 p-2 rounded-lg">
+                    <span>🚚 Delivery: <b id="modalDeliveryDays" class="text-gray-800">3-5 Days</b></span>
+                    <span>🔄 Return: <b id="modalReturnDays" class="text-gray-800">7 Days Return</b></span>
                 </div>
             </div>
+
+            <!-- Options (Color / Size / Piece) -->
+            <div id="optionsContainer" class="space-y-1">
+                <label id="optionsLabel" class="block text-xs font-bold text-gray-600">Select Option</label>
+                <div id="optionsButtons" class="flex flex-wrap gap-2"></div>
+            </div>
+
             <div class="flex space-x-2 pt-2">
                 <button onclick="addToCartFromModal()" class="flex-1 border-2 border-purple-700 text-purple-700 font-bold py-3 rounded-lg text-sm">Add To Cart</button>
                 <button onclick="buyNowFromModal()" class="flex-1 meesho-bg text-white font-bold py-3 rounded-lg text-sm shadow">Buy Now</button>
@@ -194,42 +146,52 @@
     <div id="checkoutModal" class="fixed inset-0 bg-black/60 z-50 hidden flex items-end sm:items-center justify-center p-0 sm:p-4">
         <div class="bg-white w-full max-w-md rounded-t-2xl sm:rounded-2xl max-h-[90vh] overflow-y-auto p-4 space-y-4">
             <div class="flex justify-between items-center border-b pb-2">
-                <h3 class="font-bold text-base">Checkout & Payment</h3>
+                <h3 class="font-bold text-base">Checkout & Delivery Details</h3>
                 <button onclick="closeCheckoutModal()" class="text-gray-400 font-bold">✕</button>
             </div>
 
             <form id="checkoutForm" onsubmit="handlePlaceOrder(event)" class="space-y-3">
-                <h4 class="font-bold text-xs uppercase text-gray-500">Delivery Address</h4>
+                <h4 class="font-bold text-xs uppercase text-gray-500">Select Payment Method</h4>
+                <div class="space-y-2">
+                    <label class="flex items-center justify-between p-3 border rounded-lg bg-gray-50 cursor-pointer">
+                        <div class="flex items-center space-x-2">
+                            <input type="radio" name="payment" value="ONLINE" checked onchange="updateCheckoutTotal()" class="text-purple-600">
+                            <span class="text-sm font-bold">Pay Online / UPI</span>
+                        </div>
+                        <span class="text-xs bg-green-100 text-green-800 px-2 py-0.5 rounded font-bold">Best Value</span>
+                    </label>
+                    <label class="flex items-center justify-between p-3 border rounded-lg bg-gray-50 cursor-pointer">
+                        <div class="flex items-center space-x-2">
+                            <input type="radio" name="payment" value="COD" onchange="updateCheckoutTotal()" class="text-purple-600">
+                            <span class="text-sm font-bold">Cash on Delivery (COD)</span>
+                        </div>
+                    </label>
+                </div>
+
+                <h4 class="font-bold text-xs uppercase text-gray-500 pt-2">Shipping Address</h4>
                 <input type="text" id="custName" placeholder="Full Name" class="w-full p-2.5 border rounded-lg text-sm" required>
-                <input type="tel" id="custPhone" placeholder="Phone Number" class="w-full p-2.5 border rounded-lg text-sm" required>
-                <textarea id="custAddress" placeholder="Complete Address" class="w-full p-2.5 border rounded-lg text-sm" rows="2" required></textarea>
+                <input type="tel" id="custPhone" placeholder="10-Digit Mobile Number" class="w-full p-2.5 border rounded-lg text-sm" required>
+                <textarea id="custAddress" placeholder="Full Address (House No, Street, Landmark, Pincode)" class="w-full p-2.5 border rounded-lg text-sm" rows="3" required></textarea>
 
-                <h4 class="font-bold text-xs uppercase text-gray-500 pt-2">Payment Method</h4>
-                <label class="flex items-center space-x-3 p-3 border rounded-lg bg-gray-50 cursor-pointer">
-                    <input type="radio" name="payment" value="COD" checked class="text-purple-600">
-                    <span class="text-sm font-bold">Cash on Delivery (COD)</span>
-                </label>
+                <div class="bg-gray-100 p-3 rounded-lg flex justify-between items-center">
+                    <span class="font-bold text-sm">Final Payable Amount:</span>
+                    <span id="finalPayableAmount" class="font-black text-lg text-purple-800">₹0</span>
+                </div>
 
-                <button type="submit" id="placeOrderBtn" class="w-full meesho-bg text-white font-bold py-3 rounded-lg shadow-md mt-4">
-                    Confirm & Place Order
-                </button>
+                <button type="submit" id="placeOrderBtn" class="w-full meesho-bg text-white font-bold py-3 rounded-lg shadow-md mt-2">Confirm & Place Order</button>
             </form>
         </div>
     </div>
 
-    <!-- BOTTOM NAVIGATION BAR -->
+    <!-- BOTTOM NAVIGATION -->
     <nav class="fixed bottom-0 left-0 right-0 bg-white border-t z-40 max-w-md mx-auto">
         <div class="flex justify-around items-center py-2 text-center text-gray-500">
             <button onclick="switchTab('homeTab')" id="nav-homeTab" class="nav-btn flex flex-col items-center meesho-text">
                 <i class="fa-solid fa-house text-lg"></i>
                 <span class="text-[10px] font-bold mt-0.5">Home</span>
             </button>
-            <button onclick="switchTab('categoriesTab')" id="nav-categoriesTab" class="nav-btn flex flex-col items-center hover:text-purple-700">
-                <i class="fa-solid fa-border-all text-lg"></i>
-                <span class="text-[10px] font-bold mt-0.5">Categories</span>
-            </button>
             <button onclick="switchTab('ordersTab')" id="nav-ordersTab" class="nav-btn flex flex-col items-center hover:text-purple-700">
-                <i class="fa-solid fa-box-archive text-lg"></i>
+                <i class="fa-solid fa-truck-fast text-lg"></i>
                 <span class="text-[10px] font-bold mt-0.5">My Orders</span>
             </button>
             <button onclick="switchTab('accountTab')" id="nav-accountTab" class="nav-btn flex flex-col items-center hover:text-purple-700">
@@ -239,20 +201,19 @@
         </div>
     </nav>
 
-    <!-- FIREBASE SDK & JS -->
+    <!-- FIREBASE SDK -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, collection, getDocs, addDoc, query, where } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, collection, getDocs, addDoc, query, where, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
         import { getAuth, RecaptchaVerifier, signInWithPhoneNumber } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
-        // നിങ്ങളുടേതായ ശരിയായ Firebase Config
         const firebaseConfig = {
             apiKey: "AIzaSyAYIQOX3FYTx1eN5Z-xD6dj8elfOilbbuU",
             authDomain: "pick-mart.firebaseapp.com",
             projectId: "pick-mart",
             storageBucket: "pick-mart.firebasestorage.app",
             messagingSenderId: "438637337844",
-            appId: "1:438637337844:web:80734d96769e06fa6d12a1"
+            appId: "1:438637337844:web:80734d96769e66faed12a1"
         };
 
         const app = initializeApp(firebaseConfig);
@@ -262,19 +223,28 @@
         let allProducts = [];
         let cart = {};
         let selectedProductForModal = null;
+        let selectedOptionValue = "";
         let currentUser = null;
         let confirmationResultGlobal = null;
 
-        window.addEventListener('DOMContentLoaded', () => {
+        window.addEventListener('DOMContentLoaded', async () => {
             checkAuthStatus();
-            loadProducts();
+            await loadProducts();
             setupRecaptcha();
+            checkDeepLink();
         });
 
+        // 🔗 Check Deep Link from Instagram DM (?id=PRODUCT_ID)
+        async function checkDeepLink() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const productId = urlParams.get('id');
+            if (productId) {
+                openProductModal(productId);
+            }
+        }
+
         function setupRecaptcha() {
-            window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
-                'size': 'invisible'
-            });
+            window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', { 'size': 'invisible' });
         }
 
         window.checkAuthStatus = function() {
@@ -285,7 +255,6 @@
                 document.getElementById('profileBox').classList.remove('hidden');
                 document.getElementById('userDisplayName').innerText = currentUser.name;
                 document.getElementById('userContactType').innerText = currentUser.id;
-                
                 document.getElementById('custName').value = currentUser.name;
                 document.getElementById('custPhone').value = currentUser.id.replace('+91', '');
             } else {
@@ -295,186 +264,115 @@
             }
         };
 
-        window.toggleLoginType = function() {
-            const type = document.getElementById('loginType').value;
-            const label = document.getElementById('inputLabel');
-            const input = document.getElementById('userLoginInput');
-            const btn = document.getElementById('sendOtpBtn');
-
-            if (type === 'phone') {
-                label.innerText = '10-Digit Mobile Number';
-                input.placeholder = 'e.g. 9876543210';
-                btn.innerText = 'Send OTP';
-            } else {
-                label.innerText = 'Instagram ID';
-                input.placeholder = 'e.g. @your_insta_id';
-                btn.innerText = 'Continue';
-                document.getElementById('otpSection').classList.add('hidden');
-            }
-        };
-
         window.handleLoginClick = async function() {
             const type = document.getElementById('loginType').value;
             const name = document.getElementById('userNameInput').value.trim();
             const inputVal = document.getElementById('userLoginInput').value.trim();
 
-            if (!name || !inputVal) {
-                alert('ദയവായി പേരും വിവരങ്ങളും നൽകുക!');
-                return;
-            }
+            if (!name || !inputVal) return alert('എല്ലാ വിവരങ്ങളും നൽകുക!');
 
             if (type === 'insta') {
                 currentUser = { type: 'insta', id: inputVal, name: name };
                 localStorage.setItem('pickmart_user', JSON.stringify(currentUser));
                 checkAuthStatus();
-                alert('ലോഗിൻ വിജയിച്ചു!');
                 switchTab('homeTab');
             } else {
-                // Send Phone OTP
-                if(inputVal.length < 10) {
-                    alert('ശരിയായ 10 അക്ക ഫോൺ നമ്പർ അടിക്കുക!');
-                    return;
-                }
-
-                const btn = document.getElementById('sendOtpBtn');
-                btn.disabled = true;
-                btn.innerText = 'OTP അയക്കുന്നു...';
-
+                const phoneNumber = "+91" + inputVal;
                 try {
-                    const phoneNumber = "+91" + inputVal;
-                    const appVerifier = window.recaptchaVerifier;
-                    confirmationResultGlobal = await signInWithPhoneNumber(auth, phoneNumber, appVerifier);
-                    
-                    alert('OTP ഫോണിലേക്ക് അയച്ചിട്ടുണ്ട്!');
+                    confirmationResultGlobal = await signInWithPhoneNumber(auth, phoneNumber, window.recaptchaVerifier);
+                    alert('OTP അയച്ചിട്ടുണ്ട്!');
                     document.getElementById('otpSection').classList.remove('hidden');
-                } catch (error) {
-                    alert('OTP അയക്കാൻ സാധിച്ചില്ല: ' + error.message);
-                } finally {
-                    btn.disabled = false;
-                    btn.innerText = 'Send OTP';
-                }
+                } catch (e) { alert('OTP എറർ: ' + e.message); }
             }
         };
 
         window.verifyOTP = async function() {
-            const otpCode = document.getElementById('otpInput').value.trim();
-            const name = document.getElementById('userNameInput').value.trim();
-
-            if (!otpCode || otpCode.length !== 6) {
-                alert('6 അക്ക OTP ടൈപ്പ് ചെയ്യുക!');
-                return;
-            }
-
+            const code = document.getElementById('otpInput').value;
             try {
-                const result = await confirmationResultGlobal.confirm(otpCode);
-                const user = result.user;
-
-                currentUser = { type: 'phone', id: user.phoneNumber, name: name };
+                const res = await confirmationResultGlobal.confirm(code);
+                currentUser = { type: 'phone', id: res.user.phoneNumber, name: document.getElementById('userNameInput').value };
                 localStorage.setItem('pickmart_user', JSON.stringify(currentUser));
-                
                 checkAuthStatus();
-                alert('OTP വെരിഫിക്കേഷൻ വിജയിച്ചു!');
                 switchTab('homeTab');
-            } catch (error) {
-                alert('തെറ്റായ OTP കോഡ്!');
-            }
+            } catch (e) { alert('തെറ്റായ OTP!'); }
         };
 
         window.logoutUser = function() {
             localStorage.removeItem('pickmart_user');
             checkAuthStatus();
-            alert('ലോഗ് ഔട്ട് ആയി!');
         };
 
         window.switchTab = function(tabId) {
-            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.add('hidden'));
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.add('hidden'));
             document.getElementById(tabId).classList.remove('hidden');
-
-            document.querySelectorAll('.nav-btn').forEach(btn => {
-                btn.classList.remove('meesho-text');
-                btn.classList.add('text-gray-500');
-            });
-            const activeNav = document.getElementById('nav-' + tabId);
-            if(activeNav) {
-                activeNav.classList.add('meesho-text');
-                activeNav.classList.remove('text-gray-500');
-            }
-
             if(tabId === 'ordersTab') loadMyOrders();
         };
 
         async function loadProducts() {
-            const grid = document.getElementById('productGrid');
             try {
                 const querySnapshot = await getDocs(collection(db, "products"));
                 allProducts = [];
-                querySnapshot.forEach((doc) => {
-                    allProducts.push({ id: doc.id, ...doc.data() });
-                });
+                querySnapshot.forEach(doc => allProducts.push({ id: doc.id, ...doc.data() }));
                 renderProducts(allProducts);
-            } catch (err) {
-                grid.innerHTML = '<p class="col-span-2 text-center text-red-500 py-8">പ്രൊഡക്റ്റുകൾ കാണാൻ സാധിച്ചില്ല.</p>';
-            }
+            } catch (err) { console.error(err); }
         }
 
-        window.renderProducts = function(products) {
+        function renderProducts(products) {
             const grid = document.getElementById('productGrid');
-            if (products.length === 0) {
-                grid.innerHTML = '<p class="col-span-2 text-center text-gray-500 py-8">ഉൽപ്പന്നങ്ങൾ ഒന്നും ലഭ്യമല്ല.</p>';
-                return;
-            }
-
+            if(products.length === 0) return grid.innerHTML = '<p class="col-span-2 text-center py-6 text-gray-400">പ്രൊഡക്റ്റുകൾ ഒന്നുമില്ല.</p>';
             grid.innerHTML = '';
-            products.forEach((p) => {
+            products.forEach(p => {
                 grid.innerHTML += `
-                    <div onclick="openProductModal('${p.id}')" class="bg-white rounded-xl overflow-hidden border shadow-sm flex flex-col justify-between cursor-pointer">
-                        <img src="${p.image || 'https://via.placeholder.com/150'}" class="w-full h-40 object-cover bg-gray-50">
-                        <div class="p-2.5 space-y-1">
+                    <div onclick="openProductModal('${p.id}')" class="bg-white rounded-xl border p-2 flex flex-col justify-between cursor-pointer shadow-sm">
+                        <img src="${p.image}" class="w-full h-36 object-cover rounded-lg">
+                        <div class="mt-2 space-y-1">
                             <h4 class="font-bold text-xs text-gray-800 line-clamp-1">${p.name}</h4>
                             <div class="flex items-baseline space-x-1">
-                                <span class="font-black text-sm text-gray-900">₹${p.price}</span>
-                                <span class="text-[10px] text-gray-400 line-through">₹${Math.round(p.price * 1.3)}</span>
-                            </div>
-                            <div class="flex items-center justify-between text-[10px] pt-1">
-                                <span class="bg-green-100 text-green-800 font-bold px-1.5 py-0.5 rounded">Free Delivery</span>
-                                <span class="bg-green-700 text-white font-bold px-1.5 py-0.5 rounded-full">4.1 ★</span>
+                                <span class="font-black text-sm text-purple-700">₹${p.price}</span>
+                                <span class="text-[10px] text-gray-400 line-through">₹${p.codPrice || Math.round(p.price*1.2)}</span>
                             </div>
                         </div>
                     </div>
                 `;
             });
-        };
-
-        window.filterCategory = function(cat) {
-            if(cat === 'All') renderProducts(allProducts);
-            else renderProducts(allProducts.filter(p => p.name.toLowerCase().includes(cat.toLowerCase())));
-        };
-
-        window.filterProducts = function() {
-            const query = document.getElementById('searchInput').value.toLowerCase();
-            renderProducts(allProducts.filter(p => p.name.toLowerCase().includes(query)));
-        };
+        }
 
         window.openProductModal = function(id) {
             const p = allProducts.find(item => item.id === id);
             if(!p) return;
             selectedProductForModal = p;
-            document.getElementById('modalImg').src = p.image || 'https://via.placeholder.com/150';
+            document.getElementById('modalImg').src = p.image;
             document.getElementById('modalName').innerText = p.name;
-            document.getElementById('modalPrice').innerText = '₹' + p.price;
+            document.getElementById('modalOnlinePrice').innerText = '₹' + p.price;
+            document.getElementById('modalCodPrice').innerText = '₹' + (p.codPrice || p.price);
+            document.getElementById('modalDeliveryDays').innerText = p.deliveryDays || '3-5 Days';
+            document.getElementById('modalReturnDays').innerText = (p.returnDays || '7') + ' Days Return';
+
+            const optsDiv = document.getElementById('optionsButtons');
+            optsDiv.innerHTML = '';
+            const opts = p.options ? p.options.split(',') : ['Standard'];
+            selectedOptionValue = opts[0].trim();
+
+            opts.forEach((opt, idx) => {
+                optsDiv.innerHTML += `
+                    <button onclick="selectOption('${opt.trim()}', this)" class="opt-btn border px-3 py-1 rounded-lg text-xs font-bold ${idx === 0 ? 'bg-purple-700 text-white' : 'bg-gray-50'}">${opt.trim()}</button>
+                `;
+            });
+
             document.getElementById('productModal').classList.remove('hidden');
         };
 
-        window.closeProductModal = function() {
-            document.getElementById('productModal').classList.add('hidden');
+        window.selectOption = function(val, btn) {
+            selectedOptionValue = val;
+            document.querySelectorAll('.opt-btn').forEach(b => b.className = 'opt-btn border px-3 py-1 rounded-lg text-xs font-bold bg-gray-50');
+            btn.className = 'opt-btn border px-3 py-1 rounded-lg text-xs font-bold bg-purple-700 text-white';
         };
 
+        window.closeProductModal = function() { document.getElementById('productModal').classList.add('hidden'); };
+
         window.addToCartFromModal = function() {
-            if(!selectedProductForModal) return;
             const p = selectedProductForModal;
-            if(cart[p.id]) cart[p.id].qty += 1;
-            else cart[p.id] = { name: p.name, price: p.price, qty: 1, image: p.image };
-            
+            cart[p.id] = { name: p.name, price: p.price, codPrice: p.codPrice || p.price, qty: 1, option: selectedOptionValue, image: p.image };
             updateCartUI();
             closeProductModal();
             alert('കാർട്ടിലേക്ക് ആഡ് ആയി!');
@@ -487,131 +385,109 @@
 
         function updateCartUI() {
             const items = Object.values(cart);
-            const totalQty = items.reduce((sum, item) => sum + item.qty, 0);
-            const totalPrice = items.reduce((sum, item) => sum + (item.price * item.qty), 0);
+            document.getElementById('cartBadge').innerText = items.length;
+            document.getElementById('cartBadge').classList.toggle('hidden', items.length === 0);
 
-            const badge = document.getElementById('cartBadge');
-            if(totalQty > 0) {
-                badge.innerText = totalQty;
-                badge.classList.remove('hidden');
-            } else {
-                badge.classList.add('hidden');
-            }
-
-            const cartContainer = document.getElementById('cartItemsContainer');
-            const summaryBox = document.getElementById('cartSummaryBox');
-
+            const container = document.getElementById('cartItemsContainer');
             if(items.length === 0) {
-                cartContainer.innerHTML = '<p class="text-center text-gray-400 py-8 text-sm">കാർട്ടിൽ പ്രൊഡക്റ്റുകൾ ഒന്നുമില്ല.</p>';
-                summaryBox.classList.add('hidden');
+                container.innerHTML = '<p class="text-center py-8 text-gray-400">കാർട്ടിൽ പ്രൊഡക്റ്റുകൾ ഒന്നുമില്ല.</p>';
+                document.getElementById('cartSummaryBox').classList.add('hidden');
                 return;
             }
 
-            summaryBox.classList.remove('hidden');
-            document.getElementById('cartSubtotal').innerText = '₹' + totalPrice;
-            document.getElementById('cartTotal').innerText = '₹' + totalPrice;
-
-            cartContainer.innerHTML = '';
-            for(const [id, item] of Object.entries(cart)) {
-                cartContainer.innerHTML += `
-                    <div class="bg-white p-3 rounded-xl border flex items-center justify-between">
-                        <div class="flex items-center space-x-3">
-                            <img src="${item.image}" class="w-12 h-12 rounded object-cover">
+            document.getElementById('cartSummaryBox').classList.remove('hidden');
+            container.innerHTML = '';
+            items.forEach(i => {
+                container.innerHTML += `
+                    <div class="bg-white p-3 rounded-xl border flex justify-between items-center">
+                        <div class="flex space-x-3 items-center">
+                            <img src="${i.image}" class="w-12 h-12 rounded object-cover">
                             <div>
-                                <h4 class="font-bold text-xs text-gray-800">${item.name}</h4>
-                                <p class="text-xs text-purple-700 font-bold">₹${item.price} x ${item.qty}</p>
+                                <h4 class="font-bold text-xs">${i.name}</h4>
+                                <p class="text-[10px] text-gray-500">Option: ${i.option}</p>
+                                <p class="text-xs text-purple-700 font-bold">₹${i.price}</p>
                             </div>
                         </div>
                     </div>
                 `;
-            }
+            });
+            updateCheckoutTotal();
         }
 
-        window.openCheckoutModal = function() {
-            if(!currentUser) {
-                alert('ഓർഡർ ചെയ്യുന്നതിന് മുൻപ് ലോഗിൻ ചെയ്യുക!');
-                switchTab('accountTab');
-                return;
-            }
-            document.getElementById('checkoutModal').classList.remove('hidden');
+        window.updateCheckoutTotal = function() {
+            const items = Object.values(cart);
+            const isCod = document.querySelector('input[name="payment"]:checked')?.value === 'COD';
+            const total = items.reduce((sum, item) => sum + (isCod ? item.codPrice : item.price), 0);
+            document.getElementById('cartSubtotal').innerText = '₹' + total;
+            document.getElementById('finalPayableAmount').innerText = '₹' + total;
         };
 
-        window.closeCheckoutModal = function() {
-            document.getElementById('checkoutModal').classList.add('hidden');
+        window.openCheckoutModal = function() {
+            if(!currentUser) { alert('ലോഗിൻ ചെയ്യുക!'); return switchTab('accountTab'); }
+            document.getElementById('checkoutModal').classList.remove('hidden');
+            updateCheckoutTotal();
         };
+
+        window.closeCheckoutModal = function() { document.getElementById('checkoutModal').classList.add('hidden'); };
 
         window.handlePlaceOrder = async function(e) {
             e.preventDefault();
-            const btn = document.getElementById('placeOrderBtn');
             const items = Object.values(cart);
-
-            if(items.length === 0) return;
-
-            btn.disabled = true;
-            btn.innerText = 'Processing Order...';
-
-            const summary = items.map(i => `${i.name} (x${i.qty})`).join(', ');
-            const total = items.reduce((sum, item) => sum + (item.price * item.qty), 0);
+            const isCod = document.querySelector('input[name="payment"]:checked').value === 'COD';
+            const total = items.reduce((sum, item) => sum + (isCod ? item.codPrice : item.price), 0);
 
             try {
                 await addDoc(collection(db, "orders"), {
-                    productName: summary,
+                    productName: items.map(i => `${i.name} (${i.option})`).join(', '),
                     price: total,
-                    paymentMethod: "COD",
+                    paymentMethod: isCod ? 'COD' : 'ONLINE',
                     name: document.getElementById('custName').value,
                     phone: document.getElementById('custPhone').value,
                     address: document.getElementById('custAddress').value,
-                    userIdentifier: currentUser ? currentUser.id : 'Guest',
+                    userIdentifier: currentUser.id,
+                    status: 'Order Placed',
+                    currentLocation: 'Order Confirmed - Processing',
                     timestamp: new Date()
                 });
 
-                alert('ഓർഡർ സമർപ്പിച്ചു!');
+                alert('ഓർഡർ വിജയിച്ചു!');
                 cart = {};
                 updateCartUI();
                 closeCheckoutModal();
                 switchTab('ordersTab');
-            } catch(err) {
-                alert('Error placing order: ' + err.message);
-            } finally {
-                btn.disabled = false;
-                btn.innerText = 'Confirm & Place Order';
-            }
+            } catch(e) { alert('Order Error: ' + e.message); }
         };
 
+        // 🚚 Live Tracking in My Orders
         async function loadMyOrders() {
             const container = document.getElementById('myOrdersList');
-            if(!currentUser) {
-                container.innerHTML = '<p class="text-center text-gray-500 py-6 text-sm">ഓർഡറുകൾ കാണാൻ ലോഗിൻ ചെയ്യുക.</p>';
-                return;
-            }
+            if(!currentUser) return container.innerHTML = '<p class="text-center py-6 text-gray-500 text-sm">ലോഗിൻ ചെയ്യുക.</p>';
 
             try {
                 const q = query(collection(db, "orders"), where("userIdentifier", "==", currentUser.id));
-                const querySnapshot = await getDocs(q);
-                if(querySnapshot.empty) {
-                    container.innerHTML = '<p class="text-center text-gray-500 py-6 text-sm">ഓർഡറുകൾ ഒന്നുമില്ല.</p>';
-                    return;
-                }
+                const snap = await getDocs(q);
+                if(snap.empty) return container.innerHTML = '<p class="text-center py-6 text-gray-500 text-sm">ഓർഡറുകൾ ഒന്നുമില്ല.</p>';
 
                 container.innerHTML = '';
-                querySnapshot.forEach(doc => {
+                snap.forEach(doc => {
                     const o = doc.data();
                     container.innerHTML += `
-                        <div class="bg-white p-3.5 rounded-xl border shadow-sm space-y-1">
+                        <div class="bg-white p-4 rounded-xl border shadow-sm space-y-2">
                             <div class="flex justify-between items-start border-b pb-2">
                                 <div>
                                     <h4 class="font-bold text-xs text-purple-900">${o.productName}</h4>
-                                    <p class="text-xs text-green-700 font-extrabold mt-0.5">Total: ₹${o.price}</p>
+                                    <p class="text-xs text-green-700 font-extrabold">Amount: ₹${o.price} (${o.paymentMethod})</p>
                                 </div>
-                                <span class="bg-purple-100 text-purple-800 text-[10px] font-bold px-2 py-0.5 rounded-full">Order Placed</span>
+                                <span class="bg-purple-100 text-purple-800 text-[10px] font-bold px-2 py-0.5 rounded-full">${o.status}</span>
                             </div>
-                            <p class="text-[11px] text-gray-500 pt-1"><b>Address:</b> ${o.address}</p>
+                            <div class="bg-gray-50 p-2 rounded text-xs space-y-1">
+                                <p class="text-gray-600"><b>📍 Live Tracking Location:</b> <span class="text-purple-700 font-bold">${o.currentLocation || 'In Transit'}</span></p>
+                                <p class="text-gray-500"><b>Address:</b> ${o.address}</p>
+                            </div>
                         </div>
                     `;
                 });
-            } catch(err) {
-                container.innerHTML = '<p class="text-center text-red-500 py-6 text-sm">ഓർഡറുകൾ കാണാൻ സാധിച്ചില്ല.</p>';
-            }
+            } catch(e) { container.innerHTML = '<p class="text-center text-red-500 py-4">എറർ ഉണ്ടായി.</p>'; }
         }
     </script>
 </body>
