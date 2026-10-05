@@ -9,25 +9,24 @@
     <style>
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-        .meesho-bg { background-color: #9c27b0; }
-        .meesho-text { color: #9c27b0; }
+        .meesho-bg { background-color: #2563eb; } /* Meesho/Flipkart Blue Theme */
     </style>
 </head>
 <body class="bg-gray-100 pb-20 font-sans text-gray-800">
 
     <!-- Top Navigation Header -->
-    <header class="sticky top-0 z-40 bg-white shadow-sm">
+    <header class="sticky top-0 z-40 bg-white shadow-sm border-b">
         <div class="max-w-md mx-auto px-4 py-3">
             <div class="flex items-center justify-between mb-2">
-                <span class="meesho-bg text-white font-extrabold px-3 py-1 rounded-lg text-lg tracking-wider">Pick Mart</span>
-                <button onclick="switchTab('cartTab')" class="relative hover:text-purple-700">
+                <span class="bg-blue-600 text-white font-extrabold px-3 py-1 rounded-lg text-lg tracking-wider">Pick Mart</span>
+                <button onclick="switchTab('cartTab')" class="relative text-gray-700 hover:text-blue-600">
                     <i class="fa-solid fa-cart-shopping text-xl"></i>
-                    <span id="cartBadge" class="absolute -top-2 -right-2 bg-pink-600 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full hidden">0</span>
+                    <span id="cartBadge" class="absolute -top-2 -right-2 bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full hidden">0</span>
                 </button>
             </div>
             <div class="relative mt-2">
                 <i class="fa-solid fa-magnifying-glass absolute left-3 top-3 text-gray-400"></i>
-                <input type="text" id="searchInput" oninput="filterProducts()" placeholder="Search Products..." class="w-full pl-9 pr-4 py-2 bg-gray-50 rounded-lg text-sm border focus:ring-2 focus:ring-purple-600 focus:bg-white transition outline-none">
+                <input type="text" id="searchInput" oninput="filterProducts()" placeholder="Search Products..." class="w-full pl-9 pr-4 py-2 bg-gray-50 rounded-lg text-sm border focus:ring-2 focus:ring-blue-600 focus:bg-white transition outline-none">
             </div>
         </div>
     </header>
@@ -35,10 +34,10 @@
     <main class="max-w-md mx-auto min-h-screen">
         <!-- TAB 1: HOME PAGE -->
         <div id="homeTab" class="tab-content px-3 py-3 space-y-4">
-            <div class="rounded-xl overflow-hidden shadow-sm bg-gradient-to-r from-purple-800 to-pink-600 text-white p-4">
-                <span class="bg-yellow-400 text-purple-950 font-black text-[10px] uppercase px-2 py-0.5 rounded">Exclusive Offer</span>
-                <h2 class="text-xl font-bold mt-1">Trendy Direct Collection 🔥</h2>
-                <p class="text-xs text-purple-100 mt-1">Free Delivery | Cash on Delivery Available</p>
+            <div class="rounded-xl overflow-hidden shadow-sm bg-gradient-to-r from-blue-700 to-indigo-600 text-white p-4">
+                <span class="bg-yellow-400 text-blue-950 font-black text-[10px] uppercase px-2 py-0.5 rounded">Special Offer</span>
+                <h2 class="text-xl font-bold mt-1">Direct Collection 🔥</h2>
+                <p class="text-xs text-blue-100 mt-1">Free Delivery | Cash on Delivery Available</p>
             </div>
 
             <div>
@@ -61,7 +60,7 @@
         <div id="accountTab" class="tab-content hidden p-4 space-y-4">
             <div id="profileBox" class="hidden bg-white p-4 rounded-xl border shadow-sm space-y-3">
                 <div class="flex items-center space-x-3">
-                    <div class="w-12 h-12 rounded-full bg-purple-100 text-purple-700 flex items-center justify-center font-bold text-xl">
+                    <div class="w-12 h-12 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center font-bold text-xl">
                         <i class="fa-solid fa-user"></i>
                     </div>
                     <div>
@@ -75,14 +74,14 @@
             <div id="loginFormBox" class="bg-white p-5 rounded-xl border shadow-sm space-y-4">
                 <h3 class="font-extrabold text-lg text-gray-800 text-center">Sign In to Order</h3>
                 <div class="space-y-3">
-                    <select id="loginType" onchange="toggleLoginType()" class="w-full p-2.5 border rounded-lg text-sm bg-gray-50 font-semibold">
+                    <select id="loginType" class="w-full p-2.5 border rounded-lg text-sm bg-gray-50 font-semibold">
                         <option value="phone">Phone Number (OTP)</option>
                         <option value="insta">Instagram Username</option>
                     </select>
                     <input type="text" id="userNameInput" placeholder="Your Name" class="w-full p-2.5 border rounded-lg text-sm" required>
                     <input type="text" id="userLoginInput" placeholder="Mobile Number" class="w-full p-2.5 border rounded-lg text-sm" required>
                     <div id="recaptcha-container"></div>
-                    <button id="sendOtpBtn" onclick="handleLoginClick()" class="w-full meesho-bg text-white font-bold py-3 rounded-lg shadow-md">Send OTP / Continue</button>
+                    <button id="sendOtpBtn" onclick="handleLoginClick()" class="w-full bg-blue-600 text-white font-bold py-3 rounded-lg shadow-md">Send OTP / Continue</button>
                     <div id="otpSection" class="hidden space-y-2 pt-2 border-t">
                         <input type="number" id="otpInput" placeholder="Enter 6-digit OTP" class="w-full p-2.5 border rounded-lg text-sm text-center font-bold">
                         <button onclick="verifyOTP()" class="w-full bg-green-600 text-white font-bold py-2.5 rounded-lg text-sm">Verify OTP</button>
@@ -97,7 +96,7 @@
             <div id="cartItemsContainer" class="space-y-3"></div>
             <div id="cartSummaryBox" class="bg-white p-4 rounded-xl border space-y-2 hidden">
                 <div class="flex justify-between text-sm"><span>Subtotal</span><span id="cartSubtotal" class="font-bold">₹0</span></div>
-                <button onclick="openCheckoutModal()" class="w-full meesho-bg text-white font-bold py-3 rounded-lg shadow-md mt-2">Proceed to Checkout</button>
+                <button onclick="openCheckoutModal()" class="w-full bg-blue-600 text-white font-bold py-3 rounded-lg shadow-md mt-2">Proceed to Checkout</button>
             </div>
         </div>
     </main>
@@ -110,11 +109,10 @@
             <div>
                 <h3 id="modalName" class="font-bold text-lg text-gray-800">Product Title</h3>
                 
-                <!-- Dynamic Price Box -->
-                <div class="bg-purple-50 p-2.5 rounded-xl border border-purple-100 my-2 space-y-1">
+                <div class="bg-blue-50 p-2.5 rounded-xl border border-blue-100 my-2 space-y-1">
                     <div class="flex justify-between items-center">
-                        <span class="text-xs text-purple-900 font-bold">Pay Online Price:</span>
-                        <span id="modalOnlinePrice" class="text-lg font-black text-purple-700">₹0</span>
+                        <span class="text-xs text-blue-900 font-bold">Pay Online Price:</span>
+                        <span id="modalOnlinePrice" class="text-lg font-black text-blue-700">₹0</span>
                     </div>
                     <div class="flex justify-between items-center text-xs text-gray-600">
                         <span>Cash on Delivery (COD) Price:</span>
@@ -122,63 +120,116 @@
                     </div>
                 </div>
 
-                <!-- Delivery & Return Policy Info -->
                 <div class="flex justify-between text-[11px] text-gray-500 my-2 bg-gray-50 p-2 rounded-lg">
                     <span>🚚 Delivery: <b id="modalDeliveryDays" class="text-gray-800">3-5 Days</b></span>
                     <span>🔄 Return: <b id="modalReturnDays" class="text-gray-800">7 Days Return</b></span>
                 </div>
             </div>
 
-            <!-- Options (Color / Size / Piece) -->
             <div id="optionsContainer" class="space-y-1">
-                <label id="optionsLabel" class="block text-xs font-bold text-gray-600">Select Option</label>
+                <label class="block text-xs font-bold text-gray-600">Select Option</label>
                 <div id="optionsButtons" class="flex flex-wrap gap-2"></div>
             </div>
 
             <div class="flex space-x-2 pt-2">
-                <button onclick="addToCartFromModal()" class="flex-1 border-2 border-purple-700 text-purple-700 font-bold py-3 rounded-lg text-sm">Add To Cart</button>
-                <button onclick="buyNowFromModal()" class="flex-1 meesho-bg text-white font-bold py-3 rounded-lg text-sm shadow">Buy Now</button>
+                <button onclick="addToCartFromModal()" class="flex-1 border-2 border-blue-600 text-blue-600 font-bold py-3 rounded-lg text-sm">Add To Cart</button>
+                <button onclick="buyNowFromModal()" class="flex-1 bg-blue-600 text-white font-bold py-3 rounded-lg text-sm shadow">Buy Now</button>
             </div>
         </div>
     </div>
 
-    <!-- CHECKOUT MODAL -->
+    <!-- 📍 DELIVER TO / ADDRESS MODAL (EXACT UI FROM SCREENSHOT) -->
     <div id="checkoutModal" class="fixed inset-0 bg-black/60 z-50 hidden flex items-end sm:items-center justify-center p-0 sm:p-4">
-        <div class="bg-white w-full max-w-md rounded-t-2xl sm:rounded-2xl max-h-[90vh] overflow-y-auto p-4 space-y-4">
+        <div class="bg-white w-full max-w-md rounded-t-2xl sm:rounded-2xl max-h-[92vh] overflow-y-auto p-4 space-y-4">
+            
+            <!-- Header -->
             <div class="flex justify-between items-center border-b pb-2">
-                <h3 class="font-bold text-base">Checkout & Delivery Details</h3>
-                <button onclick="closeCheckoutModal()" class="text-gray-400 font-bold">✕</button>
+                <h3 class="font-bold text-lg text-gray-800">Deliver To</h3>
+                <button onclick="closeCheckoutModal()" class="text-gray-400 font-bold text-xl">✕</button>
+            </div>
+
+            <!-- Warning Notice Banner -->
+            <div class="bg-orange-50 border border-orange-200 rounded-lg p-2.5 flex items-start space-x-2">
+                <i class="fa-solid fa-circle-info text-amber-600 mt-0.5 text-xs"></i>
+                <p class="text-[11px] text-amber-800 leading-snug">Ensure your address details are accurate for a smooth delivery experience</p>
             </div>
 
             <form id="checkoutForm" onsubmit="handlePlaceOrder(event)" class="space-y-3">
-                <h4 class="font-bold text-xs uppercase text-gray-500">Select Payment Method</h4>
-                <div class="space-y-2">
-                    <label class="flex items-center justify-between p-3 border rounded-lg bg-gray-50 cursor-pointer">
-                        <div class="flex items-center space-x-2">
-                            <input type="radio" name="payment" value="ONLINE" checked onchange="updateCheckoutTotal()" class="text-purple-600">
-                            <span class="text-sm font-bold">Pay Online / UPI</span>
-                        </div>
-                        <span class="text-xs bg-green-100 text-green-800 px-2 py-0.5 rounded font-bold">Best Value</span>
-                    </label>
-                    <label class="flex items-center justify-between p-3 border rounded-lg bg-gray-50 cursor-pointer">
-                        <div class="flex items-center space-x-2">
-                            <input type="radio" name="payment" value="COD" onchange="updateCheckoutTotal()" class="text-purple-600">
-                            <span class="text-sm font-bold">Cash on Delivery (COD)</span>
-                        </div>
-                    </label>
+                
+                <!-- Field 1: Flat/House/Building Name -->
+                <div class="relative">
+                    <label class="text-[11px] font-bold text-gray-500">Flat / House / Building name *</label>
+                    <input type="text" id="addrHouse" placeholder="e.g. Muthuthala panjayath near house" class="w-full p-2.5 border rounded-xl text-sm bg-gray-50 focus:bg-white focus:border-blue-600 outline-none" required>
                 </div>
 
-                <h4 class="font-bold text-xs uppercase text-gray-500 pt-2">Shipping Address</h4>
-                <input type="text" id="custName" placeholder="Full Name" class="w-full p-2.5 border rounded-lg text-sm" required>
-                <input type="tel" id="custPhone" placeholder="10-Digit Mobile Number" class="w-full p-2.5 border rounded-lg text-sm" required>
-                <textarea id="custAddress" placeholder="Full Address (House No, Street, Landmark, Pincode)" class="w-full p-2.5 border rounded-lg text-sm" rows="3" required></textarea>
-
-                <div class="bg-gray-100 p-3 rounded-lg flex justify-between items-center">
-                    <span class="font-bold text-sm">Final Payable Amount:</span>
-                    <span id="finalPayableAmount" class="font-black text-lg text-purple-800">₹0</span>
+                <!-- Field 2: Area / Sector / Locality (WITH GPS GPS BUTTON) -->
+                <div class="bg-gray-50 p-3 rounded-xl border relative space-y-2">
+                    <div class="flex justify-between items-center">
+                        <label class="text-[11px] font-bold text-gray-500">Area / Sector / Locality *</label>
+                        <button type="button" onclick="getCurrentGpsLocation()" class="border border-blue-600 text-blue-600 bg-white hover:bg-blue-50 px-3 py-1 rounded-lg text-xs font-bold flex items-center space-x-1 shadow-sm">
+                            <i class="fa-solid fa-location-crosshairs text-blue-600"></i>
+                            <span id="gpsBtnText">Use GPS Location</span>
+                        </button>
+                    </div>
+                    <textarea id="addrLocality" placeholder="Locality, Landmark, City, State, Pincode" class="w-full p-2 border rounded-lg text-xs bg-white text-gray-800 font-medium" rows="2" required></textarea>
+                    <input type="hidden" id="addrGpsLink" value="">
                 </div>
 
-                <button type="submit" id="placeOrderBtn" class="w-full meesho-bg text-white font-bold py-3 rounded-lg shadow-md mt-2">Confirm & Place Order</button>
+                <!-- Field 3: Full Name -->
+                <div>
+                    <label class="text-[11px] font-bold text-gray-500">Enter your full name *</label>
+                    <input type="text" id="custName" placeholder="Full Name" class="w-full p-2.5 border rounded-xl text-sm bg-gray-50 focus:bg-white focus:border-blue-600 outline-none" required>
+                </div>
+
+                <!-- Field 4: 10-Digit Mobile Number -->
+                <div>
+                    <label class="text-[11px] font-bold text-gray-500">10-digit mobile number *</label>
+                    <input type="tel" id="custPhone" placeholder="Mobile Number" class="w-full p-2.5 border rounded-xl text-sm bg-gray-50 focus:bg-white focus:border-blue-600 outline-none" required>
+                </div>
+
+                <!-- Field 5: Alternate Phone -->
+                <div>
+                    <label class="text-[11px] font-bold text-gray-500">Alternate phone number (Optional)</label>
+                    <input type="tel" id="custAltPhone" placeholder="Optional" class="w-full p-2.5 border rounded-xl text-sm bg-gray-50 focus:bg-white focus:border-blue-600 outline-none">
+                </div>
+
+                <!-- Field 6: Address Type -->
+                <div>
+                    <label class="text-[11px] font-bold text-gray-500 block mb-1">Type of address</label>
+                    <div class="flex space-x-3">
+                        <button type="button" onclick="setAddressType('Home')" id="btnTypeHome" class="type-btn border-2 border-blue-600 bg-blue-50 text-blue-700 px-4 py-1.5 rounded-lg text-xs font-bold flex items-center space-x-1">
+                            <i class="fa-solid fa-house"></i> <span>Home</span>
+                        </button>
+                        <button type="button" onclick="setAddressType('Work')" id="btnTypeWork" class="type-btn border border-gray-300 text-gray-700 px-4 py-1.5 rounded-lg text-xs font-bold flex items-center space-x-1">
+                            <i class="fa-solid fa-briefcase"></i> <span>Work</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Field 7: Payment Selection -->
+                <div class="pt-2">
+                    <label class="text-[11px] font-bold text-gray-500 block mb-1">Payment Method</label>
+                    <div class="grid grid-cols-2 gap-2">
+                        <label class="flex items-center space-x-2 p-2.5 border rounded-xl bg-gray-50 cursor-pointer">
+                            <input type="radio" name="payment" value="ONLINE" checked onchange="updateCheckoutTotal()" class="text-blue-600">
+                            <span class="text-xs font-bold">Pay Online</span>
+                        </label>
+                        <label class="flex items-center space-x-2 p-2.5 border rounded-xl bg-gray-50 cursor-pointer">
+                            <input type="radio" name="payment" value="COD" onchange="updateCheckoutTotal()" class="text-blue-600">
+                            <span class="text-xs font-bold">COD (Cash)</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="bg-gray-100 p-3 rounded-xl flex justify-between items-center mt-2">
+                    <span class="font-bold text-xs">Total Amount:</span>
+                    <span id="finalPayableAmount" class="font-black text-base text-blue-700">₹0</span>
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" id="placeOrderBtn" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3.5 rounded-xl shadow-lg text-sm tracking-wide">
+                    Update address & Place Order
+                </button>
             </form>
         </div>
     </div>
@@ -186,25 +237,25 @@
     <!-- BOTTOM NAVIGATION -->
     <nav class="fixed bottom-0 left-0 right-0 bg-white border-t z-40 max-w-md mx-auto">
         <div class="flex justify-around items-center py-2 text-center text-gray-500">
-            <button onclick="switchTab('homeTab')" id="nav-homeTab" class="nav-btn flex flex-col items-center meesho-text">
+            <button onclick="switchTab('homeTab')" id="nav-homeTab" class="nav-btn flex flex-col items-center text-blue-600">
                 <i class="fa-solid fa-house text-lg"></i>
                 <span class="text-[10px] font-bold mt-0.5">Home</span>
             </button>
-            <button onclick="switchTab('ordersTab')" id="nav-ordersTab" class="nav-btn flex flex-col items-center hover:text-purple-700">
+            <button onclick="switchTab('ordersTab')" id="nav-ordersTab" class="nav-btn flex flex-col items-center hover:text-blue-600">
                 <i class="fa-solid fa-truck-fast text-lg"></i>
                 <span class="text-[10px] font-bold mt-0.5">My Orders</span>
             </button>
-            <button onclick="switchTab('accountTab')" id="nav-accountTab" class="nav-btn flex flex-col items-center hover:text-purple-700">
+            <button onclick="switchTab('accountTab')" id="nav-accountTab" class="nav-btn flex flex-col items-center hover:text-blue-600">
                 <i class="fa-solid fa-user text-lg"></i>
                 <span class="text-[10px] font-bold mt-0.5">Account</span>
             </button>
         </div>
     </nav>
 
-    <!-- FIREBASE SDK -->
+    <!-- FIREBASE & JS LOGIC -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, collection, getDocs, addDoc, query, where, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, collection, getDocs, addDoc, query, where } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
         import { getAuth, RecaptchaVerifier, signInWithPhoneNumber } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
         const firebaseConfig = {
@@ -213,7 +264,7 @@
             projectId: "pick-mart",
             storageBucket: "pick-mart.firebasestorage.app",
             messagingSenderId: "438637337844",
-            appId: "1:438637337844:web:80734d96769e66faed12a1"
+            appId: "1:438637337844:web:80734d96769e06fa6d12a1"
         };
 
         const app = initializeApp(firebaseConfig);
@@ -224,27 +275,19 @@
         let cart = {};
         let selectedProductForModal = null;
         let selectedOptionValue = "";
+        let selectedAddressType = "Home";
         let currentUser = null;
-        let confirmationResultGlobal = null;
 
         window.addEventListener('DOMContentLoaded', async () => {
             checkAuthStatus();
             await loadProducts();
-            setupRecaptcha();
             checkDeepLink();
         });
 
-        // 🔗 Check Deep Link from Instagram DM (?id=PRODUCT_ID)
         async function checkDeepLink() {
             const urlParams = new URLSearchParams(window.location.search);
             const productId = urlParams.get('id');
-            if (productId) {
-                openProductModal(productId);
-            }
-        }
-
-        function setupRecaptcha() {
-            window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', { 'size': 'invisible' });
+            if (productId) openProductModal(productId);
         }
 
         window.checkAuthStatus = function() {
@@ -264,42 +307,62 @@
             }
         };
 
-        window.handleLoginClick = async function() {
-            const type = document.getElementById('loginType').value;
-            const name = document.getElementById('userNameInput').value.trim();
-            const inputVal = document.getElementById('userLoginInput').value.trim();
-
-            if (!name || !inputVal) return alert('എല്ലാ വിവരങ്ങളും നൽകുക!');
-
-            if (type === 'insta') {
-                currentUser = { type: 'insta', id: inputVal, name: name };
-                localStorage.setItem('pickmart_user', JSON.stringify(currentUser));
-                checkAuthStatus();
-                switchTab('homeTab');
-            } else {
-                const phoneNumber = "+91" + inputVal;
-                try {
-                    confirmationResultGlobal = await signInWithPhoneNumber(auth, phoneNumber, window.recaptchaVerifier);
-                    alert('OTP അയച്ചിട്ടുണ്ട്!');
-                    document.getElementById('otpSection').classList.remove('hidden');
-                } catch (e) { alert('OTP എറർ: ' + e.message); }
+        // 📍 GPS LOCATION AUTO FETCH FUNCTION
+        window.getCurrentGpsLocation = function() {
+            const btnText = document.getElementById('gpsBtnText');
+            const locText = document.getElementById('addrLocality');
+            
+            if (!navigator.geolocation) {
+                alert("നിങ്ങളുടെ ഫോൺ ബ്രൗസറിൽ GPS സപ്പോർട്ട് ചെയ്യുന്നില്ല.");
+                return;
             }
+
+            btnText.innerText = "Finding Location...";
+
+            navigator.geolocation.getCurrentPosition(
+                async (position) => {
+                    const lat = position.coords.latitude;
+                    const lng = position.coords.longitude;
+                    const mapUrl = `https://www.google.com/maps?q=${lat},${lng}`;
+                    document.getElementById('addrGpsLink').value = mapUrl;
+
+                    try {
+                        // Free OpenStreetMap Reverse Geocoding API
+                        const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`);
+                        const data = await response.json();
+                        
+                        if (data && data.address) {
+                            const addr = data.address;
+                            const locality = [
+                                addr.suburb || addr.neighbourhood || addr.village || addr.town || '',
+                                addr.county || addr.city || addr.district || '',
+                                addr.state || '',
+                                addr.postcode || ''
+                            ].filter(Boolean).join(', ');
+
+                            locText.value = locality || `Lat: ${lat}, Lng: ${lng}`;
+                        } else {
+                            locText.value = `Lat: ${lat}, Lng: ${lng}`;
+                        }
+                        btnText.innerText = "Location Saved ✓";
+                    } catch (e) {
+                        locText.value = `Location Pin: https://www.google.com/maps?q=${lat},${lng}`;
+                        btnText.innerText = "Location Saved ✓";
+                    }
+                },
+                (error) => {
+                    alert("ലൊക്കേഷൻ കണ്ടെത്താൻ സാധിച്ചില്ല. ഫോണിൽ GPS Location On ആക്കുക.");
+                    btnText.innerText = "Use GPS Location";
+                },
+                { enableHighAccuracy: true, timeout: 10000 }
+            );
         };
 
-        window.verifyOTP = async function() {
-            const code = document.getElementById('otpInput').value;
-            try {
-                const res = await confirmationResultGlobal.confirm(code);
-                currentUser = { type: 'phone', id: res.user.phoneNumber, name: document.getElementById('userNameInput').value };
-                localStorage.setItem('pickmart_user', JSON.stringify(currentUser));
-                checkAuthStatus();
-                switchTab('homeTab');
-            } catch (e) { alert('തെറ്റായ OTP!'); }
-        };
-
-        window.logoutUser = function() {
-            localStorage.removeItem('pickmart_user');
-            checkAuthStatus();
+        window.setAddressType = function(type) {
+            selectedAddressType = type;
+            document.querySelectorAll('.type-btn').forEach(b => b.className = 'type-btn border border-gray-300 text-gray-700 px-4 py-1.5 rounded-lg text-xs font-bold flex items-center space-x-1');
+            const activeBtn = type === 'Home' ? document.getElementById('btnTypeHome') : document.getElementById('btnTypeWork');
+            activeBtn.className = 'type-btn border-2 border-blue-600 bg-blue-50 text-blue-700 px-4 py-1.5 rounded-lg text-xs font-bold flex items-center space-x-1';
         };
 
         window.switchTab = function(tabId) {
@@ -319,7 +382,7 @@
 
         function renderProducts(products) {
             const grid = document.getElementById('productGrid');
-            if(products.length === 0) return grid.innerHTML = '<p class="col-span-2 text-center py-6 text-gray-400">പ്രൊഡക്റ്റുകൾ ഒന്നുമില്ല.</p>';
+            if(products.length === 0) return grid.innerHTML = '<p class="col-span-2 text-center py-6 text-gray-400">ഉൽപ്പന്നങ്ങൾ ഒന്നുമില്ല.</p>';
             grid.innerHTML = '';
             products.forEach(p => {
                 grid.innerHTML += `
@@ -328,7 +391,7 @@
                         <div class="mt-2 space-y-1">
                             <h4 class="font-bold text-xs text-gray-800 line-clamp-1">${p.name}</h4>
                             <div class="flex items-baseline space-x-1">
-                                <span class="font-black text-sm text-purple-700">₹${p.price}</span>
+                                <span class="font-black text-sm text-blue-700">₹${p.price}</span>
                                 <span class="text-[10px] text-gray-400 line-through">₹${p.codPrice || Math.round(p.price*1.2)}</span>
                             </div>
                         </div>
@@ -345,7 +408,7 @@
             document.getElementById('modalName').innerText = p.name;
             document.getElementById('modalOnlinePrice').innerText = '₹' + p.price;
             document.getElementById('modalCodPrice').innerText = '₹' + (p.codPrice || p.price);
-            document.getElementById('modalDeliveryDays').innerText = p.deliveryDays || '3-5 Days';
+            document.getElementById('modalDeliveryDays').innerText = (p.deliveryDays || '3-5') + ' Days';
             document.getElementById('modalReturnDays').innerText = (p.returnDays || '7') + ' Days Return';
 
             const optsDiv = document.getElementById('optionsButtons');
@@ -355,7 +418,7 @@
 
             opts.forEach((opt, idx) => {
                 optsDiv.innerHTML += `
-                    <button onclick="selectOption('${opt.trim()}', this)" class="opt-btn border px-3 py-1 rounded-lg text-xs font-bold ${idx === 0 ? 'bg-purple-700 text-white' : 'bg-gray-50'}">${opt.trim()}</button>
+                    <button onclick="selectOption('${opt.trim()}', this)" class="opt-btn border px-3 py-1 rounded-lg text-xs font-bold ${idx === 0 ? 'bg-blue-600 text-white' : 'bg-gray-50'}">${opt.trim()}</button>
                 `;
             });
 
@@ -365,7 +428,7 @@
         window.selectOption = function(val, btn) {
             selectedOptionValue = val;
             document.querySelectorAll('.opt-btn').forEach(b => b.className = 'opt-btn border px-3 py-1 rounded-lg text-xs font-bold bg-gray-50');
-            btn.className = 'opt-btn border px-3 py-1 rounded-lg text-xs font-bold bg-purple-700 text-white';
+            btn.className = 'opt-btn border px-3 py-1 rounded-lg text-xs font-bold bg-blue-600 text-white';
         };
 
         window.closeProductModal = function() { document.getElementById('productModal').classList.add('hidden'); };
@@ -405,7 +468,7 @@
                             <div>
                                 <h4 class="font-bold text-xs">${i.name}</h4>
                                 <p class="text-[10px] text-gray-500">Option: ${i.option}</p>
-                                <p class="text-xs text-purple-700 font-bold">₹${i.price}</p>
+                                <p class="text-xs text-blue-700 font-bold">₹${i.price}</p>
                             </div>
                         </div>
                     </div>
@@ -423,7 +486,7 @@
         };
 
         window.openCheckoutModal = function() {
-            if(!currentUser) { alert('ലോഗിൻ ചെയ്യുക!'); return switchTab('accountTab'); }
+            if(!currentUser) { alert('ഓർഡർ ചെയ്യുന്നതിന് മുൻപ് ലോഗിൻ ചെയ്യുക!'); return switchTab('accountTab'); }
             document.getElementById('checkoutModal').classList.remove('hidden');
             updateCheckoutTotal();
         };
@@ -436,6 +499,13 @@
             const isCod = document.querySelector('input[name="payment"]:checked').value === 'COD';
             const total = items.reduce((sum, item) => sum + (isCod ? item.codPrice : item.price), 0);
 
+            const house = document.getElementById('addrHouse').value;
+            const locality = document.getElementById('addrLocality').value;
+            const altPhone = document.getElementById('custAltPhone').value;
+            const gpsLink = document.getElementById('addrGpsLink').value;
+
+            const fullAddress = `${house}, ${locality} [Type: ${selectedAddressType}] ${altPhone ? '(Alt: ' + altPhone + ')' : ''}`;
+
             try {
                 await addDoc(collection(db, "orders"), {
                     productName: items.map(i => `${i.name} (${i.option})`).join(', '),
@@ -443,14 +513,15 @@
                     paymentMethod: isCod ? 'COD' : 'ONLINE',
                     name: document.getElementById('custName').value,
                     phone: document.getElementById('custPhone').value,
-                    address: document.getElementById('custAddress').value,
+                    address: fullAddress,
+                    gpsMapLink: gpsLink,
                     userIdentifier: currentUser.id,
                     status: 'Order Placed',
                     currentLocation: 'Order Confirmed - Processing',
                     timestamp: new Date()
                 });
 
-                alert('ഓർഡർ വിജയിച്ചു!');
+                alert('ഓർഡർ സമർപ്പിച്ചു!');
                 cart = {};
                 updateCartUI();
                 closeCheckoutModal();
@@ -458,7 +529,6 @@
             } catch(e) { alert('Order Error: ' + e.message); }
         };
 
-        // 🚚 Live Tracking in My Orders
         async function loadMyOrders() {
             const container = document.getElementById('myOrdersList');
             if(!currentUser) return container.innerHTML = '<p class="text-center py-6 text-gray-500 text-sm">ലോഗിൻ ചെയ്യുക.</p>';
@@ -475,13 +545,13 @@
                         <div class="bg-white p-4 rounded-xl border shadow-sm space-y-2">
                             <div class="flex justify-between items-start border-b pb-2">
                                 <div>
-                                    <h4 class="font-bold text-xs text-purple-900">${o.productName}</h4>
+                                    <h4 class="font-bold text-xs text-blue-900">${o.productName}</h4>
                                     <p class="text-xs text-green-700 font-extrabold">Amount: ₹${o.price} (${o.paymentMethod})</p>
                                 </div>
-                                <span class="bg-purple-100 text-purple-800 text-[10px] font-bold px-2 py-0.5 rounded-full">${o.status}</span>
+                                <span class="bg-blue-100 text-blue-800 text-[10px] font-bold px-2 py-0.5 rounded-full">${o.status}</span>
                             </div>
                             <div class="bg-gray-50 p-2 rounded text-xs space-y-1">
-                                <p class="text-gray-600"><b>📍 Live Tracking Location:</b> <span class="text-purple-700 font-bold">${o.currentLocation || 'In Transit'}</span></p>
+                                <p class="text-gray-600"><b>📍 Live Tracking:</b> <span class="text-blue-700 font-bold">${o.currentLocation || 'In Transit'}</span></p>
                                 <p class="text-gray-500"><b>Address:</b> ${o.address}</p>
                             </div>
                         </div>
