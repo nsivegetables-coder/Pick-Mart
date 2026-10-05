@@ -1,320 +1,170 @@
 <!DOCTYPE html>
-<html lang="ml">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pick Mart - Online Shopping</title>
+    <title>Pick Mart - Online Store</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        .no-scrollbar::-webkit-scrollbar { display: none; }
-        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-    </style>
 </head>
-<body class="bg-gray-100 pb-20 font-sans text-gray-800">
+<body class="bg-gray-50 min-h-screen pb-20 font-sans">
 
-    <!-- Top Navigation Header -->
-    <header class="sticky top-0 z-40 bg-white shadow-sm border-b">
-        <div class="max-w-md mx-auto px-4 py-3">
-            <div class="flex items-center justify-between mb-2">
-                <span class="bg-blue-600 text-white font-extrabold px-3 py-1 rounded-lg text-lg tracking-wider">Pick Mart</span>
-                <button onclick="switchTab('cartTab')" class="relative text-gray-700 hover:text-blue-600">
-                    <i class="fa-solid fa-cart-shopping text-xl"></i>
-                    <span id="cartBadge" class="absolute -top-2 -right-2 bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full hidden">0</span>
+    <!-- TOP HEADER NAVBAR -->
+    <header class="bg-blue-900 text-white sticky top-0 z-40 shadow-md">
+        <div class="max-w-4xl mx-auto px-4 py-3 flex justify-between items-center">
+            <a href="#" onclick="location.reload()" class="flex items-center space-x-2">
+                <span class="text-2xl">🛒</span>
+                <span class="font-extrabold text-xl tracking-wide">Pick Mart</span>
+            </a>
+
+            <div class="flex items-center space-x-2 md:space-x-4">
+                <!-- LANGUAGE SELECTOR DROPDOWN -->
+                <div class="relative bg-blue-800 rounded-lg px-2 py-1 flex items-center border border-blue-700">
+                    <span class="text-xs mr-1">🌐</span>
+                    <select id="langSelect" onchange="changeLanguage(this.value)" class="bg-transparent text-xs font-bold text-white focus:outline-none cursor-pointer">
+                        <option value="en" class="text-black">English</option>
+                        <option value="ml" class="text-black">മലയാളം</option>
+                        <option value="ta" class="text-black">தமிழ்</option>
+                        <option value="hi" class="text-black">हिंदी</option>
+                    </select>
+                </div>
+
+                <!-- TRACK ORDER BUTTON -->
+                <button onclick="openTrackModal()" class="text-xs font-bold bg-blue-800 hover:bg-blue-700 px-3 py-1.5 rounded-lg flex items-center space-x-1 border border-blue-700">
+                    <span>📦</span>
+                    <span data-i18n="btnTrack">Track</span>
                 </button>
-            </div>
-            <!-- Search Bar -->
-            <div class="relative mt-2">
-                <i class="fa-solid fa-magnifying-glass absolute left-3 top-3 text-gray-400"></i>
-                <input type="text" id="searchInput" oninput="filterProducts()" placeholder="Search Products..." class="w-full pl-9 pr-4 py-2 bg-gray-50 rounded-lg text-sm border focus:ring-2 focus:ring-blue-600 focus:bg-white transition outline-none">
+
+                <!-- CART BUTTON -->
+                <button onclick="openCartModal()" class="relative p-1.5 text-xl">
+                    🛒
+                    <span id="cartCount" class="absolute -top-1 -right-2 bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full hidden">0</span>
+                </button>
             </div>
         </div>
     </header>
 
-    <main class="max-w-md mx-auto min-h-screen">
-        <!-- TAB 1: HOME PAGE -->
-        <div id="homeTab" class="tab-content px-3 py-3 space-y-4">
-            <div class="rounded-xl overflow-hidden shadow-sm bg-gradient-to-r from-blue-700 to-indigo-600 text-white p-4">
-                <span class="bg-yellow-400 text-blue-950 font-black text-[10px] uppercase px-2 py-0.5 rounded">Special Offer</span>
-                <h2 class="text-xl font-bold mt-1">Direct Collection 🔥</h2>
-                <p class="text-xs text-blue-100 mt-1">Free Delivery | Cash on Delivery Available</p>
-            </div>
+    <!-- MAIN CONTAINER -->
+    <main class="max-w-4xl mx-auto px-3 py-4 space-y-4">
 
-            <!-- Categories Dynamic Filter Pills -->
-            <div>
-                <h3 class="font-bold text-xs text-gray-500 uppercase tracking-wider mb-2">Categories</h3>
-                <div id="categoryPills" class="flex space-x-2 overflow-x-auto no-scrollbar py-1">
-                    <button onclick="filterCategory('All')" class="bg-blue-600 text-white px-3.5 py-1.5 rounded-full text-xs font-bold whitespace-nowrap shadow-sm">All</button>
-                </div>
-            </div>
-
-            <div>
-                <h3 class="font-bold text-sm text-gray-700 mb-2">Products For You</h3>
-                <div id="productGrid" class="grid grid-cols-2 gap-2.5">
-                    <p class="col-span-2 text-center text-gray-400 py-8">പ്രൊഡക്റ്റുകൾ ലോഡ് ചെയ്യുന്നു...</p>
-                </div>
-            </div>
+        <!-- SEARCH BAR -->
+        <div class="relative">
+            <input type="text" id="searchInput" onkeyup="filterProducts()" data-i18n-ph="searchPlaceholder" placeholder="Search products..." class="w-full pl-10 pr-4 py-2.5 rounded-xl border border-gray-200 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-600 text-sm">
+            <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3 text-gray-400 text-sm"></i>
         </div>
 
-        <!-- TAB 2: HELP & FAQ -->
-        <div id="helpTab" class="tab-content hidden p-4 space-y-4">
-            <div class="bg-blue-600 text-white p-4 rounded-2xl shadow">
-                <h2 class="font-extrabold text-lg">❓ Help & Support Center</h2>
-                <p class="text-xs text-blue-100 mt-1">നിങ്ങളുടെ സംശയങ്ങൾക്കുള്ള പെട്ടെന്നുള്ള മറുപടികൾ താഴെ കാണാം.</p>
-            </div>
-            <div id="faqContainer" class="space-y-3">
-                <p class="text-center text-gray-400 py-6 text-sm">സഹായ വിവരങ്ങൾ ലോഡ് ചെയ്യുന്നു...</p>
-            </div>
+        <!-- CATEGORY PILLS -->
+        <div id="categoryContainer" class="flex space-x-2 overflow-x-auto pb-2 scrollbar-none">
+            <button onclick="filterByCategory('all')" class="cat-btn bg-blue-600 text-white px-4 py-1.5 rounded-full text-xs font-bold whitespace-nowrap shadow-sm" data-i18n="catAll">All</button>
         </div>
 
-        <!-- TAB 3: MY ORDERS -->
-        <div id="ordersTab" class="tab-content hidden p-4 space-y-3">
-            <h2 class="font-bold text-lg mb-2">My Orders & Live Tracking</h2>
-            <div id="myOrdersList" class="space-y-3">
-                <p class="text-gray-500 text-center py-6 text-sm">ഓർഡറുകൾ പരിശോധിക്കുന്നു...</p>
-            </div>
+        <!-- PRODUCT GRID -->
+        <div id="productGrid" class="grid grid-cols-2 md:grid-cols-3 gap-3">
+            <p class="col-span-full text-center text-gray-400 py-10 text-sm" data-i18n="loadingProducts">Loading products...</p>
         </div>
 
-        <!-- TAB 4: ACCOUNT -->
-        <div id="accountTab" class="tab-content hidden p-4 space-y-4">
-            <div id="profileBox" class="hidden bg-white p-5 rounded-2xl border shadow-sm space-y-4">
-                <div class="flex items-center space-x-3 border-b pb-3">
-                    <div class="w-14 h-14 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center font-bold text-2xl">
-                        <i class="fa-solid fa-user"></i>
-                    </div>
-                    <div>
-                        <h3 id="userDisplayName" class="font-extrabold text-base text-gray-900">User Name</h3>
-                        <p id="userDisplayEmail" class="text-xs text-gray-500">email@example.com</p>
-                        <p id="userDisplayPhone" class="text-xs text-blue-600 font-bold mt-0.5">+91 0000000000</p>
-                    </div>
-                </div>
+        <!-- FAQ SECTION -->
+        <section class="bg-white p-4 rounded-2xl shadow-sm border space-y-3 mt-6">
+            <h3 class="font-bold text-gray-800 text-sm flex items-center space-x-2">
+                <span>❓</span>
+                <span data-i18n="faqTitle">Frequently Asked Questions</span>
+            </h3>
+            <div id="faqList" class="space-y-2 text-xs"></div>
+        </section>
 
-                <div class="space-y-2 text-xs">
-                    <div class="flex justify-between py-1 border-b"><span class="text-gray-500">First Name:</span><span id="dispFirstName" class="font-bold text-gray-800">-</span></div>
-                    <div class="flex justify-between py-1 border-b"><span class="text-gray-500">Last Name:</span><span id="dispLastName" class="font-bold text-gray-800">-</span></div>
-                    <div class="flex justify-between py-1 border-b"><span class="text-gray-500">Phone Number:</span><span id="dispPhone" class="font-bold text-gray-800">-</span></div>
-                    <div class="flex justify-between py-1 border-b"><span class="text-gray-500">Gmail ID:</span><span id="dispEmail" class="font-bold text-gray-800">-</span></div>
-                </div>
-
-                <div class="flex space-x-2 pt-2">
-                    <button onclick="openEditProfileModal()" class="flex-1 bg-blue-50 text-blue-700 border border-blue-200 font-bold py-2.5 rounded-xl text-xs flex items-center justify-center space-x-1">
-                        <i class="fa-solid fa-pen-to-square"></i> <span>Edit Profile</span>
-                    </button>
-                    <button onclick="logoutUser()" class="bg-red-50 text-red-600 font-bold px-4 py-2.5 rounded-xl text-xs border border-red-200">Logout</button>
-                </div>
-            </div>
-
-            <div id="loginFormBox" class="bg-white p-5 rounded-2xl border shadow-sm space-y-4">
-                <h3 class="font-extrabold text-lg text-gray-800 text-center">Sign In to Order</h3>
-                <div class="space-y-3">
-                    <input type="text" id="regFirstName" placeholder="First Name *" class="w-full p-2.5 border rounded-xl text-sm" required>
-                    <input type="text" id="regLastName" placeholder="Last Name" class="w-full p-2.5 border rounded-xl text-sm">
-                    <input type="email" id="regEmail" placeholder="Gmail ID" class="w-full p-2.5 border rounded-xl text-sm">
-                    <input type="tel" id="userLoginInput" placeholder="Mobile Number *" class="w-full p-2.5 border rounded-xl text-sm" required>
-                    <button onclick="handleLoginClick()" class="w-full bg-blue-600 text-white font-bold py-3 rounded-xl shadow-md">Continue & Login</button>
-                </div>
-            </div>
-        </div>
-
-        <!-- TAB 5: CART PAGE -->
-        <div id="cartTab" class="tab-content hidden p-4 space-y-4">
-            <h2 class="font-bold text-lg mb-2">Shopping Cart</h2>
-            <div id="cartItemsContainer" class="space-y-3"></div>
-            <div id="cartSummaryBox" class="bg-white p-4 rounded-xl border space-y-2 hidden">
-                <div class="flex justify-between text-sm"><span>Subtotal</span><span id="cartSubtotal" class="font-bold">₹0</span></div>
-                <button onclick="openCheckoutModal()" class="w-full bg-blue-600 text-white font-bold py-3 rounded-xl shadow-md mt-2">Proceed to Checkout</button>
-            </div>
-        </div>
     </main>
 
-    <!-- EDIT PROFILE MODAL -->
-    <div id="editProfileModal" class="fixed inset-0 bg-black/60 z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-white w-full max-w-md rounded-2xl p-5 space-y-4">
+    <!-- CHECKOUT MODAL -->
+    <div id="checkoutModal" class="fixed inset-0 bg-black/60 z-50 hidden flex items-end md:items-center justify-center p-0 md:p-4">
+        <div class="bg-white w-full max-w-lg rounded-t-2xl md:rounded-2xl p-5 space-y-4 max-h-[90vh] overflow-y-auto shadow-2xl">
             <div class="flex justify-between items-center border-b pb-2">
-                <h3 class="font-bold text-base text-gray-800">Edit Profile Details</h3>
-                <button onclick="closeEditProfileModal()" class="text-gray-400 font-bold text-lg">✕</button>
-            </div>
-            <form onsubmit="saveProfileChanges(event)" class="space-y-3">
-                <input type="text" id="editFirstName" placeholder="First Name" class="w-full p-2.5 border rounded-xl text-sm" required>
-                <input type="text" id="editLastName" placeholder="Last Name" class="w-full p-2.5 border rounded-xl text-sm">
-                <input type="tel" id="editPhone" placeholder="Phone Number" class="w-full p-2.5 border rounded-xl text-sm" required>
-                <input type="email" id="editEmail" placeholder="Gmail ID" class="w-full p-2.5 border rounded-xl text-sm" required>
-                <button type="submit" class="w-full bg-blue-600 text-white font-bold py-3 rounded-xl shadow-md text-sm">Save Changes</button>
-            </form>
-        </div>
-    </div>
-
-    <!-- PRODUCT DETAIL MODAL -->
-    <div id="productModal" class="fixed inset-0 bg-black/60 z-50 hidden flex items-end sm:items-center justify-center p-0 sm:p-4">
-        <div class="bg-white w-full max-w-md rounded-t-2xl sm:rounded-2xl max-h-[92vh] overflow-y-auto p-4 space-y-4 relative">
-            <button onclick="closeProductModal()" class="absolute top-3 right-3 text-gray-500 bg-gray-100 rounded-full w-8 h-8 flex items-center justify-center font-bold z-10">✕</button>
-            
-            <div class="relative">
-                <img id="modalImg" src="" class="w-full h-64 object-cover rounded-xl bg-gray-50">
-                <div id="imageThumbnails" class="flex space-x-2 mt-2 overflow-x-auto no-scrollbar"></div>
+                <h3 class="font-extrabold text-base text-gray-800" data-i18n="checkoutTitle">Order Checkout</h3>
+                <button onclick="closeCheckoutModal()" class="text-gray-400 font-bold text-lg">✕</button>
             </div>
 
-            <div>
-                <h3 id="modalName" class="font-bold text-lg text-gray-800">Product Title</h3>
-                <div class="bg-blue-50 p-2.5 rounded-xl border border-blue-100 my-2 space-y-1">
-                    <div class="flex justify-between items-center">
-                        <span class="text-xs text-blue-900 font-bold">Pay Online Price:</span>
-                        <span id="modalOnlinePrice" class="text-lg font-black text-blue-700">₹0</span>
-                    </div>
-                    <div class="flex justify-between items-center text-xs text-gray-600">
-                        <span>Cash on Delivery (COD) Price:</span>
-                        <span id="modalCodPrice" class="font-bold text-gray-800">₹0</span>
-                    </div>
-                </div>
-            </div>
+            <div id="checkoutProductSummary" class="bg-blue-50 p-3 rounded-xl border border-blue-100 flex items-center space-x-3"></div>
 
-            <div id="optionsContainer" class="space-y-1">
-                <label class="block text-xs font-bold text-gray-600">Select Option</label>
-                <div id="optionsButtons" class="flex flex-wrap gap-2"></div>
-            </div>
-
-            <div class="flex space-x-2 pt-2 border-b pb-3">
-                <button onclick="addToCartFromModal()" class="flex-1 border-2 border-blue-600 text-blue-600 font-bold py-3 rounded-lg text-sm">Add To Cart</button>
-                <button onclick="buyNowFromModal()" class="flex-1 bg-blue-600 text-white font-bold py-3 rounded-lg text-sm shadow">Buy Now</button>
-            </div>
-
-            <!-- REVIEWS SECTION -->
-            <div class="space-y-3 pt-2">
-                <h4 class="font-bold text-sm text-gray-800">Customer Reviews & Ratings ⭐</h4>
-                <div class="bg-gray-50 p-3 rounded-xl border space-y-2">
-                    <p class="text-xs font-bold text-gray-600">Write a Review:</p>
-                    <div class="flex items-center space-x-2">
-                        <select id="revRating" class="p-1.5 border rounded text-xs bg-white font-bold text-amber-600">
-                            <option value="5">⭐⭐⭐⭐⭐ (5/5)</option>
-                            <option value="4">⭐⭐⭐⭐ (4/5)</option>
-                            <option value="3">⭐⭐⭐ (3/5)</option>
-                        </select>
-                        <input type="text" id="revComment" placeholder="Write feedback..." class="flex-1 p-1.5 border rounded text-xs bg-white">
-                    </div>
-                    <button onclick="submitUserReview()" class="w-full bg-gray-800 text-white text-xs font-bold py-1.5 rounded-lg">Submit Review</button>
-                </div>
-                <div id="reviewsList" class="space-y-2 max-h-40 overflow-y-auto no-scrollbar"></div>
-            </div>
-        </div>
-    </div>
-
-    <!-- DELIVER TO / CHECKOUT WITH UPI -->
-    <div id="checkoutModal" class="fixed inset-0 bg-black/60 z-50 hidden flex items-end sm:items-center justify-center p-0 sm:p-4">
-        <div class="bg-white w-full max-w-md rounded-t-2xl sm:rounded-2xl max-h-[92vh] overflow-y-auto p-4 space-y-4">
-            <div class="flex justify-between items-center border-b pb-2">
-                <h3 class="font-bold text-lg text-gray-800">Deliver To</h3>
-                <button onclick="closeCheckoutModal()" class="text-gray-400 font-bold text-xl">✕</button>
-            </div>
-
-            <form id="checkoutForm" onsubmit="handlePlaceOrder(event)" class="space-y-3">
+            <form id="orderForm" class="space-y-3">
                 <div>
-                    <label class="text-[11px] font-bold text-gray-500">Flat / House / Building name *</label>
-                    <input type="text" id="addrHouse" placeholder="House / Building Name or Number" class="w-full p-2.5 border rounded-xl text-sm bg-gray-50" required>
-                </div>
-
-                <div class="bg-gray-50 p-3 rounded-xl border space-y-2">
-                    <div class="flex justify-between items-center">
-                        <label class="text-[11px] font-bold text-gray-500">Area / Locality *</label>
-                        <button type="button" onclick="getCurrentGpsLocation()" class="border border-blue-600 text-blue-600 bg-white px-3 py-1 rounded-lg text-xs font-bold">
-                            <span id="gpsBtnText">Use GPS Location</span>
-                        </button>
-                    </div>
-                    <textarea id="addrLocality" placeholder="Locality, Landmark, City, State, Pincode" class="w-full p-2 border rounded-lg text-xs bg-white" rows="2" required></textarea>
-                    <input type="hidden" id="addrGpsLink" value="">
+                    <label class="block text-xs font-bold text-gray-700 mb-1" data-i18n="lblFullName">Full Name *</label>
+                    <input type="text" id="custName" required class="w-full p-2.5 border rounded-xl text-sm" data-i18n-ph="phName" placeholder="Enter your name">
                 </div>
 
                 <div>
-                    <label class="text-[11px] font-bold text-gray-500">Enter your full name *</label>
-                    <input type="text" id="custName" placeholder="Full Name" class="w-full p-2.5 border rounded-xl text-sm bg-gray-50" required>
+                    <label class="block text-xs font-bold text-gray-700 mb-1" data-i18n="lblPhone">Phone Number *</label>
+                    <input type="tel" id="custPhone" required pattern="[0-9]{10}" class="w-full p-2.5 border rounded-xl text-sm" data-i18n-ph="phPhone" placeholder="10-digit mobile number">
                 </div>
 
                 <div>
-                    <label class="text-[11px] font-bold text-gray-500">10-digit mobile number *</label>
-                    <input type="tel" id="custPhone" placeholder="Mobile Number" class="w-full p-2.5 border rounded-xl text-sm bg-gray-50" required>
+                    <label class="block text-xs font-bold text-gray-700 mb-1" data-i18n="lblAddress">Delivery Address *</label>
+                    <textarea id="custAddress" required rows="2" class="w-full p-2.5 border rounded-xl text-sm" data-i18n-ph="phAddress" placeholder="House name/number, area, pincode"></textarea>
                 </div>
 
-                <div>
-                    <label class="text-[11px] font-bold text-gray-500">Alternate phone number (Optional)</label>
-                    <input type="tel" id="custAltPhone" placeholder="Alternate Mobile Number" class="w-full p-2.5 border rounded-xl text-sm bg-gray-50">
+                <div class="flex items-center justify-between bg-gray-50 p-2.5 rounded-xl border">
+                    <span class="text-xs font-bold text-gray-600" data-i18n="lblGps">GPS Location Link</span>
+                    <button type="button" onclick="getGPSLocation()" class="bg-blue-600 text-white text-xs font-bold px-3 py-1.5 rounded-lg flex items-center space-x-1">
+                        <span>📍</span>
+                        <span data-i18n="btnGps">Add Location</span>
+                    </button>
                 </div>
+                <input type="hidden" id="gpsLinkInput">
 
                 <div>
-                    <label class="text-[11px] font-bold text-gray-500 block mb-1">Payment Method</label>
+                    <label class="block text-xs font-bold text-gray-700 mb-1" data-i18n="lblPaymentMethod">Payment Option *</label>
                     <div class="grid grid-cols-2 gap-2">
-                        <label class="flex items-center space-x-2 p-2.5 border rounded-xl bg-gray-50 cursor-pointer">
-                            <input type="radio" name="payment" value="ONLINE" checked onchange="togglePaymentBox()" class="text-blue-600">
-                            <span class="text-xs font-bold">Pay Online / UPI</span>
+                        <label class="border p-3 rounded-xl flex flex-col items-center justify-center cursor-pointer font-bold text-xs bg-gray-50 has-[:checked]:border-blue-600 has-[:checked]:bg-blue-50">
+                            <input type="radio" name="payMethod" value="Online" checked onchange="togglePaymentBox('Online')" class="hidden">
+                            <span>💳 <span data-i18n="optPayOnline">Pay Online</span></span>
+                            <span id="onlinePriceTag" class="text-[10px] text-green-600 font-extrabold mt-1">₹0</span>
                         </label>
-                        <label class="flex items-center space-x-2 p-2.5 border rounded-xl bg-gray-50 cursor-pointer">
-                            <input type="radio" name="payment" value="COD" onchange="togglePaymentBox()" class="text-blue-600">
-                            <span class="text-xs font-bold">COD (Cash)</span>
+                        <label class="border p-3 rounded-xl flex flex-col items-center justify-center cursor-pointer font-bold text-xs bg-gray-50 has-[:checked]:border-blue-600 has-[:checked]:bg-blue-50">
+                            <input type="radio" name="payMethod" value="COD" onchange="togglePaymentBox('COD')" class="hidden">
+                            <span>💵 <span data-i18n="optCod">Cash on Delivery</span></span>
+                            <span id="codPriceTag" class="text-[10px] text-gray-500 font-extrabold mt-1">₹0</span>
                         </label>
                     </div>
                 </div>
 
-                <div id="upiPaymentBox" class="bg-blue-50 border border-blue-200 p-3.5 rounded-xl space-y-3">
-                    <p class="text-xs font-bold text-blue-900 border-b pb-1">💳 Choose UPI Payment Method:</p>
-                    <div class="grid grid-cols-2 gap-2">
-                        <button type="button" onclick="payViaUPI('phonepe')" class="bg-purple-700 text-white font-bold py-2 rounded-lg text-xs flex items-center justify-center space-x-1">
-                            <i class="fa-solid fa-mobile-screen"></i> <span>PhonePe</span>
-                        </button>
-                        <button type="button" onclick="payViaUPI('gpay')" class="bg-blue-600 text-white font-bold py-2 rounded-lg text-xs flex items-center justify-center space-x-1">
-                            <i class="fa-brands fa-google-pay text-base"></i> <span>Google Pay</span>
-                        </button>
-                    </div>
-
-                    <div class="bg-white p-2 rounded-lg border text-center text-xs space-y-1">
-                        <p class="text-gray-500 text-[10px]">Or Pay using UPI ID:</p>
-                        <div class="flex items-center justify-center space-x-2">
-                            <span class="font-extrabold text-blue-900">Q245377579@ybl</span>
-                            <button type="button" onclick="navigator.clipboard.writeText('Q245377579@ybl'); alert('UPI ID Copied!')" class="text-blue-600 text-[10px] font-bold underline">Copy</button>
-                        </div>
-                    </div>
-
-                    <div class="bg-white p-2.5 rounded-lg border space-y-1">
-                        <label class="text-[11px] font-bold text-red-600 block">📸 Upload Payment Screenshot *</label>
-                        <input type="file" id="payScreenshotFile" accept="image/*" class="w-full text-xs text-gray-700">
+                <!-- UPI QR BOX -->
+                <div id="upiBox" class="bg-blue-50 p-3 rounded-xl border border-blue-200 text-center space-y-2">
+                    <p class="text-xs font-bold text-blue-900" data-i18n="upiMsg">Scan QR & Pay with Google Pay / PhonePe / Paytm</p>
+                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=upi://pay?pa=pickmart@upi" class="w-32 h-32 mx-auto rounded-lg border bg-white p-1">
+                    <p class="text-[11px] text-gray-600 font-bold">UPI ID: <span class="text-blue-900">pickmart@upi</span></p>
+                    
+                    <div class="text-left bg-white p-2 rounded-lg border">
+                        <label class="block text-[11px] font-bold text-gray-700 mb-1" data-i18n="lblScreenshot">Upload Payment Screenshot *</label>
+                        <input type="file" id="payScreenshot" accept="image/*" class="w-full text-xs">
                     </div>
                 </div>
 
-                <div class="bg-gray-100 p-3 rounded-xl flex justify-between items-center">
-                    <span class="font-bold text-xs">Total Amount:</span>
-                    <span id="finalPayableAmount" class="font-black text-base text-blue-700">₹0</span>
-                </div>
-
-                <button type="submit" id="placeOrderBtn" class="w-full bg-blue-600 text-white font-bold py-3.5 rounded-xl shadow-lg text-sm">
+                <button type="submit" id="submitOrderBtn" class="w-full bg-green-600 text-white font-extrabold py-3 rounded-xl text-sm shadow-md hover:bg-green-700" data-i18n="btnConfirmOrder">
                     Confirm & Place Order
                 </button>
             </form>
         </div>
     </div>
 
-    <!-- BOTTOM NAVIGATION -->
-    <nav class="fixed bottom-0 left-0 right-0 bg-white border-t z-40 max-w-md mx-auto">
-        <div class="flex justify-around items-center py-2 text-center text-gray-500">
-            <button onclick="switchTab('homeTab')" id="nav-homeTab" class="nav-btn flex flex-col items-center text-blue-600">
-                <i class="fa-solid fa-house text-lg"></i>
-                <span class="text-[10px] font-bold mt-0.5">Home</span>
-            </button>
-            <button onclick="switchTab('helpTab')" id="nav-helpTab" class="nav-btn flex flex-col items-center hover:text-blue-600">
-                <i class="fa-solid fa-circle-question text-lg"></i>
-                <span class="text-[10px] font-bold mt-0.5">Help</span>
-            </button>
-            <button onclick="switchTab('ordersTab')" id="nav-ordersTab" class="nav-btn flex flex-col items-center hover:text-blue-600">
-                <i class="fa-solid fa-truck-fast text-lg"></i>
-                <span class="text-[10px] font-bold mt-0.5">My Orders</span>
-            </button>
-            <button onclick="switchTab('accountTab')" id="nav-accountTab" class="nav-btn flex flex-col items-center hover:text-blue-600">
-                <i class="fa-solid fa-user text-lg"></i>
-                <span class="text-[10px] font-bold mt-0.5">Account</span>
-            </button>
-        </div>
-    </nav>
+    <!-- TRACK ORDER MODAL -->
+    <div id="trackModal" class="fixed inset-0 bg-black/60 z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white w-full max-w-md rounded-2xl p-5 space-y-4 shadow-2xl">
+            <div class="flex justify-between items-center border-b pb-2">
+                <h3 class="font-extrabold text-base text-gray-800" data-i18n="trackTitle">Track Order Status</h3>
+                <button onclick="closeTrackModal()" class="text-gray-400 font-bold text-lg">✕</button>
+            </div>
+            
+            <div class="flex gap-2">
+                <input type="tel" id="trackPhoneInput" data-i18n-ph="phTrackPhone" placeholder="Enter Phone Number" class="flex-1 p-2.5 border rounded-xl text-sm">
+                <button onclick="fetchOrderTracking()" class="bg-blue-600 text-white px-4 py-2.5 rounded-xl font-bold text-xs" data-i18n="btnSearch">Search</button>
+            </div>
 
-    <!-- FIREBASE SDK -->
+            <div id="trackingResult" class="space-y-3 pt-2"></div>
+        </div>
+    </div>
+
+    <!-- FIREBASE & MULTI-LANGUAGE SCRIPT -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, collection, getDocs, addDoc, query, where } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, getDocs, doc, getDoc, query, where } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyAYIQOX3FYTx1eN5Z-xD6dj8elfOilbbuU",
@@ -328,86 +178,352 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        let allProducts = [];
-        let categories = [];
-        let cart = {};
-        let selectedProductForModal = null;
-        let selectedOptionValue = "";
-        let currentUser = null;
-
-        window.addEventListener('DOMContentLoaded', async () => {
-            checkAuthStatus();
-            await loadCategories();
-            await loadProducts();
-            loadFAQs();
-            checkDeepLink();
-        });
-
-        async function checkDeepLink() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const productId = urlParams.get('id');
-            if (productId) openProductModal(productId);
-        }
-
-        window.checkAuthStatus = function() {
-            const savedUser = localStorage.getItem('pickmart_user');
-            if (savedUser) {
-                currentUser = JSON.parse(savedUser);
-                document.getElementById('loginFormBox').classList.add('hidden');
-                document.getElementById('profileBox').classList.remove('hidden');
-
-                const fullName = `${currentUser.firstName || ''} ${currentUser.lastName || ''}`.trim() || 'User';
-                document.getElementById('userDisplayName').innerText = fullName;
-                document.getElementById('userDisplayEmail').innerText = currentUser.email || 'No email set';
-                document.getElementById('userDisplayPhone').innerText = currentUser.phone || currentUser.id;
-
-                document.getElementById('dispFirstName').innerText = currentUser.firstName || '-';
-                document.getElementById('dispLastName').innerText = currentUser.lastName || '-';
-                document.getElementById('dispPhone').innerText = currentUser.phone || currentUser.id || '-';
-                document.getElementById('dispEmail').innerText = currentUser.email || '-';
-
-                document.getElementById('custName').value = fullName;
-                document.getElementById('custPhone').value = (currentUser.phone || currentUser.id || '').replace('+91', '');
-            } else {
-                currentUser = null;
-                document.getElementById('loginFormBox').classList.remove('hidden');
-                document.getElementById('profileBox').classList.add('hidden');
+        // MULTI-LANGUAGE DICTIONARY
+        const i18nData = {
+            en: {
+                btnTrack: "Track",
+                searchPlaceholder: "Search products...",
+                catAll: "All",
+                loadingProducts: "Loading products...",
+                faqTitle: "Frequently Asked Questions",
+                checkoutTitle: "Order Checkout",
+                lblFullName: "Full Name *",
+                phName: "Enter your name",
+                lblPhone: "Phone Number *",
+                phPhone: "10-digit mobile number",
+                lblAddress: "Delivery Address *",
+                phAddress: "House name/number, area, pincode",
+                lblGps: "GPS Location Link",
+                btnGps: "Add Location",
+                lblPaymentMethod: "Payment Option *",
+                optPayOnline: "Pay Online",
+                optCod: "Cash on Delivery",
+                upiMsg: "Scan QR & Pay with Google Pay / PhonePe / Paytm",
+                lblScreenshot: "Upload Payment Screenshot *",
+                btnConfirmOrder: "Confirm & Place Order",
+                trackTitle: "Track Order Status",
+                phTrackPhone: "Enter Phone Number",
+                btnSearch: "Search",
+                buyNow: "Buy Now",
+                optSelect: "Option:",
+                reviews: "Reviews",
+                addReviewBtn: "Write Review"
+            },
+            ml: {
+                btnTrack: "ട്രാക്ക്",
+                searchPlaceholder: "ഉൽപ്പന്നങ്ങൾ തിരയുക...",
+                catAll: "എല്ലാം",
+                loadingProducts: "ഉൽപ്പന്നങ്ങൾ ലോഡ് ചെയ്യുന്നു...",
+                faqTitle: "പതിവായി ചോദിക്കുന്ന ചോദ്യങ്ങൾ",
+                checkoutTitle: "ഓർഡർ ചെക്ക്ഔട്ട്",
+                lblFullName: "മുഴുവൻ പേര് *",
+                phName: "നിങ്ങളുടെ പേര് നൽകുക",
+                lblPhone: "ഫോൺ നമ്പർ *",
+                phPhone: "10 അക്ക മൊബൈൽ നമ്പർ",
+                lblAddress: "ഡെലിവറി വിലാസം *",
+                phAddress: "വീട്ടുപേര്/നമ്പർ, സ്ഥലം, പിൻകോഡ്",
+                lblGps: "GPS ലൊക്കേഷൻ ലിങ്ക്",
+                btnGps: "ലൊക്കേഷൻ നൽകുക",
+                lblPaymentMethod: "പേയ്‌മെന്റ് രീതി *",
+                optPayOnline: "ഓൺലൈൻ പേയ്‌‌മെന്റ്",
+                optCod: "ക്യാഷ് ഓൺ ഡെലിവറി",
+                upiMsg: "QR കോഡ് സ്കാൻ ചെയ്ത് Google Pay / PhonePe വഴി പണം അടയ്ക്കുക",
+                lblScreenshot: "പേയ്‌മെന്റ് സ്ക്രീൻഷോട്ട് അപ്‌ലോഡ് ചെയ്യുക *",
+                btnConfirmOrder: "ഓർഡർ സ്ഥിരീകരിക്കുക",
+                trackTitle: "ഓർഡർ ട്രാക്ക് ചെയ്യുക",
+                phTrackPhone: "ഫോൺ നമ്പർ നൽകുക",
+                btnSearch: "തിരയുക",
+                buyNow: "ഇപ്പോൾ വാങ്ങുക",
+                optSelect: "ഓപ്ഷൻ:",
+                reviews: "റിവ്യൂകൾ",
+                addReviewBtn: "റിവ്യൂ എഴുതുക"
+            },
+            ta: {
+                btnTrack: "டிராக்",
+                searchPlaceholder: "பொருட்களைத் தேடுங்கள்...",
+                catAll: "அனைத்தும்",
+                loadingProducts: "பொருட்கள் ஏற்றப்படுகின்றன...",
+                faqTitle: "அடிக்கடி கேட்கப்படும் கேள்விகள்",
+                checkoutTitle: "ஆர்டர் செக்அவுட்",
+                lblFullName: "முழு பெயர் *",
+                phName: "உங்கள் பெயரை உள்ளிடவும்",
+                lblPhone: "தொலைபேசி எண் *",
+                phPhone: "10 இலக்க மொபைல் எண்",
+                lblAddress: "டெலிவரி முகவரி *",
+                phAddress: "வீட்டு பெயர்/எண், பகுதி, பின்கோடு",
+                lblGps: "GPS இருப்பிட இணைப்பு",
+                btnGps: "இருப்பிடத்தைச் சேர்",
+                lblPaymentMethod: "கட்டண முறை *",
+                optPayOnline: "ஆன்லைன் கட்டணம்",
+                optCod: "கேஷ் ஆன் டெலிவரி",
+                upiMsg: "QR குறியீட்டை ஸ்கேன் செய்து கட்டணம் செலுத்தவும்",
+                lblScreenshot: "கட்டண ஸ்கிரீன்ஷாட்டைப் பதிவேற்றவும் *",
+                btnConfirmOrder: "ஆர்டரை உறுதிப்படுத்தவும்",
+                trackTitle: "ஆர்டர் நிலை",
+                phTrackPhone: "தொலைபேசி எண்ணை உள்ளிடவும்",
+                btnSearch: "தேடு",
+                buyNow: "இப்போது வாங்கவும்",
+                optSelect: "விருப்பம்:",
+                reviews: "விமர்சனங்கள்",
+                addReviewBtn: "விமர்சனம் எழுத"
+            },
+            hi: {
+                btnTrack: "ट्रैक करें",
+                searchPlaceholder: "उत्पाद खोजें...",
+                catAll: "सभी",
+                loadingProducts: "उत्पाद लोड हो रहे हैं...",
+                faqTitle: "अक्सर पूछे जाने वाले प्रश्न",
+                checkoutTitle: "ऑर्डर चेकआउट",
+                lblFullName: "पूरा नाम *",
+                phName: "अपना नाम दर्ज करें",
+                lblPhone: "फोन नंबर *",
+                phPhone: "10 अंकों का मोबाइल नंबर",
+                lblAddress: "डिलिवरी का पता *",
+                phAddress: "मकान का नाम/नंबर, क्षेत्र, पिनकोड",
+                lblGps: "GPS लोकेशन लिंक",
+                btnGps: "लोकेशन जोड़ें",
+                lblPaymentMethod: "भुगतान का विकल्प *",
+                optPayOnline: "ऑनलाइन भुगतान",
+                optCod: "कैश ऑन डिलीवरी",
+                upiMsg: "QR कोड स्कैन करके भुगतान करें",
+                lblScreenshot: "भुगतान का स्क्रीनशॉट अपलोड करें *",
+                btnConfirmOrder: "ऑर्डर की पुष्टि करें",
+                trackTitle: "ऑर्डर ट्रैक करें",
+                phTrackPhone: "फोन नंबर दर्ज करें",
+                btnSearch: "खोजें",
+                buyNow: "अभी खरीदें",
+                optSelect: "विकल्प:",
+                reviews: "समीक्षाएं",
+                addReviewBtn: "समीक्षा लिखें"
             }
         };
 
-        async function loadCategories() {
-            try {
-                const snap = await getDocs(collection(db, "categories"));
-                const pillDiv = document.getElementById('categoryPills');
-                pillDiv.innerHTML = `<button onclick="filterCategory('All')" class="bg-blue-600 text-white px-3.5 py-1.5 rounded-full text-xs font-bold whitespace-nowrap shadow-sm">All</button>`;
-                snap.forEach(docSnap => {
-                    const cat = docSnap.data().name;
-                    pillDiv.innerHTML += `<button onclick="filterCategory('${cat}')" class="bg-white border text-gray-700 px-3.5 py-1.5 rounded-full text-xs font-bold whitespace-nowrap shadow-sm hover:border-blue-600">${cat}</button>`;
-                });
-            } catch(e) { console.error(e); }
+        let currentLang = localStorage.getItem('pickmart_lang') || 'en';
+        let allProducts = [];
+        let activeProductForCheckout = null;
+
+        window.changeLanguage = function(langKey) {
+            currentLang = langKey;
+            localStorage.setItem('pickmart_lang', langKey);
+            document.getElementById('langSelect').value = langKey;
+            applyTranslations();
+            renderProducts(allProducts);
+        };
+
+        function applyTranslations() {
+            const dict = i18nData[currentLang] || i18nData['en'];
+
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (dict[key]) el.innerText = dict[key];
+            });
+
+            document.querySelectorAll('[data-i18n-ph]').forEach(el => {
+                const key = el.getAttribute('data-i18n-ph');
+                if (dict[key]) el.placeholder = dict[key];
+            });
         }
 
-        window.filterCategory = function(catName) {
-            if(catName === 'All') { renderProducts(allProducts); return; }
-            const filtered = allProducts.filter(p => p.category === catName);
+        // INITIAL LOAD
+        window.addEventListener('DOMContentLoaded', async () => {
+            document.getElementById('langSelect').value = currentLang;
+            applyTranslations();
+
+            await loadCategories();
+            await loadProducts();
+            await loadFaqs();
+
+            // Direct URL Check (from Insta link)
+            const urlParams = new URLSearchParams(window.location.search);
+            const pId = urlParams.get('id');
+            if (pId) {
+                openProductDirectly(pId);
+            }
+        });
+
+        async function loadCategories() {
+            const container = document.getElementById('categoryContainer');
+            const snap = await getDocs(collection(db, "categories"));
+            snap.forEach(docSnap => {
+                const cName = docSnap.data().name;
+                container.innerHTML += `
+                    <button onclick="filterByCategory('${cName}')" class="cat-btn bg-gray-200 text-gray-700 px-4 py-1.5 rounded-full text-xs font-bold whitespace-nowrap">${cName}</button>
+                `;
+            });
+        }
+
+        async function loadProducts() {
+            const snap = await getDocs(collection(db, "products"));
+            allProducts = [];
+            snap.forEach(docSnap => {
+                allProducts.push({ id: docSnap.id, ...docSnap.data() });
+            });
+            renderProducts(allProducts);
+        }
+
+        function renderProducts(products) {
+            const grid = document.getElementById('productGrid');
+            grid.innerHTML = '';
+            const dict = i18nData[currentLang] || i18nData['en'];
+
+            if (products.length === 0) {
+                grid.innerHTML = `<p class="col-span-full text-center text-gray-400 py-10 text-sm">No products found.</p>`;
+                return;
+            }
+
+            products.forEach(p => {
+                const img = p.images && p.images.length > 0 ? p.images[0] : (p.image || 'https://via.placeholder.com/150');
+                const optionsArr = p.options ? p.options.split(',') : [];
+
+                grid.innerHTML += `
+                    <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden flex flex-col justify-between p-2.5">
+                        <div class="space-y-2">
+                            <img src="${img}" class="w-full h-36 object-cover rounded-xl">
+                            <h4 class="font-extrabold text-xs text-gray-800 line-clamp-1">${p.name}</h4>
+                            
+                            <div class="flex items-center justify-between text-xs">
+                                <div>
+                                    <span class="text-green-700 font-black text-sm">₹${p.price}</span>
+                                    <span class="text-[10px] text-gray-400 line-through">₹${p.codPrice}</span>
+                                </div>
+                                <span class="bg-green-100 text-green-800 text-[9px] font-extrabold px-1.5 py-0.5 rounded">Pay Online</span>
+                            </div>
+
+                            ${optionsArr.length > 0 ? `
+                                <div class="text-[10px]">
+                                    <label class="font-bold text-gray-500">${dict.optSelect}</label>
+                                    <select id="opt-${p.id}" class="w-full border rounded p-1 text-[11px]">
+                                        ${optionsArr.map(o => `<option value="${o.trim()}">${o.trim()}</option>`).join('')}
+                                    </select>
+                                </div>
+                            ` : ''}
+                        </div>
+
+                        <button onclick="startCheckout('${p.id}')" class="mt-3 w-full bg-blue-600 text-white font-bold py-2 rounded-xl text-xs hover:bg-blue-700 shadow-sm flex items-center justify-center space-x-1">
+                            <span>🛍️</span>
+                            <span>${dict.buyNow}</span>
+                        </button>
+                    </div>
+                `;
+            });
+        }
+
+        window.filterByCategory = function(cat) {
+            if (cat === 'all') {
+                renderProducts(allProducts);
+            } else {
+                const filtered = allProducts.filter(p => p.category === cat);
+                renderProducts(filtered);
+            }
+        };
+
+        window.filterProducts = function() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            const filtered = allProducts.filter(p => p.name.toLowerCase().includes(query));
             renderProducts(filtered);
         };
 
-        window.togglePaymentBox = function() {
-            const isOnline = document.querySelector('input[name="payment"]:checked')?.value === 'ONLINE';
-            document.getElementById('upiPaymentBox').classList.toggle('hidden', !isOnline);
-            updateCheckoutTotal();
+        async function openProductDirectly(pId) {
+            const pDoc = await getDoc(doc(db, "products", pId));
+            if (pDoc.exists()) {
+                startCheckout(pId);
+            }
+        }
+
+        window.startCheckout = function(pId) {
+            const product = allProducts.find(p => p.id === pId);
+            if (!product) return;
+
+            activeProductForCheckout = product;
+            const selectedOpt = document.getElementById(`opt-${pId}`) ? document.getElementById(`opt-${pId}`).value : '';
+
+            const summary = document.getElementById('checkoutProductSummary');
+            const img = product.images && product.images.length > 0 ? product.images[0] : (product.image || '');
+
+            summary.innerHTML = `
+                <img src="${img}" class="w-12 h-12 object-cover rounded-lg">
+                <div class="text-xs">
+                    <h5 class="font-extrabold text-blue-900">${product.name}</h5>
+                    ${selectedOpt ? `<p class="text-gray-500 font-bold">Selected: ${selectedOpt}</p>` : ''}
+                </div>
+            `;
+
+            document.getElementById('onlinePriceTag').innerText = `₹${product.price}`;
+            document.getElementById('codPriceTag').innerText = `₹${product.codPrice}`;
+
+            document.getElementById('checkoutModal').classList.remove('hidden');
         };
 
-        window.payViaUPI = function(appType) {
-            const amountText = document.getElementById('finalPayableAmount').innerText.replace('₹', '');
-            const upiId = "Q245377579@ybl";
-            const storeName = "Pick Mart";
-            const upiUrl = `upi://pay?pa=${upiId}&pn=${encodeURIComponent(storeName)}&am=${amountText}&cu=INR`;
-            window.location.href = upiUrl;
+        window.closeCheckoutModal = function() {
+            document.getElementById('checkoutModal').classList.add('hidden');
         };
 
-        function compressImage(file) {
+        window.togglePaymentBox = function(method) {
+            const upiBox = document.getElementById('upiBox');
+            if (method === 'Online') {
+                upiBox.classList.remove('hidden');
+            } else {
+                upiBox.classList.add('hidden');
+            }
+        };
+
+        window.getGPSLocation = function() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition((pos) => {
+                    const link = `https://maps.google.com/?q=${pos.coords.latitude},${pos.coords.longitude}`;
+                    document.getElementById('gpsLinkInput').value = link;
+                    alert("GPS Location added successfully!");
+                }, () => alert("Could not fetch location. Please allow GPS permission."));
+            } else { alert("Geolocation not supported."); }
+        };
+
+        document.getElementById('orderForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('submitOrderBtn');
+            btn.disabled = true;
+            btn.innerText = "Processing...";
+
+            const method = document.querySelector('input[name="payMethod"]:checked').value;
+            const price = method === 'Online' ? activeProductForCheckout.price : activeProductForCheckout.codPrice;
+            const profit = price - (activeProductForCheckout.costPrice || 0);
+
+            let screenshotBase64 = "";
+            if (method === 'Online') {
+                const fileInput = document.getElementById('payScreenshot');
+                if (fileInput.files.length > 0) {
+                    screenshotBase64 = await compressImg(fileInput.files[0]);
+                }
+            }
+
+            const now = new Date();
+            const monthKey = `${now.getMonth()+1}-${now.getFullYear()}`;
+
+            try {
+                await addDoc(collection(db, "orders"), {
+                    productId: activeProductForCheckout.id,
+                    productName: activeProductForCheckout.name,
+                    name: document.getElementById('custName').value,
+                    phone: document.getElementById('custPhone').value,
+                    address: document.getElementById('custAddress').value,
+                    gpsMapLink: document.getElementById('gpsLinkInput').value,
+                    paymentMethod: method,
+                    price: price,
+                    profit: profit,
+                    paymentScreenshot: screenshotBase64,
+                    status: "Order Placed",
+                    monthKey: monthKey,
+                    timestamp: now,
+                    orderDateFormatted: now.toLocaleString('en-IN', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true })
+                });
+
+                alert("🎉 Order placed successfully!");
+                closeCheckoutModal();
+                document.getElementById('orderForm').reset();
+            } catch(err) { alert("Order Failed: " + err.message); }
+            finally { btn.disabled = false; btn.innerText = "Confirm & Place Order"; }
+        });
+
+        function compressImg(file) {
             return new Promise((resolve) => {
                 const reader = new FileReader();
                 reader.readAsDataURL(file);
@@ -416,391 +532,69 @@
                     img.src = e.target.result;
                     img.onload = () => {
                         const canvas = document.createElement('canvas');
-                        canvas.width = 600;
-                        canvas.height = Math.round((img.height * 600) / img.width);
+                        canvas.width = 400;
+                        canvas.height = Math.round((img.height * 400) / img.width);
                         canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
-                        resolve(canvas.toDataURL('image/jpeg', 0.7));
+                        resolve(canvas.toDataURL('image/jpeg', 0.6));
                     };
                 };
             });
         }
 
-        // 🛍️ PLACE ORDER (No WhatsApp redirect)
-        window.handlePlaceOrder = async function(e) {
-            e.preventDefault();
-            const btn = document.getElementById('placeOrderBtn');
-            const items = Object.values(cart);
-            const isCod = document.querySelector('input[name="payment"]:checked').value === 'COD';
-            const total = items.reduce((sum, item) => sum + (isCod ? item.codPrice : item.price), 0);
-            const totalCost = items.reduce((sum, item) => sum + (item.costPrice || 0), 0);
-
-            let screenshotBase64 = "";
-            if (!isCod) {
-                const fileInput = document.getElementById('payScreenshotFile');
-                if (fileInput.files.length === 0) {
-                    alert('ഓൺലൈൻ പേയ്‌മെന്റ് ചെയ്തതിന്റെ സ്ക്രീൻഷോട്ട് അപ്‌ലോഡ് ചെയ്യുക!');
-                    return;
-                }
-                btn.disabled = true;
-                btn.innerText = "Processing Screenshot...";
-                screenshotBase64 = await compressImage(fileInput.files[0]);
-            }
-
-            btn.disabled = true;
-            btn.innerText = "Placing Order...";
-
-            const house = document.getElementById('addrHouse').value;
-            const locality = document.getElementById('addrLocality').value;
-            const custName = document.getElementById('custName').value;
-            const custPhone = document.getElementById('custPhone').value;
-            const altPhone = document.getElementById('custAltPhone').value;
-            const gpsLink = document.getElementById('addrGpsLink').value;
-
-            const fullAddress = `${house}, ${locality} ${altPhone ? '(Alt: ' + altPhone + ')' : ''}`;
-            const itemSummary = items.map(i => `${i.name} (${i.option})`).join(', ');
-
-            const d = new Date();
-            const monthKey = `${d.getMonth()+1}-${d.getFullYear()}`;
-
-            // Format Readable Date and Time
-            const formattedDateStr = d.toLocaleString('en-IN', {
-                day: '2-digit', month: 'short', year: 'numeric',
-                hour: '2-digit', minute: '2-digit', hour12: true
-            });
-
-            try {
-                await addDoc(collection(db, "orders"), {
-                    productName: itemSummary,
-                    price: total,
-                    costPrice: totalCost,
-                    profit: total - totalCost,
-                    paymentMethod: isCod ? 'COD' : 'ONLINE',
-                    paymentScreenshot: screenshotBase64,
-                    name: custName,
-                    phone: custPhone,
-                    address: fullAddress,
-                    gpsMapLink: gpsLink,
-                    userIdentifier: currentUser.id || currentUser.phone,
-                    status: 'Order Placed',
-                    currentLocation: 'Order Confirmed - Processing',
-                    monthKey: monthKey,
-                    orderDateFormatted: formattedDateStr,
-                    timestamp: d
-                });
-
-                alert('ഓർഡർ സമർപ്പിച്ചു! നിങ്ങളുടെ അക്കൗണ്ടിൽ ട്രാക്ക് ചെയ്യാം.');
-                cart = {};
-                updateCartUI();
-                closeCheckoutModal();
-                switchTab('ordersTab');
-            } catch(err) { alert('Order Error: ' + err.message); }
-            finally { btn.disabled = false; btn.innerText = "Confirm & Place Order"; }
+        // TRACK ORDER MODAL LOGIC
+        window.openTrackModal = function() {
+            document.getElementById('trackModal').classList.remove('hidden');
         };
 
-        window.openEditProfileModal = function() {
-            if(!currentUser) return;
-            document.getElementById('editFirstName').value = currentUser.firstName || '';
-            document.getElementById('editLastName').value = currentUser.lastName || '';
-            document.getElementById('editPhone').value = currentUser.phone || currentUser.id || '';
-            document.getElementById('editEmail').value = currentUser.email || '';
-            document.getElementById('editProfileModal').classList.remove('hidden');
+        window.closeTrackModal = function() {
+            document.getElementById('trackModal').classList.add('hidden');
         };
 
-        window.closeEditProfileModal = function() { document.getElementById('editProfileModal').classList.add('hidden'); };
+        window.fetchOrderTracking = async function() {
+            const phone = document.getElementById('trackPhoneInput').value.trim();
+            const resultDiv = document.getElementById('trackingResult');
+            resultDiv.innerHTML = '<p class="text-xs text-gray-400 text-center">Searching...</p>';
 
-        window.saveProfileChanges = function(e) {
-            e.preventDefault();
-            currentUser.firstName = document.getElementById('editFirstName').value.trim();
-            currentUser.lastName = document.getElementById('editLastName').value.trim();
-            currentUser.phone = document.getElementById('editPhone').value.trim();
-            currentUser.email = document.getElementById('editEmail').value.trim();
-            localStorage.setItem('pickmart_user', JSON.stringify(currentUser));
-            checkAuthStatus();
-            closeEditProfileModal();
-            alert('പ്രൊഫൈൽ മാറ്റങ്ങൾ സേവ് ചെയ്തു!');
-        };
+            if (!phone) return alert("Please enter phone number");
 
-        window.handleLoginClick = function() {
-            const firstName = document.getElementById('regFirstName').value.trim();
-            const phone = document.getElementById('userLoginInput').value.trim();
-            if(!firstName || !phone) return alert('ഫസ്റ്റ് നെയിമും ഫോൺ നമ്പറും നൽകുക!');
+            const q = query(collection(db, "orders"), where("phone", "==", phone));
+            const snap = await getDocs(q);
 
-            currentUser = {
-                firstName: firstName,
-                lastName: document.getElementById('regLastName').value.trim(),
-                email: document.getElementById('regEmail').value.trim(),
-                phone: phone,
-                id: phone
-            };
-            localStorage.setItem('pickmart_user', JSON.stringify(currentUser));
-            checkAuthStatus();
-            switchTab('homeTab');
-        };
-
-        window.filterProducts = function() {
-            const queryVal = document.getElementById('searchInput').value.toLowerCase().trim();
-            if (!queryVal) return renderProducts(allProducts);
-            renderProducts(allProducts.filter(p => p.name.toLowerCase().includes(queryVal)));
-        };
-
-        window.getCurrentGpsLocation = function() {
-            const btnText = document.getElementById('gpsBtnText');
-            const locText = document.getElementById('addrLocality');
-            if (!navigator.geolocation) return alert("GPS സപ്പോർട്ട് ചെയ്യുന്നില്ല.");
-            btnText.innerText = "Finding...";
-
-            navigator.geolocation.getCurrentPosition(async (pos) => {
-                const lat = pos.coords.latitude;
-                const lng = pos.coords.longitude;
-                document.getElementById('addrGpsLink').value = `https://www.google.com/maps?q=${lat},${lng}`;
-                try {
-                    const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`);
-                    const data = await res.json();
-                    if(data && data.address) {
-                        const a = data.address;
-                        locText.value = [a.suburb||a.village||'', a.city||a.district||'', a.state||'', a.postcode||''].filter(Boolean).join(', ');
-                    } else { locText.value = `Lat: ${lat}, Lng: ${lng}`; }
-                    btnText.innerText = "Saved ✓";
-                } catch(e) {
-                    locText.value = `https://www.google.com/maps?q=${lat},${lng}`;
-                    btnText.innerText = "Saved ✓";
-                }
-            }, () => { alert("GPS ഓൺ ആക്കുക."); btnText.innerText = "Use GPS Location"; }, {enableHighAccuracy: true});
-        };
-
-        window.switchTab = function(tabId) {
-            document.querySelectorAll('.tab-content').forEach(t => t.classList.add('hidden'));
-            document.getElementById(tabId).classList.remove('hidden');
-            if(tabId === 'ordersTab') loadMyOrders();
-        };
-
-        async function loadProducts() {
-            try {
-                const snap = await getDocs(collection(db, "products"));
-                allProducts = [];
-                snap.forEach(doc => allProducts.push({ id: doc.id, ...doc.data() }));
-                renderProducts(allProducts);
-            } catch(e) { console.error(e); }
-        }
-
-        function renderProducts(products) {
-            const grid = document.getElementById('productGrid');
-            if(products.length === 0) return grid.innerHTML = '<p class="col-span-2 text-center py-6 text-gray-400">പ്രൊഡക്റ്റുകൾ ഒന്നുമില്ല.</p>';
-            grid.innerHTML = '';
-            products.forEach(p => {
-                const mainImg = p.images && p.images.length > 0 ? p.images[0] : p.image;
-                grid.innerHTML += `
-                    <div onclick="openProductModal('${p.id}')" class="bg-white rounded-xl border p-2 flex flex-col justify-between cursor-pointer shadow-sm">
-                        <img src="${mainImg}" class="w-full h-36 object-cover rounded-lg">
-                        <div class="mt-2 space-y-1">
-                            <h4 class="font-bold text-xs text-gray-800 line-clamp-1">${p.name}</h4>
-                            <div class="flex items-baseline space-x-1">
-                                <span class="font-black text-sm text-blue-700">₹${p.price}</span>
-                                <span class="text-[10px] text-gray-400 line-through">₹${p.codPrice || Math.round(p.price*1.2)}</span>
-                            </div>
-                        </div>
-                    </div>
-                `;
-            });
-        }
-
-        window.openProductModal = function(id) {
-            const p = allProducts.find(item => item.id === id);
-            if(!p) return;
-            selectedProductForModal = p;
-
-            const imgs = p.images && p.images.length > 0 ? p.images : [p.image];
-            document.getElementById('modalImg').src = imgs[0];
-
-            const thumbDiv = document.getElementById('imageThumbnails');
-            thumbDiv.innerHTML = '';
-            imgs.forEach((img) => {
-                thumbDiv.innerHTML += `<img src="${img}" onclick="document.getElementById('modalImg').src='${img}'" class="w-12 h-12 object-cover rounded-lg border-2 border-blue-600 cursor-pointer">`;
-            });
-
-            document.getElementById('modalName').innerText = p.name;
-            document.getElementById('modalOnlinePrice').innerText = '₹' + p.price;
-            document.getElementById('modalCodPrice').innerText = '₹' + (p.codPrice || p.price);
-
-            const optsDiv = document.getElementById('optionsButtons');
-            optsDiv.innerHTML = '';
-            const opts = p.options ? p.options.split(',') : ['Standard'];
-            selectedOptionValue = opts[0].trim();
-
-            opts.forEach((opt, idx) => {
-                optsDiv.innerHTML += `
-                    <button onclick="selectOption('${opt.trim()}', this)" class="opt-btn border px-3 py-1 rounded-lg text-xs font-bold ${idx === 0 ? 'bg-blue-600 text-white' : 'bg-gray-50'}">${opt.trim()}</button>
-                `;
-            });
-
-            loadProductReviews(p.id);
-            document.getElementById('productModal').classList.remove('hidden');
-        };
-
-        window.selectOption = function(val, btn) {
-            selectedOptionValue = val;
-            document.querySelectorAll('.opt-btn').forEach(b => b.className = 'opt-btn border px-3 py-1 rounded-lg text-xs font-bold bg-gray-50');
-            btn.className = 'opt-btn border px-3 py-1 rounded-lg text-xs font-bold bg-blue-600 text-white';
-        };
-
-        window.closeProductModal = function() { document.getElementById('productModal').classList.add('hidden'); };
-
-        window.addToCartFromModal = function() {
-            const p = selectedProductForModal;
-            const mainImg = p.images && p.images.length > 0 ? p.images[0] : p.image;
-            cart[p.id] = { name: p.name, price: p.price, codPrice: p.codPrice || p.price, costPrice: p.costPrice || 0, qty: 1, option: selectedOptionValue, image: mainImg };
-            updateCartUI();
-            closeProductModal();
-            alert('കാർട്ടിലേക്ക് ആഡ് ആയി!');
-        };
-
-        window.buyNowFromModal = function() {
-            addToCartFromModal();
-            switchTab('cartTab');
-        };
-
-        function updateCartUI() {
-            const items = Object.values(cart);
-            document.getElementById('cartBadge').innerText = items.length;
-            document.getElementById('cartBadge').classList.toggle('hidden', items.length === 0);
-
-            const container = document.getElementById('cartItemsContainer');
-            if(items.length === 0) {
-                container.innerHTML = '<p class="text-center py-8 text-gray-400">കാർട്ടിൽ പ്രൊഡക്റ്റുകൾ ഒന്നുമില്ല.</p>';
-                document.getElementById('cartSummaryBox').classList.add('hidden');
+            resultDiv.innerHTML = '';
+            if (snap.empty) {
+                resultDiv.innerHTML = `<p class="text-xs text-red-500 text-center">No orders found for this number.</p>`;
                 return;
             }
 
-            document.getElementById('cartSummaryBox').classList.remove('hidden');
-            container.innerHTML = '';
-            items.forEach(i => {
-                container.innerHTML += `
-                    <div class="bg-white p-3 rounded-xl border flex justify-between items-center">
-                        <div class="flex space-x-3 items-center">
-                            <img src="${i.image}" class="w-12 h-12 rounded object-cover">
-                            <div>
-                                <h4 class="font-bold text-xs">${i.name}</h4>
-                                <p class="text-[10px] text-gray-500">Option: ${i.option}</p>
-                                <p class="text-xs text-blue-700 font-bold">₹${i.price}</p>
-                            </div>
+            snap.forEach(docSnap => {
+                const o = docSnap.data();
+                resultDiv.innerHTML += `
+                    <div class="border p-3 rounded-xl bg-blue-50/50 space-y-1 text-xs">
+                        <div class="flex justify-between font-bold text-blue-900">
+                            <span>${o.productName}</span>
+                            <span class="text-green-700">₹${o.price}</span>
                         </div>
+                        <p class="text-[11px] text-gray-500">Status: <b class="text-blue-700">${o.status}</b></p>
+                        ${o.currentLocation ? `<p class="text-[11px] text-gray-600">Location: 📍 ${o.currentLocation}</p>` : ''}
                     </div>
                 `;
             });
-            updateCheckoutTotal();
-        }
-
-        window.updateCheckoutTotal = function() {
-            const items = Object.values(cart);
-            const isCod = document.querySelector('input[name="payment"]:checked')?.value === 'COD';
-            const total = items.reduce((sum, item) => sum + (isCod ? item.codPrice : item.price), 0);
-            document.getElementById('cartSubtotal').innerText = '₹' + total;
-            document.getElementById('finalPayableAmount').innerText = '₹' + total;
         };
 
-        window.openCheckoutModal = function() {
-            if(!currentUser) { alert('ലോഗിൻ ചെയ്യുക!'); return switchTab('accountTab'); }
-            document.getElementById('checkoutModal').classList.remove('hidden');
-            togglePaymentBox();
-        };
-
-        window.closeCheckoutModal = function() { document.getElementById('checkoutModal').classList.add('hidden'); };
-
-        async function loadFAQs() {
-            const container = document.getElementById('faqContainer');
-            try {
-                const snap = await getDocs(collection(db, "faqs"));
-                if(snap.empty) { container.innerHTML = '<p class="text-center text-gray-400 py-4 text-xs">ചോദ്യങ്ങൾ ഒന്നും ഇല്ല.</p>'; return; }
-                container.innerHTML = '';
-                snap.forEach(docSnap => {
-                    const f = docSnap.data();
-                    container.innerHTML += `
-                        <div class="bg-white p-3.5 rounded-xl border shadow-sm space-y-1">
-                            <h4 class="font-bold text-xs text-blue-900">❓ ${f.question}</h4>
-                            <p class="text-xs text-gray-600 border-t pt-1 mt-1">💡 ${f.answer}</p>
-                        </div>
-                    `;
-                });
-            } catch(e) { container.innerHTML = '<p class="text-center text-red-500 py-4 text-xs">FAQ Error</p>'; }
+        async function loadFaqs() {
+            const list = document.getElementById('faqList');
+            const snap = await getDocs(collection(db, "faqs"));
+            list.innerHTML = '';
+            snap.forEach(docSnap => {
+                const f = docSnap.data();
+                list.innerHTML += `
+                    <details class="bg-gray-50 p-2.5 rounded-xl border">
+                        <summary class="font-bold text-gray-800 cursor-pointer">❓ ${f.question}</summary>
+                        <p class="text-gray-600 mt-1 pl-4">${f.answer}</p>
+                    </details>
+                `;
+            });
         }
-
-        async function loadProductReviews(pId) {
-            const list = document.getElementById('reviewsList');
-            list.innerHTML = '<p class="text-xs text-gray-400">ലോഡ് ചെയ്യുന്നു...</p>';
-            try {
-                const q = query(collection(db, "reviews"), where("productId", "==", pId));
-                const snap = await getDocs(q);
-                if(snap.empty) { list.innerHTML = '<p class="text-xs text-gray-400">റിവ്യൂകൾ ഇല്ല.</p>'; return; }
-                list.innerHTML = '';
-                snap.forEach(docSnap => {
-                    const r = docSnap.data();
-                    list.innerHTML += `
-                        <div class="bg-gray-50 p-2 rounded-lg border text-xs">
-                            <div class="flex justify-between font-bold text-gray-800">
-                                <span>${r.userName || 'Customer'}</span>
-                                <span class="text-amber-600 text-[10px]">${'⭐'.repeat(r.rating || 5)}</span>
-                            </div>
-                            <p class="text-gray-600 text-[11px]">${r.comment}</p>
-                        </div>
-                    `;
-                });
-            } catch(e) { list.innerHTML = '<p class="text-xs text-red-500">Error</p>'; }
-        }
-
-        window.submitUserReview = async function() {
-            if(!selectedProductForModal) return;
-            const comment = document.getElementById('revComment').value.trim();
-            if(!comment) return alert('റിവ്യൂ എഴുതുക!');
-            try {
-                await addDoc(collection(db, "reviews"), {
-                    productId: selectedProductForModal.id,
-                    userName: currentUser ? currentUser.firstName || 'User' : 'Customer',
-                    rating: Number(document.getElementById('revRating').value),
-                    comment: comment,
-                    timestamp: new Date()
-                });
-                alert('റിവ്യൂ സമർപ്പിച്ചു!');
-                document.getElementById('revComment').value = '';
-                loadProductReviews(selectedProductForModal.id);
-            } catch(e) { alert('Error'); }
-        };
-
-        async function loadMyOrders() {
-            const container = document.getElementById('myOrdersList');
-            if(!currentUser) return container.innerHTML = '<p class="text-center py-6 text-gray-500 text-sm">ലോഗിൻ ചെയ്യുക.</p>';
-
-            try {
-                const q = query(collection(db, "orders"), where("userIdentifier", "==", currentUser.id || currentUser.phone));
-                const snap = await getDocs(q);
-                if(snap.empty) return container.innerHTML = '<p class="text-center py-6 text-gray-500 text-sm">ഓർഡറുകൾ ഒന്നുമില്ല.</p>';
-
-                container.innerHTML = '';
-                snap.forEach(docSnap => {
-                    const o = docSnap.data();
-                    container.innerHTML += `
-                        <div class="bg-white p-4 rounded-xl border shadow-sm space-y-2">
-                            <div class="flex justify-between items-start border-b pb-2">
-                                <div>
-                                    <h4 class="font-bold text-xs text-blue-900">${o.productName}</h4>
-                                    <p class="text-xs text-green-700 font-extrabold">Amount: ₹${o.price} (${o.paymentMethod})</p>
-                                </div>
-                                <span class="bg-blue-100 text-blue-800 text-[10px] font-bold px-2 py-0.5 rounded-full">${o.status}</span>
-                            </div>
-                            <div class="bg-gray-50 p-2 rounded text-xs space-y-1">
-                                <p class="text-gray-600"><b>📍 Live Tracking:</b> <span class="text-blue-700 font-bold">${o.currentLocation || 'In Transit'}</span></p>
-                                <p class="text-gray-500"><b>Address:</b> ${o.address}</p>
-                            </div>
-                        </div>
-                    `;
-                });
-            } catch(e) { container.innerHTML = '<p class="text-center text-red-500 py-4">എറർ ഉണ്ടായി.</p>'; }
-        }
-
-        window.logoutUser = function() {
-            localStorage.removeItem('pickmart_user');
-            checkAuthStatus();
-            alert('ലോഗ് ഔട്ട് ആയി!');
-        };
     </script>
 </body>
 </html>
