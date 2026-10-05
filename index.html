@@ -13,7 +13,7 @@
 </head>
 <body class="bg-gray-100 pb-20 font-sans text-gray-800">
 
-    <!-- Header -->
+    <!-- Top Navigation Header -->
     <header class="sticky top-0 z-40 bg-white shadow-sm border-b">
         <div class="max-w-md mx-auto px-4 py-3">
             <div class="flex items-center justify-between mb-2">
@@ -23,6 +23,7 @@
                     <span id="cartBadge" class="absolute -top-2 -right-2 bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full hidden">0</span>
                 </button>
             </div>
+            <!-- Search Bar -->
             <div class="relative mt-2">
                 <i class="fa-solid fa-magnifying-glass absolute left-3 top-3 text-gray-400"></i>
                 <input type="text" id="searchInput" oninput="filterProducts()" placeholder="Search Products..." class="w-full pl-9 pr-4 py-2 bg-gray-50 rounded-lg text-sm border focus:ring-2 focus:ring-blue-600 focus:bg-white transition outline-none">
@@ -37,6 +38,14 @@
                 <span class="bg-yellow-400 text-blue-950 font-black text-[10px] uppercase px-2 py-0.5 rounded">Special Offer</span>
                 <h2 class="text-xl font-bold mt-1">Direct Collection 🔥</h2>
                 <p class="text-xs text-blue-100 mt-1">Free Delivery | Cash on Delivery Available</p>
+            </div>
+
+            <!-- Categories Dynamic Filter Pills -->
+            <div>
+                <h3 class="font-bold text-xs text-gray-500 uppercase tracking-wider mb-2">Categories</h3>
+                <div id="categoryPills" class="flex space-x-2 overflow-x-auto no-scrollbar py-1">
+                    <button onclick="filterCategory('All')" class="bg-blue-600 text-white px-3.5 py-1.5 rounded-full text-xs font-bold whitespace-nowrap shadow-sm">All</button>
+                </div>
             </div>
 
             <div>
@@ -189,7 +198,7 @@
         </div>
     </div>
 
-    <!-- 📍 DELIVER TO / CHECKOUT WITH UPI & SCREENSHOT UPLOAD -->
+    <!-- DELIVER TO / CHECKOUT WITH UPI -->
     <div id="checkoutModal" class="fixed inset-0 bg-black/60 z-50 hidden flex items-end sm:items-center justify-center p-0 sm:p-4">
         <div class="bg-white w-full max-w-md rounded-t-2xl sm:rounded-2xl max-h-[92vh] overflow-y-auto p-4 space-y-4">
             <div class="flex justify-between items-center border-b pb-2">
@@ -229,7 +238,6 @@
                     <input type="tel" id="custAltPhone" placeholder="Alternate Mobile Number" class="w-full p-2.5 border rounded-xl text-sm bg-gray-50">
                 </div>
 
-                <!-- PAYMENT METHOD SELECTION -->
                 <div>
                     <label class="text-[11px] font-bold text-gray-500 block mb-1">Payment Method</label>
                     <div class="grid grid-cols-2 gap-2">
@@ -244,10 +252,8 @@
                     </div>
                 </div>
 
-                <!-- UPI PAYMENT DETAILS & SCREENSHOT UPLOAD SECTION -->
                 <div id="upiPaymentBox" class="bg-blue-50 border border-blue-200 p-3.5 rounded-xl space-y-3">
                     <p class="text-xs font-bold text-blue-900 border-b pb-1">💳 Choose UPI Payment Method:</p>
-
                     <div class="grid grid-cols-2 gap-2">
                         <button type="button" onclick="payViaUPI('phonepe')" class="bg-purple-700 text-white font-bold py-2 rounded-lg text-xs flex items-center justify-center space-x-1">
                             <i class="fa-solid fa-mobile-screen"></i> <span>PhonePe</span>
@@ -265,9 +271,8 @@
                         </div>
                     </div>
 
-                    <!-- Upload Payment Screenshot -->
                     <div class="bg-white p-2.5 rounded-lg border space-y-1">
-                        <label class="text-[11px] font-bold text-red-600 block">📸 Upload Payment Screenshot (തീയതിയും ടൈമും ഉള്ള സ്ക്രീൻഷോട്ട് നിർബന്ധമാണ്) *</label>
+                        <label class="text-[11px] font-bold text-red-600 block">📸 Upload Payment Screenshot *</label>
                         <input type="file" id="payScreenshotFile" accept="image/*" class="w-full text-xs text-gray-700">
                     </div>
                 </div>
@@ -324,6 +329,7 @@
         const db = getFirestore(app);
 
         let allProducts = [];
+        let categories = [];
         let cart = {};
         let selectedProductForModal = null;
         let selectedOptionValue = "";
@@ -331,6 +337,7 @@
 
         window.addEventListener('DOMContentLoaded', async () => {
             checkAuthStatus();
+            await loadCategories();
             await loadProducts();
             loadFAQs();
             checkDeepLink();
@@ -368,6 +375,24 @@
             }
         };
 
+        async function loadCategories() {
+            try {
+                const snap = await getDocs(collection(db, "categories"));
+                const pillDiv = document.getElementById('categoryPills');
+                pillDiv.innerHTML = `<button onclick="filterCategory('All')" class="bg-blue-600 text-white px-3.5 py-1.5 rounded-full text-xs font-bold whitespace-nowrap shadow-sm">All</button>`;
+                snap.forEach(docSnap => {
+                    const cat = docSnap.data().name;
+                    pillDiv.innerHTML += `<button onclick="filterCategory('${cat}')" class="bg-white border text-gray-700 px-3.5 py-1.5 rounded-full text-xs font-bold whitespace-nowrap shadow-sm hover:border-blue-600">${cat}</button>`;
+                });
+            } catch(e) { console.error(e); }
+        }
+
+        window.filterCategory = function(catName) {
+            if(catName === 'All') { renderProducts(allProducts); return; }
+            const filtered = allProducts.filter(p => p.category === catName);
+            renderProducts(filtered);
+        };
+
         window.togglePaymentBox = function() {
             const isOnline = document.querySelector('input[name="payment"]:checked')?.value === 'ONLINE';
             document.getElementById('upiPaymentBox').classList.toggle('hidden', !isOnline);
@@ -400,6 +425,7 @@
             });
         }
 
+        // 🛍️ PLACE ORDER (No WhatsApp redirect)
         window.handlePlaceOrder = async function(e) {
             e.preventDefault();
             const btn = document.getElementById('placeOrderBtn');
@@ -436,6 +462,12 @@
             const d = new Date();
             const monthKey = `${d.getMonth()+1}-${d.getFullYear()}`;
 
+            // Format Readable Date and Time
+            const formattedDateStr = d.toLocaleString('en-IN', {
+                day: '2-digit', month: 'short', year: 'numeric',
+                hour: '2-digit', minute: '2-digit', hour12: true
+            });
+
             try {
                 await addDoc(collection(db, "orders"), {
                     productName: itemSummary,
@@ -452,14 +484,11 @@
                     status: 'Order Placed',
                     currentLocation: 'Order Confirmed - Processing',
                     monthKey: monthKey,
-                    timestamp: new Date()
+                    orderDateFormatted: formattedDateStr,
+                    timestamp: d
                 });
 
-                // Send WhatsApp Notification to 7593076529
-                const waMsg = `🛒 *New Order Received on Pick Mart!*\n\n📦 *Items:* ${itemSummary}\n💰 *Amount:* ₹${total} (${isCod ? 'COD' : 'ONLINE/UPI'})\n👤 *Customer:* ${custName}\n📞 *Phone:* ${custPhone}\n📍 *Address:* ${fullAddress}${gpsLink ? '\n🗺️ *GPS Link:* ' + gpsLink : ''}`;
-                window.open(`https://api.whatsapp.com/send?phone=917593076529&text=${encodeURIComponent(waMsg)}`, '_blank');
-
-                alert('ഓർഡർ സമർപ്പിച്ചു! വിവരങ്ങൾ വാട്സാപ്പിൽ അയച്ചിട്ടുണ്ട്.');
+                alert('ഓർഡർ സമർപ്പിച്ചു! നിങ്ങളുടെ അക്കൗണ്ടിൽ ട്രാക്ക് ചെയ്യാം.');
                 cart = {};
                 updateCartUI();
                 closeCheckoutModal();
