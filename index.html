@@ -473,7 +473,14 @@
         async function checkDeepLink() {
             const urlParams = new URLSearchParams(window.location.search);
             const productId = urlParams.get('id');
-            if (productId) openProductModal(productId);
+            if (productId) {
+                let attempts = 0;
+                while (allProducts.length === 0 && attempts < 25) {
+                    await new Promise(r => setTimeout(r, 200));
+                    attempts++;
+                }
+                openProductModal(productId);
+            }
         }
 
         window.checkAuthStatus = function() {
