@@ -125,9 +125,9 @@
 
     </div>
 
-    <!-- IMAGE LIGHTBOX MODAL FOR SCREENSHOT VIEW -->
+    <!-- IMAGE LIGHTBOX MODAL FOR SCREENSHOT & PRODUCT PHOTO ZOOM -->
     <div id="imageModal" class="fixed inset-0 bg-black/80 z-50 hidden flex items-center justify-center p-4" onclick="closeImageModal()">
-        <img id="modalFullImg" src="" class="max-w-full max-h-[90vh] rounded-xl border-2 border-white">
+        <img id="modalFullImg" src="" class="max-w-full max-h-[90vh] rounded-xl border-2 border-white object-contain">
     </div>
 
     <!-- FIREBASE SDK -->
@@ -225,7 +225,7 @@
             finally { btn.disabled = false; btn.innerText = "Save Product"; }
         };
 
-        // Load Products with Copy Insta Link
+        // Load Products with Zoomable Image Click & Copy Insta Link
         async function loadProducts() {
             const grid = document.getElementById('productsList');
             const snap = await getDocs(collection(db, "products"));
@@ -239,7 +239,7 @@
                 const imgs = p.images || [p.image];
                 grid.innerHTML += `
                     <div class="bg-white p-2.5 rounded-2xl border space-y-1.5 text-xs shadow-sm">
-                        <img src="${imgs[0]}" class="w-full h-28 object-cover rounded-xl">
+                        <img src="${imgs[0]}" onclick="openImageModal('${imgs[0]}')" class="w-full h-28 object-cover rounded-xl cursor-pointer hover:opacity-90" title="Click to view full image">
                         <h4 class="font-bold line-clamp-1">${p.name}</h4>
                         <p class="text-blue-700 font-bold">₹${p.price} <span class="text-[10px] text-gray-400">(${imgs.length} photos)</span></p>
                         
@@ -271,7 +271,7 @@
         async function loadOrders() {
             const list = document.getElementById('ordersList');
             const snap = await getDocs(collection(db, "orders"));
-            
+
             let total = snap.size;
             let outCount = 0;
             let delCount = 0;
