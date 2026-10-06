@@ -167,7 +167,8 @@
             <button onclick="closeProductModal()" class="absolute top-3 right-3 text-gray-500 bg-gray-100 rounded-full w-8 h-8 flex items-center justify-center font-bold z-10">✕</button>
 
             <div class="relative">
-                <img id="modalImg" src="" class="w-full h-64 object-cover rounded-xl bg-gray-50">
+                <!-- Click to zoom modal image -->
+                <img id="modalImg" src="" onclick="openUserImageModal(this.src)" class="w-full h-64 object-cover rounded-xl bg-gray-50 cursor-pointer hover:opacity-95" title="Click to view full image">
                 <div id="imageThumbnails" class="flex space-x-2 mt-2 overflow-x-auto no-scrollbar"></div>
             </div>
 
@@ -304,6 +305,11 @@
                 </button>
             </form>
         </div>
+    </div>
+
+    <!-- USER IMAGE LIGHTBOX MODAL FOR ZOOM -->
+    <div id="userImageModal" class="fixed inset-0 bg-black/80 z-50 hidden flex items-center justify-center p-4" onclick="closeUserImageModal()">
+        <img id="userModalFullImg" src="" class="max-w-full max-h-[90vh] rounded-xl border-2 border-white object-contain">
     </div>
 
     <!-- BOTTOM NAVIGATION -->
@@ -573,7 +579,7 @@
             if (!isCod) {
                 const fileInput = document.getElementById('payScreenshotFile');
                 if (fileInput.files.length === 0) {
-                    alert('ഓൺലൈൻ പേയ്‌മെന്റ് ചെയ്തതിന്റെ സ്ക്രീൻഷോട്ട് അപ്‌ലോഡ് ചെയ്യുക!');
+                    alert('ഓൺലൈൻ പേയ്‌‌മെന്റ് ചെയ്തതിന്റെ സ്ക്രീൻഷോട്ട് അപ്‌ലോഡ് ചെയ്യുക!');
                     return;
                 }
                 btn.disabled = true;
@@ -778,6 +784,16 @@
         };
 
         window.closeProductModal = function() { document.getElementById('productModal').classList.add('hidden'); };
+
+        // User Zoomable Lightbox Functions
+        window.openUserImageModal = function(imgSrc) {
+            document.getElementById('userModalFullImg').src = imgSrc;
+            document.getElementById('userImageModal').classList.remove('hidden');
+        };
+
+        window.closeUserImageModal = function() {
+            document.getElementById('userImageModal').classList.add('hidden');
+        };
 
         window.addToCartFromModal = function() {
             const p = selectedProductForModal;
