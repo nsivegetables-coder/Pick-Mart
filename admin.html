@@ -36,6 +36,21 @@
                 </button>
             </div>
 
+            <!-- TIME PERIOD FILTER TABS (Daily / Monthly / Yearly) -->
+            <div class="flex bg-blue-700 p-1 rounded-xl gap-1">
+                <button onclick="setStatsPeriod('all')" id="period-all" class="flex-1 text-[10px] font-bold py-1.5 rounded-lg bg-blue-800 text-white transition">All Time</button>
+                <button onclick="setStatsPeriod('daily')" id="period-daily" class="flex-1 text-[10px] font-bold py-1.5 rounded-lg text-blue-200 transition">Daily</button>
+                <button onclick="setStatsPeriod('monthly')" id="period-monthly" class="flex-1 text-[10px] font-bold py-1.5 rounded-lg text-blue-200 transition">Monthly</button>
+                <button onclick="setStatsPeriod('yearly')" id="period-yearly" class="flex-1 text-[10px] font-bold py-1.5 rounded-lg text-blue-200 transition">Yearly</button>
+            </div>
+            
+            <!-- Dynamic Date/Month Selector Display -->
+            <div id="dateSelectorBox" class="hidden flex gap-2">
+                <input type="date" id="filterDateInput" onchange="renderOrdersUI()" class="w-full p-1.5 rounded-lg text-xs bg-white text-gray-800 font-bold border-none outline-none">
+                <input type="month" id="filterMonthInput" onchange="renderOrdersUI()" class="hidden w-full p-1.5 rounded-lg text-xs bg-white text-gray-800 font-bold border-none outline-none">
+                <select id="filterYearInput" onchange="renderOrdersUI()" class="hidden w-full p-1.5 rounded-lg text-xs bg-white text-gray-800 font-bold border-none outline-none"></select>
+            </div>
+
             <!-- Order Status Summary Grid -->
             <div class="grid grid-cols-4 gap-1.5 pt-2 border-t border-blue-500/50 text-center">
                 <div class="bg-blue-700/60 p-1.5 rounded-xl">
@@ -66,17 +81,16 @@
             <button onclick="switchAdminTab('helpTab')" id="tab-helpTab" class="bg-white text-gray-700 border px-3 py-1.5 rounded-full text-xs font-bold whitespace-nowrap">❓ Help/FAQ</button>
         </div>
 
-        <!-- TAB 1: ORDERS MANAGEMENT WITH PERMANENT HISTORY -->
+        <!-- TAB 1: ORDERS MANAGEMENT WITH PERMANENT HISTORY & STATUS FILTERS -->
         <div id="ordersTab" class="tab-sec space-y-3">
             <div class="flex justify-between items-center">
-                <h3 class="font-bold text-sm text-gray-800">Orders Management</h3>
-                <select id="orderFilterSelect" onchange="filterOrdersList()" class="p-1 border rounded-lg text-xs bg-white font-bold text-blue-700">
-                    <option value="ALL">All Active Orders</option>
+                <h3 class="font-bold text-sm text-gray-800">Orders History & Data</h3>
+                <select id="orderFilterSelect" onchange="renderOrdersUI()" class="p-1 border rounded-lg text-xs bg-white font-bold text-blue-700">
+                    <option value="ALL">All Statuses</option>
                     <option value="Order Placed">New Orders</option>
                     <option value="Out for Delivery">Out for Delivery</option>
                     <option value="Delivered">Delivered</option>
-                    <option value="Cancelled">Cancelled (Last 24h)</option>
-                    <option value="HISTORY">Cancelled History (Older & Safe)</option>
+                    <option value="Cancelled">Cancelled Orders</option>
                 </select>
             </div>
             <div id="ordersList" class="space-y-3">
@@ -191,11 +205,13 @@
         const db = getFirestore(app);
 
         let cachedOrders = [];
+        let currentPeriod = 'all';
 
         window.checkAdminPassword = function() {
             const pass = document.getElementById('adminPassInput').value;
             if(pass === "1234" || pass === "admin") {
                 document.getElementById('adminAuthOverlay').classList.add('hidden');
+                initDateSelectors();
                 loadOrders();
                 loadProducts();
                 loadCategories();
@@ -204,6 +220,38 @@
             } else {
                 alert("Incorrect Password!");
             }
+        };
+
+        function initDateSelectors() {
+            const today = new Date();
+            const yyyy = today.getFullYear();
+            const mm = String(today.getMonth() + 1).padStart(2, '0');
+            const dd = String(today.getDate()).padStart(2, '0');
+
+            document.getElementById('filterDateInput').value = `${yyyy}-${mm}-${dd}`;
+            document.getElementById('filterMonthInput').value = `${yyyy}-${mm}`;
+
+            const yearSelect = document.getElementById('filterYearInput');
+            yearSelect.innerHTML = '';
+            for(let y = yyyy; y >= yyyy - 3; y--) {
+                yearSelect.innerHTML += `<option value="${y}">${y}</option>`;
+            }
+            yearSelect.value = yyyy;
+        }
+
+        window.setStatsPeriod = function(period) {
+            currentPeriod = period;
+            ['all', 'daily', 'monthly', 'yearly'].forEach(p => {
+                const btn = document.getElementById('period-' + p);
+                btn.className = p === period ? "flex-1 text-[10px] font-bold py-1.5 rounded-lg bg-blue-800 text-white transition" : "flex-1 text-[10px] font-bold py-1.5 rounded-lg text-blue-200 transition";
+            });
+
+            document.getElementById('dateSelectorBox').classList.toggle('hidden', period === 'all');
+            document.getElementById('filterDateInput').classList.toggle('hidden', period !== 'daily');
+            document.getElementById('filterMonthInput').classList.toggle('hidden', period !== 'monthly');
+            document.getElementById('filterYearInput').classList.toggle('hidden', period !== 'yearly');
+
+            renderOrdersUI();
         };
 
         window.switchAdminTab = function(tabId) {
@@ -318,54 +366,64 @@
             renderOrdersUI();
         }
 
-        window.filterOrdersList = function() {
-            renderOrdersUI();
-        };
-
         function renderOrdersUI() {
             const list = document.getElementById('ordersList');
-            const filterVal = document.getElementById('orderFilterSelect').value;
+            const statusFilter = document.getElementById('orderFilterSelect').value;
 
-            let total = cachedOrders.length;
+            let totalCount = 0;
             let outCount = 0;
             let delCount = 0;
             let canCount = 0;
 
-            const now = new Date().getTime();
-            const filteredOrders = cachedOrders.filter(o => {
-                const status = o.status || 'Order Placed';
-                if(status.toLowerCase().includes('out')) outCount++;
-                if(status.toLowerCase().includes('deliver')) delCount++;
-                if(status.toLowerCase().includes('cancel')) canCount++;
+            const selectedDateStr = document.getElementById('filterDateInput').value; // YYYY-MM-DD
+            const selectedMonthStr = document.getElementById('filterMonthInput').value; // YYYY-MM
+            const selectedYearStr = document.getElementById('filterYearInput').value; // YYYY
 
-                const orderTime = o.timestamp && o.timestamp.seconds ? o.timestamp.seconds * 1000 : (new Date(o.timestamp || Date.now()).getTime());
-                const isOlderThan24h = (now - orderTime) > (24 * 60 * 60 * 1000);
-                const isCancelled = status.toLowerCase().includes('cancel');
+            const periodFilteredOrders = cachedOrders.filter(o => {
+                const orderDateObj = o.timestamp && o.timestamp.seconds ? new Date(o.timestamp.seconds * 1000) : new Date(o.timestamp || Date.now());
+                
+                const oY = orderDateObj.getFullYear();
+                const oM = String(orderDateObj.getMonth() + 1).padStart(2, '0');
+                const oD = String(orderDateObj.getDate()).padStart(2, '0');
 
-                if (filterVal === 'HISTORY') {
-                    // Permanently keep in history forever once older than 24h
-                    return isCancelled && isOlderThan24h;
-                } else if (filterVal === 'Cancelled') {
-                    return isCancelled && !isOlderThan24h;
-                } else if (filterVal !== 'ALL') {
-                    return status === filterVal && (!isCancelled || !isOlderThan24h);
-                } else {
-                    return !isCancelled || !isOlderThan24h; 
-                }
+                const oDateKey = `${oY}-${oM}-${oD}`;
+                const oMonthKey = `${oY}-${oM}`;
+                const oYearKey = String(oY);
+
+                if (currentPeriod === 'daily') return oDateKey === selectedDateStr;
+                if (currentPeriod === 'monthly') return oMonthKey === selectedMonthStr;
+                if (currentPeriod === 'yearly') return oYearKey === selectedYearStr;
+                return true; // 'all'
             });
 
-            document.getElementById('statTotal').innerText = total;
+            // Calculate Stats based on period filtered orders
+            periodFilteredOrders.forEach(o => {
+                const status = (o.status || 'Order Placed').toLowerCase();
+                totalCount++;
+                if (status.includes('out')) outCount++;
+                if (status.includes('deliver')) delCount++;
+                if (status.includes('cancel')) canCount++;
+            });
+
+            document.getElementById('statTotal').innerText = totalCount;
             document.getElementById('statOut').innerText = outCount;
             document.getElementById('statDelivered').innerText = delCount;
             document.getElementById('statCancelled').innerText = canCount;
 
-            if(filteredOrders.length === 0) {
-                list.innerHTML = '<p class="text-center py-6 text-gray-400 text-xs">No matching orders found.</p>';
+            // Further filter by status dropdown for list view
+            const finalDisplayedOrders = periodFilteredOrders.filter(o => {
+                const status = o.status || 'Order Placed';
+                if (statusFilter !== 'ALL') return status === statusFilter;
+                return true;
+            });
+
+            if (finalDisplayedOrders.length === 0) {
+                list.innerHTML = '<p class="text-center py-6 text-gray-400 text-xs">No orders found for this selection.</p>';
                 return;
             }
 
             list.innerHTML = '';
-            filteredOrders.forEach(o => {
+            finalDisplayedOrders.forEach(o => {
                 const id = o.id;
                 const status = o.status || 'Order Placed';
 
