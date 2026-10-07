@@ -66,17 +66,17 @@
             <button onclick="switchAdminTab('helpTab')" id="tab-helpTab" class="bg-white text-gray-700 border px-3 py-1.5 rounded-full text-xs font-bold whitespace-nowrap">❓ Help/FAQ</button>
         </div>
 
-        <!-- TAB 1: ORDERS MANAGEMENT WITH FILTER & 24H HISTORY -->
+        <!-- TAB 1: ORDERS MANAGEMENT WITH PERMANENT HISTORY -->
         <div id="ordersTab" class="tab-sec space-y-3">
             <div class="flex justify-between items-center">
                 <h3 class="font-bold text-sm text-gray-800">Orders Management</h3>
                 <select id="orderFilterSelect" onchange="filterOrdersList()" class="p-1 border rounded-lg text-xs bg-white font-bold text-blue-700">
-                    <option value="ALL">All Orders</option>
+                    <option value="ALL">All Active Orders</option>
                     <option value="Order Placed">New Orders</option>
                     <option value="Out for Delivery">Out for Delivery</option>
                     <option value="Delivered">Delivered</option>
-                    <option value="Cancelled">Cancelled (Active)</option>
-                    <option value="HISTORY">Cancelled History (>24h)</option>
+                    <option value="Cancelled">Cancelled (Last 24h)</option>
+                    <option value="HISTORY">Cancelled History (Older & Safe)</option>
                 </select>
             </div>
             <div id="ordersList" class="space-y-3">
@@ -126,7 +126,7 @@
             <div id="categoriesList" class="space-y-2"></div>
         </div>
 
-        <!-- TAB 4: REVIEWS & RATINGS (ADMIN CAN ADD) -->
+        <!-- TAB 4: REVIEWS & RATINGS -->
         <div id="reviewsTab" class="tab-sec hidden space-y-3">
             <div class="bg-white p-4 rounded-2xl border space-y-3 shadow-sm">
                 <h3 class="font-bold text-sm border-b pb-2">Add Admin Review / Rating</h3>
@@ -168,7 +168,7 @@
 
     </div>
 
-    <!-- IMAGE LIGHTBOX MODAL FOR SCREENSHOT & PRODUCT PHOTO ZOOM -->
+    <!-- IMAGE LIGHTBOX MODAL -->
     <div id="imageModal" class="fixed inset-0 bg-black/80 z-50 hidden flex items-center justify-center p-4" onclick="closeImageModal()">
         <img id="modalFullImg" src="" class="max-w-full max-h-[90vh] rounded-xl border-2 border-white object-contain">
     </div>
@@ -216,7 +216,6 @@
             document.getElementById('tab-' + tabId).className = "bg-blue-600 text-white px-3 py-1.5 rounded-full text-xs font-bold whitespace-nowrap";
         };
 
-        // Multiple Photo Compression
         function compressFiles(files) {
             return Promise.all(Array.from(files).map(file => {
                 return new Promise((resolve) => {
@@ -237,7 +236,6 @@
             }));
         }
 
-        // Add Product Logic
         window.handleAddProduct = async function(e) {
             e.preventDefault();
             const btn = document.getElementById('saveProdBtn');
@@ -271,7 +269,6 @@
             finally { btn.disabled = false; btn.innerText = "Save Product"; }
         };
 
-        // Load Products with Copy Insta Link
         async function loadProducts() {
             const grid = document.getElementById('productsList');
             const snap = await getDocs(collection(db, "products"));
@@ -312,7 +309,6 @@
             }
         };
 
-        // Load Orders with Filter & 24h Cancelled History Split
         async function loadOrders() {
             const snap = await getDocs(collection(db, "orders"));
             cachedOrders = [];
@@ -347,13 +343,14 @@
                 const isCancelled = status.toLowerCase().includes('cancel');
 
                 if (filterVal === 'HISTORY') {
+                    // Permanently keep in history forever once older than 24h
                     return isCancelled && isOlderThan24h;
                 } else if (filterVal === 'Cancelled') {
                     return isCancelled && !isOlderThan24h;
                 } else if (filterVal !== 'ALL') {
                     return status === filterVal && (!isCancelled || !isOlderThan24h);
                 } else {
-                    return !isCancelled || !isOlderThan24h; // Default show non-historical
+                    return !isCancelled || !isOlderThan24h; 
                 }
             });
 
@@ -428,7 +425,6 @@
             document.getElementById('imageModal').classList.add('hidden');
         };
 
-        // Categories Management
         window.handleAddCategory = async function(e) {
             e.preventDefault();
             const name = document.getElementById('catNameInput').value;
@@ -461,7 +457,6 @@
             }
         };
 
-        // Admin Review Publication Logic
         window.handleAddAdminReview = async function(e) {
             e.preventDefault();
             const prodId = document.getElementById('adminRevProdId').value.trim() || 'store_general';
@@ -486,7 +481,7 @@
         async function loadReviews() {
             const list = document.getElementById('reviewsList');
             const snap = await getDocs(collection(db, "reviews"));
-            if(snap.empty) return list.innerHTML = '<p class="text-center py-6 text-gray-400 text-xs">No reviews submitted.</p>';
+            if(snap.empty) return list.innerHTML = '<p class="text-center text-gray-400 py-6 text-xs">No reviews submitted.</p>';
 
             list.innerHTML = '';
             snap.forEach(docSnap => {
@@ -512,7 +507,6 @@
             }
         };
 
-        // Help / FAQ Admin Management
         window.handleAddFaq = async function(e) {
             e.preventDefault();
             const question = document.getElementById('faqQuestion').value.trim();
@@ -533,7 +527,7 @@
         async function loadAdminFaqs() {
             const list = document.getElementById('adminFaqList');
             const snap = await getDocs(collection(db, "faqs"));
-            if(snap.empty) return list.innerHTML = '<p class="text-center py-6 text-gray-400 text-xs">No Help items added.</p>';
+            if(snap.empty) return list.innerHTML = '<p class="text-center text-gray-400 py-6 text-xs">No Help items added.</p>';
 
             list.innerHTML = '';
             snap.forEach(docSnap => {
