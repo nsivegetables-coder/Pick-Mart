@@ -366,7 +366,7 @@
             renderOrdersUI();
         }
 
-        function renderOrdersUI() {
+        window.renderOrdersUI = function() {
             const list = document.getElementById('ordersList');
             const statusFilter = document.getElementById('orderFilterSelect').value;
 
@@ -379,6 +379,7 @@
             const selectedMonthStr = document.getElementById('filterMonthInput').value; // YYYY-MM
             const selectedYearStr = document.getElementById('filterYearInput').value; // YYYY
 
+            // 1st Level: Filter by Date/Month/Year/All Time
             const periodFilteredOrders = cachedOrders.filter(o => {
                 const orderDateObj = o.timestamp && o.timestamp.seconds ? new Date(o.timestamp.seconds * 1000) : new Date(o.timestamp || Date.now());
                 
@@ -393,16 +394,16 @@
                 if (currentPeriod === 'daily') return oDateKey === selectedDateStr;
                 if (currentPeriod === 'monthly') return oMonthKey === selectedMonthStr;
                 if (currentPeriod === 'yearly') return oYearKey === selectedYearStr;
-                return true; // 'all'
+                return true; 
             });
 
-            // Calculate Stats based on period filtered orders
+            // Calculate Box Stats based on period filtered orders
             periodFilteredOrders.forEach(o => {
-                const status = (o.status || 'Order Placed').toLowerCase();
+                const status = (o.status || 'Order Placed').trim();
                 totalCount++;
-                if (status.includes('out')) outCount++;
-                if (status.includes('deliver')) delCount++;
-                if (status.includes('cancel')) canCount++;
+                if (status.toLowerCase().includes('out')) outCount++;
+                if (status.toLowerCase().includes('deliver')) delCount++;
+                if (status.toLowerCase().includes('cancel')) canCount++;
             });
 
             document.getElementById('statTotal').innerText = totalCount;
@@ -410,10 +411,12 @@
             document.getElementById('statDelivered').innerText = delCount;
             document.getElementById('statCancelled').innerText = canCount;
 
-            // Further filter by status dropdown for list view
+            // 2nd Level: Filter by Selected Status Dropdown
             const finalDisplayedOrders = periodFilteredOrders.filter(o => {
-                const status = o.status || 'Order Placed';
-                if (statusFilter !== 'ALL') return status === statusFilter;
+                const status = (o.status || 'Order Placed').trim();
+                if (statusFilter !== 'ALL') {
+                    return status.toLowerCase() === statusFilter.toLowerCase();
+                }
                 return true;
             });
 
