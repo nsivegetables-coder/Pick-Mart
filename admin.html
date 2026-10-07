@@ -23,7 +23,7 @@
 
     <!-- MAIN ADMIN CONTAINER -->
     <div class="max-w-md mx-auto p-4 space-y-4">
-        
+
         <!-- Header & Stats Summary -->
         <div class="bg-blue-600 text-white p-4 rounded-2xl shadow space-y-3">
             <div class="flex justify-between items-center">
@@ -35,7 +35,7 @@
                     <i class="fa-solid fa-rotate"></i>
                 </button>
             </div>
-            
+
             <!-- Order Status Summary Grid -->
             <div class="grid grid-cols-4 gap-1.5 pt-2 border-t border-blue-500/50 text-center">
                 <div class="bg-blue-700/60 p-1.5 rounded-xl">
@@ -59,15 +59,26 @@
 
         <!-- Navigation Tabs -->
         <div class="flex space-x-2 border-b pb-2 overflow-x-auto no-scrollbar">
-            <button onclick="switchAdminTab('ordersTab')" id="tab-ordersTab" class="bg-blue-600 text-white px-3.5 py-1.5 rounded-full text-xs font-bold whitespace-nowrap">📦 Orders</button>
-            <button onclick="switchAdminTab('productsTab')" id="tab-productsTab" class="bg-white text-gray-700 border px-3.5 py-1.5 rounded-full text-xs font-bold whitespace-nowrap">🏷️ Products</button>
-            <button onclick="switchAdminTab('categoriesTab')" id="tab-categoriesTab" class="bg-white text-gray-700 border px-3.5 py-1.5 rounded-full text-xs font-bold whitespace-nowrap">📂 Categories</button>
-            <button onclick="switchAdminTab('reviewsTab')" id="tab-reviewsTab" class="bg-white text-gray-700 border px-3.5 py-1.5 rounded-full text-xs font-bold whitespace-nowrap">⭐ Reviews</button>
+            <button onclick="switchAdminTab('ordersTab')" id="tab-ordersTab" class="bg-blue-600 text-white px-3 py-1.5 rounded-full text-xs font-bold whitespace-nowrap">📦 Orders</button>
+            <button onclick="switchAdminTab('productsTab')" id="tab-productsTab" class="bg-white text-gray-700 border px-3 py-1.5 rounded-full text-xs font-bold whitespace-nowrap">🏷️ Products</button>
+            <button onclick="switchAdminTab('categoriesTab')" id="tab-categoriesTab" class="bg-white text-gray-700 border px-3 py-1.5 rounded-full text-xs font-bold whitespace-nowrap">📂 Categories</button>
+            <button onclick="switchAdminTab('reviewsTab')" id="tab-reviewsTab" class="bg-white text-gray-700 border px-3 py-1.5 rounded-full text-xs font-bold whitespace-nowrap">⭐ Reviews</button>
+            <button onclick="switchAdminTab('helpTab')" id="tab-helpTab" class="bg-white text-gray-700 border px-3 py-1.5 rounded-full text-xs font-bold whitespace-nowrap">❓ Help/FAQ</button>
         </div>
 
-        <!-- TAB 1: ORDERS MANAGEMENT -->
+        <!-- TAB 1: ORDERS MANAGEMENT WITH FILTER & 24H HISTORY -->
         <div id="ordersTab" class="tab-sec space-y-3">
-            <h3 class="font-bold text-sm text-gray-800">Orders & Delivery Management</h3>
+            <div class="flex justify-between items-center">
+                <h3 class="font-bold text-sm text-gray-800">Orders Management</h3>
+                <select id="orderFilterSelect" onchange="filterOrdersList()" class="p-1 border rounded-lg text-xs bg-white font-bold text-blue-700">
+                    <option value="ALL">All Orders</option>
+                    <option value="Order Placed">New Orders</option>
+                    <option value="Out for Delivery">Out for Delivery</option>
+                    <option value="Delivered">Delivered</option>
+                    <option value="Cancelled">Cancelled (Active)</option>
+                    <option value="HISTORY">Cancelled History (>24h)</option>
+                </select>
+            </div>
             <div id="ordersList" class="space-y-3">
                 <p class="text-center text-gray-400 py-6 text-xs">Loading orders...</p>
             </div>
@@ -79,7 +90,7 @@
                 <h3 class="font-bold text-sm text-gray-800 border-b pb-2">Add New Product (Multiple Photos)</h3>
                 <form onsubmit="handleAddProduct(event)" class="space-y-3">
                     <input type="text" id="prodName" placeholder="Product Title *" class="w-full p-2.5 border rounded-xl text-xs" required>
-                    
+
                     <div class="grid grid-cols-2 gap-2">
                         <input type="number" id="prodPrice" placeholder="Online Price ₹ *" class="p-2.5 border rounded-xl text-xs" required>
                         <input type="number" id="prodCodPrice" placeholder="COD Price ₹ *" class="p-2.5 border rounded-xl text-xs" required>
@@ -93,7 +104,7 @@
 
                     <input type="text" id="prodOptions" placeholder="Options (e.g. 500g, 1kg)" class="w-full p-2.5 border rounded-xl text-xs">
                     <input type="text" id="prodCategory" placeholder="Category Name" class="w-full p-2.5 border rounded-xl text-xs">
-                    
+
                     <button type="submit" id="saveProdBtn" class="w-full bg-blue-600 text-white font-bold py-2.5 rounded-xl text-xs shadow">Save Product</button>
                 </form>
             </div>
@@ -115,11 +126,43 @@
             <div id="categoriesList" class="space-y-2"></div>
         </div>
 
-        <!-- TAB 4: REVIEWS & RATINGS -->
+        <!-- TAB 4: REVIEWS & RATINGS (ADMIN CAN ADD) -->
         <div id="reviewsTab" class="tab-sec hidden space-y-3">
-            <h3 class="font-bold text-sm text-gray-800">Customer Ratings & Reviews</h3>
+            <div class="bg-white p-4 rounded-2xl border space-y-3 shadow-sm">
+                <h3 class="font-bold text-sm border-b pb-2">Add Admin Review / Rating</h3>
+                <form onsubmit="handleAddAdminReview(event)" class="space-y-2">
+                    <input type="text" id="adminRevProdId" placeholder="Product ID (Optional / Store Review)" class="w-full p-2 border rounded-xl text-xs">
+                    <div class="flex gap-2">
+                        <select id="adminRevRating" class="p-2 border rounded-xl text-xs bg-white font-bold text-amber-600">
+                            <option value="5">⭐⭐⭐⭐⭐ (5/5)</option>
+                            <option value="4">⭐⭐⭐⭐ (4/5)</option>
+                            <option value="3">⭐⭐⭐ (3/5)</option>
+                        </select>
+                        <input type="text" id="adminRevName" placeholder="Reviewer Name (e.g. Pick Mart Official)" class="flex-1 p-2 border rounded-xl text-xs" required>
+                    </div>
+                    <textarea id="adminRevComment" placeholder="Write review comment..." class="w-full p-2 border rounded-xl text-xs" rows="2" required></textarea>
+                    <button type="submit" class="w-full bg-blue-600 text-white font-bold py-2 rounded-xl text-xs shadow">Publish Review</button>
+                </form>
+            </div>
+            <h3 class="font-bold text-sm text-gray-800 pt-2">All Customer & Admin Reviews</h3>
             <div id="reviewsList" class="space-y-2">
                 <p class="text-center text-gray-400 py-6 text-xs">Loading reviews...</p>
+            </div>
+        </div>
+
+        <!-- TAB 5: HELP / FAQ MANAGEMENT -->
+        <div id="helpTab" class="tab-sec hidden space-y-3">
+            <div class="bg-white p-4 rounded-2xl border space-y-3 shadow-sm">
+                <h3 class="font-bold text-sm border-b pb-2">Add Help / FAQ Question & Answer</h3>
+                <form onsubmit="handleAddFaq(event)" class="space-y-2">
+                    <input type="text" id="faqQuestion" placeholder="Question (e.g. How to order?)" class="w-full p-2.5 border rounded-xl text-xs" required>
+                    <textarea id="faqAnswer" placeholder="Answer description..." class="w-full p-2.5 border rounded-xl text-xs" rows="2" required></textarea>
+                    <button type="submit" class="w-full bg-blue-600 text-white font-bold py-2.5 rounded-xl text-xs shadow">Save Help Item</button>
+                </form>
+            </div>
+            <h3 class="font-bold text-sm text-gray-800 pt-2">Manage Help Questions</h3>
+            <div id="adminFaqList" class="space-y-2">
+                <p class="text-center text-gray-400 py-6 text-xs">Loading FAQs...</p>
             </div>
         </div>
 
@@ -147,6 +190,8 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
+        let cachedOrders = [];
+
         window.checkAdminPassword = function() {
             const pass = document.getElementById('adminPassInput').value;
             if(pass === "1234" || pass === "admin") {
@@ -155,6 +200,7 @@
                 loadProducts();
                 loadCategories();
                 loadReviews();
+                loadAdminFaqs();
             } else {
                 alert("Incorrect Password!");
             }
@@ -165,9 +211,9 @@
             document.getElementById(tabId).classList.remove('hidden');
 
             document.querySelectorAll('button[id^="tab-"]').forEach(b => {
-                b.className = "bg-white text-gray-700 border px-3.5 py-1.5 rounded-full text-xs font-bold whitespace-nowrap";
+                b.className = "bg-white text-gray-700 border px-3 py-1.5 rounded-full text-xs font-bold whitespace-nowrap";
             });
-            document.getElementById('tab-' + tabId).className = "bg-blue-600 text-white px-3.5 py-1.5 rounded-full text-xs font-bold whitespace-nowrap";
+            document.getElementById('tab-' + tabId).className = "bg-blue-600 text-white px-3 py-1.5 rounded-full text-xs font-bold whitespace-nowrap";
         };
 
         // Multiple Photo Compression
@@ -225,7 +271,7 @@
             finally { btn.disabled = false; btn.innerText = "Save Product"; }
         };
 
-        // Load Products with Zoomable Image Click & Copy Insta Link
+        // Load Products with Copy Insta Link
         async function loadProducts() {
             const grid = document.getElementById('productsList');
             const snap = await getDocs(collection(db, "products"));
@@ -239,11 +285,10 @@
                 const imgs = p.images || [p.image];
                 grid.innerHTML += `
                     <div class="bg-white p-2.5 rounded-2xl border space-y-1.5 text-xs shadow-sm">
-                        <img src="${imgs[0]}" onclick="openImageModal('${imgs[0]}')" class="w-full h-28 object-cover rounded-xl cursor-pointer hover:opacity-90" title="Click to view full image">
+                        <img src="${imgs[0]}" onclick="openImageModal('${imgs[0]}')" class="w-full h-28 object-cover rounded-xl cursor-pointer hover:opacity-90">
                         <h4 class="font-bold line-clamp-1">${p.name}</h4>
                         <p class="text-blue-700 font-bold">₹${p.price} <span class="text-[10px] text-gray-400">(${imgs.length} photos)</span></p>
                         
-                        <!-- INSTAGRAM LINK COPY BUTTON -->
                         <button onclick="copyInstaLink('${id}')" class="w-full bg-purple-50 text-purple-700 border border-purple-200 font-bold py-1.5 rounded-xl text-[10px] flex items-center justify-center space-x-1">
                             <i class="fa-brands fa-instagram"></i> <span>Copy Insta Link</span>
                         </button>
@@ -267,34 +312,65 @@
             }
         };
 
-        // Load Orders with Counters, Dropdowns & Payment Screenshot Viewer
+        // Load Orders with Filter & 24h Cancelled History Split
         async function loadOrders() {
-            const list = document.getElementById('ordersList');
             const snap = await getDocs(collection(db, "orders"));
+            cachedOrders = [];
+            snap.forEach(docSnap => {
+                cachedOrders.push({ id: docSnap.id, ...docSnap.data() });
+            });
+            renderOrdersUI();
+        }
 
-            let total = snap.size;
+        window.filterOrdersList = function() {
+            renderOrdersUI();
+        };
+
+        function renderOrdersUI() {
+            const list = document.getElementById('ordersList');
+            const filterVal = document.getElementById('orderFilterSelect').value;
+
+            let total = cachedOrders.length;
             let outCount = 0;
             let delCount = 0;
             let canCount = 0;
 
-            if(snap.empty) {
-                list.innerHTML = '<p class="text-center py-6 text-gray-400 text-xs">No orders received.</p>';
-                document.getElementById('statTotal').innerText = 0;
-                document.getElementById('statOut').innerText = 0;
-                document.getElementById('statDelivered').innerText = 0;
-                document.getElementById('statCancelled').innerText = 0;
+            const now = new Date().getTime();
+            const filteredOrders = cachedOrders.filter(o => {
+                const status = o.status || 'Order Placed';
+                if(status.toLowerCase().includes('out')) outCount++;
+                if(status.toLowerCase().includes('deliver')) delCount++;
+                if(status.toLowerCase().includes('cancel')) canCount++;
+
+                const orderTime = o.timestamp && o.timestamp.seconds ? o.timestamp.seconds * 1000 : (new Date(o.timestamp || Date.now()).getTime());
+                const isOlderThan24h = (now - orderTime) > (24 * 60 * 60 * 1000);
+                const isCancelled = status.toLowerCase().includes('cancel');
+
+                if (filterVal === 'HISTORY') {
+                    return isCancelled && isOlderThan24h;
+                } else if (filterVal === 'Cancelled') {
+                    return isCancelled && !isOlderThan24h;
+                } else if (filterVal !== 'ALL') {
+                    return status === filterVal && (!isCancelled || !isOlderThan24h);
+                } else {
+                    return !isCancelled || !isOlderThan24h; // Default show non-historical
+                }
+            });
+
+            document.getElementById('statTotal').innerText = total;
+            document.getElementById('statOut').innerText = outCount;
+            document.getElementById('statDelivered').innerText = delCount;
+            document.getElementById('statCancelled').innerText = canCount;
+
+            if(filteredOrders.length === 0) {
+                list.innerHTML = '<p class="text-center py-6 text-gray-400 text-xs">No matching orders found.</p>';
                 return;
             }
 
             list.innerHTML = '';
-            snap.forEach(docSnap => {
-                const o = docSnap.data();
-                const id = docSnap.id;
+            filteredOrders.forEach(o => {
+                const id = o.id;
                 const status = o.status || 'Order Placed';
-
-                if(status.toLowerCase().includes('out')) outCount++;
-                if(status.toLowerCase().includes('deliver')) delCount++;
-                if(status.toLowerCase().includes('cancel')) canCount++;
 
                 list.innerHTML += `
                     <div class="bg-white p-3.5 rounded-2xl border space-y-2 text-xs shadow-sm">
@@ -302,7 +378,7 @@
                             <div>
                                 <h4 class="font-bold text-blue-900 text-sm">${o.productName}</h4>
                                 <p class="text-xs text-green-700 font-extrabold">₹${o.price} (${o.paymentMethod})</p>
-                                <p class="text-[10px] text-gray-400">${o.orderDateFormatted || ''}</p>
+                                <p class="text-[10px] text-gray-400">📅 ${o.orderDateFormatted || 'N/A'}</p>
                             </div>
                             <span class="bg-blue-100 text-blue-800 text-[10px] font-bold px-2 py-0.5 rounded-full">${status}</span>
                         </div>
@@ -312,15 +388,13 @@
                             ${o.gpsMapLink ? `<a href="${o.gpsMapLink}" target="_blank" class="text-blue-600 font-bold underline text-[11px]">📍 View Location on Maps</a>` : ''}
                         </div>
                         
-                        <!-- PAYMENT SCREENSHOT THUMBNAIL -->
                         ${o.paymentScreenshot ? `
                             <div class="pt-1 flex items-center space-x-2">
                                 <span class="font-bold text-gray-500 text-[10px]">Payment Proof:</span>
-                                <img src="${o.paymentScreenshot}" onclick="openImageModal('${o.paymentScreenshot}')" class="w-12 h-12 object-cover rounded-lg border cursor-pointer hover:opacity-80" title="Click to view full screenshot">
+                                <img src="${o.paymentScreenshot}" onclick="openImageModal('${o.paymentScreenshot}')" class="w-12 h-12 object-cover rounded-lg border cursor-pointer hover:opacity-80">
                             </div>
                         ` : ''}
                         
-                        <!-- STATUS DROPDOWN & UPDATE -->
                         <div class="bg-gray-50 p-2.5 rounded-xl border space-y-2 pt-2">
                             <label class="block font-bold text-gray-700 text-[11px]">Update Order Status:</label>
                             <div class="flex gap-2">
@@ -336,11 +410,6 @@
                     </div>
                 `;
             });
-
-            document.getElementById('statTotal').innerText = total;
-            document.getElementById('statOut').innerText = outCount;
-            document.getElementById('statDelivered').innerText = delCount;
-            document.getElementById('statCancelled').innerText = canCount;
         }
 
         window.updateOrderStatus = async function(id) {
@@ -359,7 +428,7 @@
             document.getElementById('imageModal').classList.add('hidden');
         };
 
-        // Categories Add & Delete Management
+        // Categories Management
         window.handleAddCategory = async function(e) {
             e.preventDefault();
             const name = document.getElementById('catNameInput').value;
@@ -372,10 +441,7 @@
             const list = document.getElementById('categoriesList');
             const snap = await getDocs(collection(db, "categories"));
             list.innerHTML = '';
-            if(snap.empty) {
-                list.innerHTML = '<p class="text-center text-gray-400 py-4 text-xs">No categories found.</p>';
-                return;
-            }
+            if(snap.empty) return list.innerHTML = '<p class="text-center text-gray-400 py-4 text-xs">No categories found.</p>';
             snap.forEach(docSnap => {
                 const c = docSnap.data();
                 const id = docSnap.id;
@@ -395,7 +461,28 @@
             }
         };
 
-        // Reviews Management
+        // Admin Review Publication Logic
+        window.handleAddAdminReview = async function(e) {
+            e.preventDefault();
+            const prodId = document.getElementById('adminRevProdId').value.trim() || 'store_general';
+            const rating = Number(document.getElementById('adminRevRating').value);
+            const userName = document.getElementById('adminRevName').value.trim();
+            const comment = document.getElementById('adminRevComment').value.trim();
+
+            try {
+                await addDoc(collection(db, "reviews"), {
+                    productId: prodId,
+                    userName: userName,
+                    rating: rating,
+                    comment: comment,
+                    timestamp: new Date()
+                });
+                alert("Review Published Successfully!");
+                e.target.reset();
+                loadReviews();
+            } catch(err) { alert("Error: " + err.message); }
+        };
+
         async function loadReviews() {
             const list = document.getElementById('reviewsList');
             const snap = await getDocs(collection(db, "reviews"));
@@ -404,17 +491,72 @@
             list.innerHTML = '';
             snap.forEach(docSnap => {
                 const r = docSnap.data();
+                const id = docSnap.id;
                 list.innerHTML += `
                     <div class="bg-white p-3 rounded-xl border text-xs space-y-1 shadow-sm">
                         <div class="flex justify-between font-bold">
-                            <span>${r.userName || 'Customer'}</span>
+                            <span>${r.userName || 'Customer'} <span class="text-[10px] text-gray-400">(Prod: ${r.productId || 'General'})</span></span>
                             <span class="text-amber-500">${'⭐'.repeat(r.rating || 5)}</span>
                         </div>
                         <p class="text-gray-600">${r.comment}</p>
+                        <button onclick="deleteReview('${id}')" class="text-red-500 font-bold text-[10px] underline pt-1">Delete Review</button>
                     </div>
                 `;
             });
         }
+
+        window.deleteReview = async function(id) {
+            if(confirm("Delete this review?")) {
+                await deleteDoc(doc(db, "reviews", id));
+                loadReviews();
+            }
+        };
+
+        // Help / FAQ Admin Management
+        window.handleAddFaq = async function(e) {
+            e.preventDefault();
+            const question = document.getElementById('faqQuestion').value.trim();
+            const answer = document.getElementById('faqAnswer').value.trim();
+
+            try {
+                await addDoc(collection(db, "faqs"), {
+                    question: question,
+                    answer: answer,
+                    timestamp: new Date()
+                });
+                alert("FAQ Added Successfully!");
+                e.target.reset();
+                loadAdminFaqs();
+            } catch(err) { alert("Error: " + err.message); }
+        };
+
+        async function loadAdminFaqs() {
+            const list = document.getElementById('adminFaqList');
+            const snap = await getDocs(collection(db, "faqs"));
+            if(snap.empty) return list.innerHTML = '<p class="text-center py-6 text-gray-400 text-xs">No Help items added.</p>';
+
+            list.innerHTML = '';
+            snap.forEach(docSnap => {
+                const f = docSnap.data();
+                const id = docSnap.id;
+                list.innerHTML += `
+                    <div class="bg-white p-3 rounded-xl border text-xs space-y-1 shadow-sm flex justify-between items-start">
+                        <div>
+                            <h4 class="font-bold text-blue-900">❓ ${f.question}</h4>
+                            <p class="text-gray-600">💡 ${f.answer}</p>
+                        </div>
+                        <button onclick="deleteFaq('${id}')" class="bg-red-50 text-red-600 px-2.5 py-1 rounded-lg border border-red-200">Delete</button>
+                    </div>
+                `;
+            });
+        }
+
+        window.deleteFaq = async function(id) {
+            if(confirm("Delete this FAQ?")) {
+                await deleteDoc(doc(db, "faqs", id));
+                loadAdminFaqs();
+            }
+        };
     </script>
 </body>
 </html>
