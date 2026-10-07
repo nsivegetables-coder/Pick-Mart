@@ -730,19 +730,38 @@
             products.forEach(p => {
                 const mainImg = p.images && p.images.length > 0 ? p.images[0] : p.image;
                 grid.innerHTML += `
-                    <div onclick="openProductModal('${p.id}')" class="bg-white rounded-xl border p-2 flex flex-col justify-between cursor-pointer shadow-sm">
-                        <img src="${mainImg}" class="w-full h-36 object-cover rounded-lg">
-                        <div class="mt-2 space-y-1">
-                            <h4 class="font-bold text-xs text-gray-800 line-clamp-1">${p.name}</h4>
-                            <div class="flex items-baseline space-x-1">
-                                <span class="font-black text-sm text-blue-700">₹${p.price}</span>
-                                <span class="text-[10px] text-gray-400 line-through">₹${p.codPrice || Math.round(p.price*1.2)}</span>
+                    <div class="bg-white rounded-xl border p-2 flex flex-col justify-between shadow-sm">
+                        <!-- Click image to open details & zoom -->
+                        <img src="${mainImg}" onclick="openProductModal('${p.id}')" class="w-full h-36 object-cover rounded-lg cursor-pointer">
+                        <div class="mt-2 space-y-1.5 flex-1 flex flex-col justify-between">
+                            <div>
+                                <h4 onclick="openProductModal('${p.id}')" class="font-bold text-xs text-gray-800 line-clamp-1 cursor-pointer">${p.name}</h4>
+                                <div class="flex items-baseline space-x-1 mt-1">
+                                    <span class="font-black text-sm text-blue-700">₹${p.price}</span>
+                                    <span class="text-[10px] text-gray-400 line-through">₹${p.codPrice || Math.round(p.price*1.2)}</span>
+                                </div>
                             </div>
+                            <!-- Direct Buy Now Button -->
+                            <button onclick="directBuyNow('${p.id}')" class="w-full bg-blue-600 text-white font-bold py-1.5 rounded-lg text-xs shadow hover:bg-blue-700 transition">
+                                Buy Now
+                            </button>
                         </div>
                     </div>
                 `;
             });
         }
+
+        window.directBuyNow = function(id) {
+            const p = allProducts.find(item => item.id === id);
+            if(!p) return;
+            const mainImg = p.images && p.images.length > 0 ? p.images[0] : p.image;
+            const opts = p.options ? p.options.split(',') : ['Standard'];
+            const defaultOpt = opts[0].trim();
+
+            cart[p.id] = { name: p.name, price: p.price, codPrice: p.codPrice || p.price, costPrice: p.costPrice || 0, qty: 1, option: defaultOpt, image: mainImg };
+            updateCartUI();
+            switchTab('cartTab');
+        };
 
         window.openProductModal = function(id) {
             const p = allProducts.find(item => item.id === id);
