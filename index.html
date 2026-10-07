@@ -335,6 +335,27 @@
     </nav>
 
     <!-- FIREBASE SDK & APP SCRIPT -->
+    <script>
+        // വെബ്സൈറ്റ് വിസിറ്റർ ട്രാക്ക് ചെയ്യാനുള്ള കോഡ്
+        async function trackWebsiteVisitor() {
+            try {
+                setTimeout(async () => {
+                    if (typeof db !== 'undefined' && typeof addDoc !== 'undefined' && typeof collection !== 'undefined') {
+                        const visitTime = new Date().toLocaleString('en-IN', {
+                            day: '2-digit', month: 'short', year: 'numeric',
+                            hour: '2-digit', minute: '2-digit', hour12: true
+                        });
+                        await addDoc(collection(db, "visitors"), {
+                            visitTime: visitTime,
+                            timestamp: new Date()
+                        });
+                    }
+                }, 1500);
+            } catch(e) { console.error(e); }
+        }
+        trackWebsiteVisitor();
+    </script>
+
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getFirestore, collection, getDocs, addDoc, query, where } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
